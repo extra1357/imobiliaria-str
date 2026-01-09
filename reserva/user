@@ -1,0 +1,7 @@
+edson@edson-MacBook:~/imobiliaria_str$ node create-admin.js
+✅ Usuário admin criado/atualizado!
+📧 Email: admin@imobiliaria.com
+🔑 Senha: admin123
+
+Faça login em: http://localhost:3000/admin/login
+

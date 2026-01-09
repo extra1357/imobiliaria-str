@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Imóveis</title>
+  <style>
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f6fa;
+    }
+
+    header {
+      background: #0056d6;
+      color: white;
+      padding: 25px;
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 0;
+    }
+
+    .welcome {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      font-size: 18px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .imoveis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+
+    .card-info {
+      padding: 15px;
+    }
+
+    .valor {
+      font-size: 22px;
+      color: #0056d6;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    /* BOTÃO CONTATO RÁPIDO */
+    #btn-contato {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #0056d6;
+      color: white;
+      padding: 16px 22px;
+      border-radius: 10px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+
+    #btn-contato:hover {
+      background: #003c9c;
+    }
+
+    /* MODAL */
+    #contatoModal {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 25px;
+      background: white;
+      width: 320px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    #contatoModal h3 {
+      margin: 0 0 10px 0;
+      color: #0056d6;
+    }
+
+    .corretor-msg {
+      background: #eff5ff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      border-left: 3px solid #0056d6;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      font-size: 15px;
+    }
+
+    button.enviar {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      border: none;
+      background: #0056d6;
+      color: white;
+      font-size: 17px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .whatsapp-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      background: #25D366;
+      color: white;
+      font-size: 17px;
+      border-radius: 6px;
+      text-align: center;
+      display: block;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body>
+
+<header>Digital Imóveis</header>
+
+<div class="container">
+
+  <div class="welcome">
+    Olá! 👋 Sou o <b>Ricardo, corretor responsável</b> pelo atendimento Digital Imóveis.  
+    Estou aqui para te ajudar a encontrar o imóvel ideal.  
+    Clique no botão de <b>contato rápido</b> se quiser que eu te chame agora.
+  </div>
+
+  <h2>Imóveis Disponíveis</h2>
+
+  <div class="imoveis-grid">
+    
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1501183638710-841dd1904471" alt="">
+      <div class="card-info">
+        <div class="valor">R$ 850.000</div>
+        Casa ampla com 3 dormitórios e 2 vagas de garagem.
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1560184897-60c9f8e5917c" alt="">
+      <div class="card-info">
+        <div class="valor">R$ 520.000</div>
+        Apartamento moderno com vista panorâmica.
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1572120360610-d971b9d7767c" alt="">
+      <div class="card-info">
+        <div class="valor">R$ 980.000</div>
+        Casa de alto padrão com piscina e área gourmet.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTÃO CONTATO RÁPIDO -->
+<button id="btn-contato">Contato Rápido</button>
+
+<!-- MODAL -->
+<div id="contatoModal">
+  <h3>Atendimento Digital</h3>
+
+  <div class="corretor-msg">
+    Olá! Sou Ricardo, posso te ajudar agora mesmo!  
+    Preencha os dados abaixo ou fale comigo no WhatsApp.
+  </div>
+
+  <input id="nome" type="text" placeholder="Seu nome">
+  <input id="telefone" type="text" placeholder="Seu telefone">
+  <textarea id="mensagem" rows="3" placeholder="Detalhe seu interesse"></textarea>
+
+  <button class="enviar" onclick="enviarContato()">Enviar</button>
+
+  <a class="whatsapp-btn" href="https://wa.me/5511999999999" target="_blank">Falar no WhatsApp</a>
+</div>
+
+<script>
+
+  const modal = document.getElementById("contatoModal");
+  const btn = document.getElementById("btn-contato");
+
+  btn.addEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  function enviarContato() {
+    const nome = document.getElementById("nome").value;
+    const tel = document.getElementById("telefone").value;
+
+    if (!nome || !tel) {
+      alert("Por favor, preencha nome e telefone.");
+      return;
+    }
+
+    alert("Seu contato foi enviado! O corretor entrará em contato em breve.");
+    modal.style.display = "none";
+  }
+</script>
+
+</body>
+</html>

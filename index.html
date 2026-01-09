@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Imóveis</title>
+  <meta name="description" content="Digital Imóveis - gestão e contato rápido entre leads e corretores" />
+  <style>
+    :root{
+      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --success:#10b981;
+      --max-width:1100px; --radius:12px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#0f172a;line-height:1.4}
+    header{background:linear-gradient(90deg,#0ea5e9 0%, #2563eb 100%);color:white;padding:28px 16px}
+    .wrap{max-width:var(--max-width);margin:0 auto}
+    header .title{display:flex;align-items:center;gap:12px}
+    header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    header p{margin:4px 0 0;font-size:13px;opacity:.95}
+    main{padding:28px 16px}
+    .controls{display:flex;gap:12px;align-items:center;margin:18px 0;flex-wrap:wrap}
+    .search{flex:1;min-width:220px}
+    input[type="search"], select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6eef6;background:white}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(2,6,23,0.06);display:flex;flex-direction:column}
+    .thumb{height:160px;background:#ddd;background-position:center;background-size:cover}
+    .card-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
+    .price{font-weight:700;color:var(--accent);font-size:18px}
+    .addr{font-size:13px;color:var(--muted);margin-top:6px}
+    .meta{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:10px;border:none;cursor:pointer}
+    .btn.secondary{background:#eef2ff;color:var(--accent);border:1px solid #c7ddff}
+    footer{padding:18px 0;text-align:center;color:var(--muted);font-size:13px}
+    /* contact drawer */
+    .contact-drawer{position:fixed;right:18px;bottom:18px;width:360px;max-width:calc(100% - 36px);border-radius:14px;background:linear-gradient(180deg,#ffffff, #fbfdff);box-shadow:0 18px 48px rgba(7,12,20,0.18);overflow:hidden}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eef2f6}
+    .drawer-header h3{margin:0;font-size:15px}
+    .drawer-body{padding:12px 14px}
+    .field{margin-bottom:10px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input[type="text"], input[type="email"], input[type="tel"], textarea, input[type="datetime-local"]{
+      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fff
+    }
+    textarea{min-height:80px;resize:vertical}
+    .small{font-size:12px;color:#374151}
+    .lead-card{background:#f8fafc;border-radius:10px;padding:10px;margin-top:8px;border:1px solid #eef2f6}
+    .prompt-box{background:#0b1220;color:white;padding:10px;border-radius:8px;margin-top:8px;font-size:13px;}
+    .copy-btn{background:#fff;color:#0b1220;padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
+    /* responsive */
+    @media (max-width:640px){
+      .contact-drawer{right:12px;left:12px;bottom:12px;width:auto}
+      header h1{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden><rect width="24" height="24" rx="6" fill="white" opacity=".08"></rect><path d="M6 11.5L12 7l6 4.5V18a1 1 0 0 1-1 1h-3v-4H10v4H7a1 1 0 0 1-1-1v-6.5z" fill="white"></path></svg>
+        <div>
+          <h1>Digital Imóveis</h1>
+          <p>Descubra imóveis — entre em contato e agende visitas com nosso corretor.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="Buscar por bairro, cidade ou palavra-chave" />
+      </div>
+      <div style="width:160px">
+        <select id="filter">
+          <option value="all">Todos os imóveis</option>
+          <option value="apto">Apartamento</option>
+          <option value="casa">Casa</option>
+          <option value="terreno">Terreno</option>
+        </select>
+      </div>
+      <div style="width:140px"><input id="maxPrice" type="text" placeholder="Preço máx. (R$)" /></div>
+      <div><button id="searchBtn" class="btn">Buscar</button></div>
+    </div>
+
+    <section id="list" class="grid" aria-live="polite">
+      <!-- Cards inseridos por JavaScript -->
+    </section>
+
+    <footer>
+      © <span id="year"></span> Digital Imóveis — desenvolvido para demonstração
+    </footer>
+  </main>
+
+  <!-- Contact Drawer -->
+  <aside class="contact-drawer" aria-label="Formulário de contato">
+    <div class="drawer-header">
+      <h3>Contato rápido</h3>
+      <div style="font-size:12px;color:var(--muted)">Corretor online</div>
+    </div>
+    <div class="drawer-body">
+      <div class="field">
+        <label for="name">Nome</label>
+        <input id="name" type="text" placeholder="Seu nome" />
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" placeholder="seu@email.com" />
+      </div>
+      <div class="field">
+        <label for="phone">Telefone</label>
+        <input id="phone" type="tel" placeholder="(11) 9xxxx-xxxx" />
+      </div>
+      <div class="field">
+        <label for="property">Imóvel de interesse (opcional)</label>
+        <input id="property" type="text" placeholder="Ex: Casa - Rua A, 123 / Ref: 001" />
+      </div>
+      <div class="field">
+        <label for="datetime">Preferência de dia/hora</label>
+        <input id="datetime" type="datetime-local" />
+      </div>
+      <div class="field">
+        <label for="message">Mensagem</label>
+        <textarea id="message" placeholder="Escreva sua mensagem..."></textarea>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="sendLead" class="btn">Enviar mensagem</button>
+        <button id="clearForm" class="btn secondary">Limpar</button>
+      </div>
+
+      <div id="leadResult" class="lead-card small" style="display:none"></div>
+
+      <div id="promptArea" style="display:none">
+        <div style="margin-top:10px;font-size:13px;color:var(--muted)">Prompt sugerido para o corretor:</div>
+        <div class="prompt-box" id="agentPrompt"></div>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button id="copyPrompt" class="copy-btn">Copiar prompt</button>
+          <button id="openWhats" class="copy-btn">Abrir WhatsApp (simular)</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    // Dados de exemplo (imóveis)
+    const properties = [
+      { id: 'IM001', type: 'apto', title: 'Apartamento moderno', addr: 'Rua das Flores, 120 - Centro', price: 420000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=1' },
+      { id: 'IM002', type: 'casa', title: 'Casa com quintal', addr: 'Av. Brasil, 500 - Jardim', price: 850000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=2' },
+      { id: 'IM003', type: 'apto', title: 'Loft central', addr: 'Praça São Pedro, 10 - Centro', price: 320000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=3' },
+      { id: 'IM004', type: 'terreno', title: 'Terreno amplo', addr: 'Rodovia dos Imigrantes, km 8', price: 250000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=4' },
+      { id: 'IM005', type: 'casa', title: 'Sobrado espaçoso', addr: 'R. das Acácias, 77 - Bosque', price: 980000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=5' },
+      { id: 'IM006', type: 'apto', title: 'Studio compacto', addr: 'Av. Paulista, 2020 - Bela Vista', price: 260000, img: 'https://source.unsplash.com/collection/8912953/800x600?sig=6' }
+    ];
+
+    // Corretores (simulação de roteamento)
+    const agents = [
+      { id: 'AG001', name: 'João Silva', phone: '+5511999000001' },
+      { id: 'AG002', name: 'Mariana Alves', phone: '+5511999000002' },
+      { id: 'AG003', name: 'Carlos Pereira', phone: '+5511999000003' }
+    ];
+
+    const listEl = document.getElementById('list');
+    const yearEl = document.getElementById('year');
+    yearEl.textContent = new Date().getFullYear();
+
+    // Render cards
+    function renderProperties(items){
+      listEl.innerHTML = '';
+      items.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb" style="background-image:url('${p.img}')"></div>
+          <div class="card-body">
+            <div class="price">R$ ${p.price.toLocaleString('pt-BR')}</div>
+            <div class="addr">${p.title} • ${p.addr}</div>
+            <div class="meta">
+              <div style="font-size:13px;color:var(--muted)">Ref: ${p.id}</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn" data-id="${p.id}" onclick="startContact('${p.id}')">Quero este</button>
+                <button class="btn secondary" onclick="viewDetails('${p.id}')">Ver</button>
+              </div>
+            </div>
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+    renderProperties(properties);
+
+    // Simple search/filter
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const q = document.getElementById('q').value.trim().toLowerCase();
+      const filter = document.getElementById('filter').value;
+      const maxP = parseFloat(String(document.getElementById('maxPrice').value).replace(/\D/g,''));
+      const result = properties.filter(p => {
+        if(filter !== 'all' && p.type !== filter) return false;
+        if(q && !(p.addr.toLowerCase().includes(q) || p.title.toLowerCase().includes(q) || p.id.toLowerCase().includes(q))) return false;
+        if(!isNaN(maxP) && maxP>0 && p.price>maxP) return false;
+        return true;
+      });
+      renderProperties(result);
+    });
+
+    function viewDetails(id){
+      const p = properties.find(x => x.id===id);
+      if(!p) return alert('Imóvel não encontrado');
+      alert(`${p.title}\n\nEndereço: ${p.addr}\nPreço: R$ ${p.price.toLocaleString('pt-BR')}\nRef: ${p.id}`);
+    }
+
+    // When user clicks "Quero este" populate property field and scroll to form
+    function startContact(id){
+      const p = properties.find(x => x.id===id);
+      if(!p) return;
+      document.getElementById('property').value = `${p.title} — ${p.addr} (Ref: ${p.id})`;
+      // focus on name
+      document.getElementById('name').focus();
+      // small highlight
+      document.querySelector('.contact-drawer').style.boxShadow = '0 22px 60px rgba(37,99,235,0.22)';
+      setTimeout(()=>document.querySelector('.contact-drawer').style.boxShadow='',1200);
+    }
+
+    // Form handling - simulate lead creation and routing to agent
+    document.getElementById('sendLead').addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const property = document.getElementById('property').value.trim() || 'Interesse geral';
+      const datetime = document.getElementById('datetime').value;
+      const message = document.getElementById('message').value.trim();
+
+      if(!name || !email || !phone){
+        alert('Por favor preencher nome, e-mail e telefone.');
+        return;
+      }
+
+      // create lead object (simulação)
+      const lead = {
+        id: 'L' + Date.now().toString().slice(-6),
+        name, email, phone, property, datetime, message, createdAt: new Date().toISOString()
+      };
+
+      // assign agent round-robin (simple)
+      const assigned = agents[(parseInt(lead.id.slice(-1))||0) % agents.length];
+
+      // show result to user (site visitor)
+      const resultEl = document.getElementById('leadResult');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        Obrigado, ${lead.name}. Sua mensagem foi enviada com sucesso.<br>
+        Lead: <strong>${lead.id}</strong> • Imóvel: <strong>${lead.property}</strong><br>
+        Corretor responsável: <strong>${assigned.name}</strong> • ${assigned.phone}
+      `;
+
+      // prepare prompt for agent
+      const prompt = `Olá ${assigned.name},\n\nNovo lead recebido:\nID: ${lead.id}\nNome: ${lead.name}\nTelefone: ${lead.phone}\nEmail: ${lead.email}\nImóvel: ${lead.property}\nData/Hora sugerida: ${lead.datetime || 'Não informado'}\nMensagem: ${lead.message || '—'}\n\nAção sugerida: ligar/WhatsApp nas próximas 2 horas para confirmar disponibilidade e agendar visita. Enviar link de localização e documentos necessários.\n\nObservações: trate o lead com prioridade e registre o agendamento no sistema.`;
+      document.getElementById('agentPrompt').textContent = prompt;
+      document.getElementById('promptArea').style.display = 'block';
+
+      // Log simulação (no console). Aqui é onde você integraria a API real.
+      console.log('Lead criado:', lead);
+      console.log('Atribuído ao corretor:', assigned);
+
+      // limpar formulário parcialmente
+      document.getElementById('message').value = '';
+      // opcional: zerar nome/email/phone se quiser
+    });
+
+    document.getElementById('clearForm').addEventListener('click', () => {
+      ['name','email','phone','property','datetime','message'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('leadResult').style.display = 'none';
+      document.getElementById('promptArea').style.display = 'none';
+    });
+
+    // copy prompt
+    document.getElementById('copyPrompt').addEventListener('click', () => {
+      const text = document.getElementById('agentPrompt').textContent;
+      navigator.clipboard?.writeText(text).then(()=>alert('Prompt copiado para a área de transferência.'));
+    });
+
+    // open whatsapp sim (abrir link com texto)
+    document.getElementById('openWhats').addEventListener('click', () => {
+      const txt = encodeURIComponent(document.getElementById('agentPrompt').textContent);
+      // This opens web.whatsapp with a blank number; in production you'd use agent phone
+      const url = `https://web.whatsapp.com/send?text=${txt}`;
+      window.open(url, '_blank');
+    });
+
+    // small enhancement: allow enter to search
+    document.getElementById('q').addEventListener('keydown', (e)=>{ if(e.key==='Enter') document.getElementById('searchBtn').click(); });
+
+    // expose startContact for onclick inline
+    window.startContact = startContact;
+    window.viewDetails = viewDetails;
+  </script>
+</body>
+</html>

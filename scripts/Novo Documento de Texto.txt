@@ -1,0 +1,107 @@
+// scripts/fix-imoveis-status.ts
+// Este script atualiza todos os imóveis existentes para terem status correto
+
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  console.log('🔧 Iniciando correção de status dos imóveis...\n')
+
+  try {
+    // 1. Buscar todos os imóveis
+    const todosImoveis = await prisma.imovel.findMany()
+    console.log(`📊 Total de imóveis encontrados: ${todosImoveis.length}`)
+
+    if (todosImoveis.length === 0) {
+      console.log('ℹ️  Nenhum imóvel para atualizar.')
+      return
+    }
+
+    // 2. Atualizar imóveis que não têm status ou têm status nulo
+    const imoveisSemStatus = todosImoveis.filter(i => !i.status || i.status === null)
+    console.log(`🔍 Imóveis sem status: ${imoveisSemStatus.length}`)
+
+    if (imoveisSemStatus.length > 0) {
+      // Define status baseado no campo 'disponivel'
+      for (const imovel of imoveisSemStatus) {
+        const novoStatus = imovel.disponivel ? 'ATIVO' : 'ARQUIVADO'
+        
+        await prisma.imovel.update({
+          where: { id: imovel.id },
+          data: { 
+            status: novoStatus,
+            disponivel: novoStatus === 'ATIVO' // Garante consistência
+          }
+        })
+
+        console.log(`  ✅ Imóvel ${imovel.id.substring(0, 8)} → ${novoStatus}`)
+      }
+    }
+
+    // 3. Sincronizar campo 'disponivel' com 'status' para todos
+    console.log('\n🔄 Sincronizando campo "disponivel" com "status"...')
+    
+    const imoveisParaSincronizar = await prisma.imovel.findMany({
+      where: {
+        OR: [
+          { status: 'ATIVO', disponivel: false },
+          { status: { not: 'ATIVO' }, disponivel: true }
+        ]
+      }
+    })
+
+    console.log(`🔍 Imóveis com inconsistência: ${imoveisParaSincronizar.length}`)
+
+    for (const imovel of imoveisParaSincronizar) {
+      const disponivelCorreto = imovel.status === 'ATIVO'
+      
+      await prisma.imovel.update({
+        where: { id: imovel.id },
+        data: { disponivel: disponivelCorreto }
+      })
+
+      console.log(`  ✅ Imóvel ${imovel.id.substring(0, 8)} → disponivel: ${disponivelCorreto}`)
+    }
+
+    // 4. Resumo final
+    console.log('\n📊 RESUMO FINAL:')
+    
+    const resumo = await prisma.imovel.groupBy({
+      by: ['status'],
+      _count: true
+    })
+
+    resumo.forEach(r => {
+      console.log(`  • ${r.status}: ${r._count} imóveis`)
+    })
+
+    // 5. Registrar na auditoria
+    await prisma.auditoria.create({
+      data: {
+        acao: 'MIGRACAO_STATUS_IMOVEIS',
+        tabela: 'Imovel',
+        usuario: 'sistema',
+        dados: JSON.stringify({
+          totalAtualizado: imoveisSemStatus.length + imoveisParaSincronizar.length,
+          resumo: resumo
+        })
+      }
+    })
+
+    console.log('\n✅ Migração concluída com sucesso!')
+
+  } catch (error) {
+    console.error('❌ Erro durante a migração:', error)
+    throw error
+  }
+}
+
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
