@@ -7,7 +7,6 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({ imoveis: 0, leads: 0 });
   const [loading, setLoading] = useState(true);
 
-  // ✅ LÓGICA ORIGINAL PRESERVADA INTEGRALMENTE
   useEffect(() => {
     async function fetchStats() {
       try {
@@ -36,15 +35,53 @@ export default function AdminDashboard() {
           <p className="text-[9px] font-black tracking-[0.3em] uppercase mt-2 text-slate-500">v2.0 Production</p>
         </div>
         
-        <nav className="flex-1 p-6 space-y-4">
+        <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
+          {/* Seção Principal */}
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-4">Principal</p>
           <Link href="/admin" className="block p-4 font-black uppercase italic tracking-widest text-sm bg-blue-600 shadow-[5px_5px_0px_0px_rgba(255,255,255,0.2)]">
-            Painel Geral
+            📊 Painel Geral
           </Link>
+          <Link href="/admin/dashboard" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
+            📈 Dashboard
+          </Link>
+
+          {/* Seção Cadastros */}
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-6">Cadastros</p>
           <Link href="/admin/imoveis" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
-            Meus Imóveis
+            🏠 Imóveis
+          </Link>
+          <Link href="/admin/proprietarios" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
+            👤 Proprietários
+          </Link>
+          <Link href="/admin/corretores" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-green-500 transition-all">
+            👥 Corretores
           </Link>
           <Link href="/admin/leads" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
-            Leads Recebidos
+            📋 Leads
+          </Link>
+
+          {/* Seção Negócios */}
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-6">Negócios</p>
+          <Link href="/admin/vendas" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-green-500 transition-all">
+            💰 Vendas
+          </Link>
+          <Link href="/admin/alugueis" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-orange-500 transition-all">
+            🏘️ Aluguéis
+          </Link>
+          <Link href="/admin/comissoes" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-yellow-500 transition-all">
+            💵 Comissões
+          </Link>
+          <Link href="/admin/consultas" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
+            📅 Consultas
+          </Link>
+
+          {/* Seção Relatórios */}
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 mt-6">Relatórios</p>
+          <Link href="/admin/analise-mercado" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-purple-500 transition-all">
+            📊 Análise Mercado
+          </Link>
+          <Link href="/admin/leads/relatorio" className="block p-4 font-black uppercase italic tracking-widest text-sm hover:bg-slate-800 border-l-4 border-transparent hover:border-blue-600 transition-all">
+            📈 Relatório Leads
           </Link>
         </nav>
 
@@ -67,68 +104,142 @@ export default function AdminDashboard() {
               Gestão IMOBILIÁRIA PERTO — Database: PostgreSQL
             </p>
           </div>
-          <Link 
-            href="/admin/imoveis/novo" 
-            className="bg-slate-900 text-white px-10 py-5 font-black rounded-sm hover:bg-blue-600 transition-all shadow-[8px_8px_0px_0px_rgba(37,99,235,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 uppercase italic tracking-tighter text-lg"
-          >
-            + Novo Imóvel
-          </Link>
+          <div className="flex gap-4">
+            <Link 
+              href="/admin/corretores/novo" 
+              className="bg-green-600 text-white px-6 py-4 font-black rounded-sm hover:bg-green-700 transition-all shadow-[6px_6px_0px_0px_rgba(22,163,74,0.5)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 uppercase italic tracking-tighter text-sm"
+            >
+              + Corretor
+            </Link>
+            <Link 
+              href="/admin/imoveis/novo" 
+              className="bg-slate-900 text-white px-6 py-4 font-black rounded-sm hover:bg-blue-600 transition-all shadow-[6px_6px_0px_0px_rgba(37,99,235,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 uppercase italic tracking-tighter text-sm"
+            >
+              + Imóvel
+            </Link>
+          </div>
         </header>
 
         {/* DASHBOARD STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Imóveis */}
-          <div className="bg-white border-[3px] border-slate-900 p-8 shadow-[10px_10px_0px_0px_rgba(15,23,42,0.08)] group hover:shadow-none transition-all">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Imóveis no Banco</span>
-            <div className="text-6xl font-black text-slate-900 mt-4 italic tracking-tighter group-hover:text-blue-600 transition-colors">
+          <div className="bg-white border-[3px] border-slate-900 p-6 shadow-[8px_8px_0px_0px_rgba(15,23,42,0.08)] group hover:shadow-none transition-all">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Imóveis</span>
+            <div className="text-5xl font-black text-slate-900 mt-3 italic tracking-tighter group-hover:text-blue-600 transition-colors">
               {loading ? '...' : stats.imoveis}
             </div>
-            <div className="mt-4 h-[2px] bg-slate-100 w-full"></div>
+            <Link href="/admin/imoveis" className="text-[9px] font-bold text-blue-600 uppercase mt-2 block hover:underline">
+              Ver todos →
+            </Link>
           </div>
           
           {/* Leads */}
-          <div className="bg-white border-[3px] border-slate-900 p-8 shadow-[10px_10px_0px_0px_rgba(37,99,235,0.1)] group hover:shadow-none transition-all">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Leads (30 Dias)</span>
-            <div className="text-6xl font-black text-blue-600 mt-4 italic tracking-tighter">
+          <div className="bg-white border-[3px] border-slate-900 p-6 shadow-[8px_8px_0px_0px_rgba(37,99,235,0.1)] group hover:shadow-none transition-all">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Leads</span>
+            <div className="text-5xl font-black text-blue-600 mt-3 italic tracking-tighter">
               0
             </div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase mt-2">Nenhuma conversão recente</p>
+            <Link href="/admin/leads" className="text-[9px] font-bold text-blue-600 uppercase mt-2 block hover:underline">
+              Ver todos →
+            </Link>
           </div>
 
-          {/* System Status */}
-          <div className="bg-slate-900 p-8 border-[3px] border-slate-900 shadow-[10px_10px_0px_0px_rgba(37,99,235,1)]">
-            <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Status do Sistema</span>
-            <div className="text-3xl font-black text-white mt-4 italic tracking-tighter uppercase">
-              Online
+          {/* Vendas */}
+          <div className="bg-white border-[3px] border-green-600 p-6 shadow-[8px_8px_0px_0px_rgba(22,163,74,0.15)] group hover:shadow-none transition-all">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Vendas</span>
+            <div className="text-5xl font-black text-green-600 mt-3 italic tracking-tighter">
+              0
             </div>
-            <div className="mt-4 flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">PostgreSQL Conectado</span>
+            <Link href="/admin/vendas" className="text-[9px] font-bold text-green-600 uppercase mt-2 block hover:underline">
+              Ver todas →
+            </Link>
+          </div>
+
+          {/* Aluguéis */}
+          <div className="bg-white border-[3px] border-orange-500 p-6 shadow-[8px_8px_0px_0px_rgba(249,115,22,0.15)] group hover:shadow-none transition-all">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Aluguéis Ativos</span>
+            <div className="text-5xl font-black text-orange-500 mt-3 italic tracking-tighter">
+              0
             </div>
+            <Link href="/admin/alugueis" className="text-[9px] font-bold text-orange-500 uppercase mt-2 block hover:underline">
+              Ver todos →
+            </Link>
           </div>
         </div>
 
-        {/* ATIVIDADES RECENTES */}
-        <section className="mt-16">
-          <div className="flex items-center gap-4 mb-8">
-            <h3 className="font-black uppercase italic tracking-tighter text-2xl">Atividades Recentes</h3>
+        {/* AÇÕES RÁPIDAS */}
+        <section className="mt-12">
+          <div className="flex items-center gap-4 mb-6">
+            <h3 className="font-black uppercase italic tracking-tighter text-xl">Ações Rápidas</h3>
             <div className="flex-1 h-[3px] bg-slate-200"></div>
           </div>
           
-          <div className="bg-white border-[3px] border-slate-900 p-12 text-center shadow-[15px_15px_0px_0px_rgba(15,23,42,0.05)]">
-            <p className="font-black text-slate-600 uppercase tracking-widest italic text-lg">
-              {stats.imoveis > 0 
-                ? `Pipeline Ativo: ${stats.imoveis} imóveis sincronizados com o banco.` 
-                : "Aguardando sincronização de dados..."}
-            </p>
-            {stats.imoveis === 0 && (
-              <p className="text-[10px] font-bold text-slate-400 uppercase mt-2">Nenhum registro detectado nas tabelas STR</p>
-            )}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link href="/admin/proprietarios/novo" className="bg-white border-2 border-slate-200 p-6 text-center hover:border-blue-600 hover:bg-blue-50 transition-all rounded-lg">
+              <span className="text-3xl">👤</span>
+              <p className="font-bold text-sm mt-2 text-slate-700">Novo Proprietário</p>
+            </Link>
+            <Link href="/admin/leads/novo" className="bg-white border-2 border-slate-200 p-6 text-center hover:border-blue-600 hover:bg-blue-50 transition-all rounded-lg">
+              <span className="text-3xl">📋</span>
+              <p className="font-bold text-sm mt-2 text-slate-700">Novo Lead</p>
+            </Link>
+            <Link href="/admin/vendas/nova" className="bg-white border-2 border-slate-200 p-6 text-center hover:border-green-600 hover:bg-green-50 transition-all rounded-lg">
+              <span className="text-3xl">💰</span>
+              <p className="font-bold text-sm mt-2 text-slate-700">Nova Venda</p>
+            </Link>
+            <Link href="/admin/alugueis/novo" className="bg-white border-2 border-slate-200 p-6 text-center hover:border-orange-500 hover:bg-orange-50 transition-all rounded-lg">
+              <span className="text-3xl">🏘️</span>
+              <p className="font-bold text-sm mt-2 text-slate-700">Novo Contrato</p>
+            </Link>
+          </div>
+        </section>
+
+        {/* COMISSÕES PENDENTES */}
+        <section className="mt-12">
+          <div className="flex items-center gap-4 mb-6">
+            <h3 className="font-black uppercase italic tracking-tighter text-xl">💵 Comissões</h3>
+            <div className="flex-1 h-[3px] bg-slate-200"></div>
+            <Link href="/admin/comissoes" className="text-sm font-bold text-blue-600 hover:underline">
+              Ver todas →
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-yellow-50 border-2 border-yellow-400 p-6 rounded-lg">
+              <p className="text-[10px] font-black text-yellow-600 uppercase tracking-widest">Pendentes</p>
+              <p className="text-3xl font-black text-yellow-600 mt-2">R$ 0,00</p>
+            </div>
+            <div className="bg-blue-50 border-2 border-blue-400 p-6 rounded-lg">
+              <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Aprovadas</p>
+              <p className="text-3xl font-black text-blue-600 mt-2">R$ 0,00</p>
+            </div>
+            <div className="bg-green-50 border-2 border-green-400 p-6 rounded-lg">
+              <p className="text-[10px] font-black text-green-600 uppercase tracking-widest">Pagas (Mês)</p>
+              <p className="text-3xl font-black text-green-600 mt-2">R$ 0,00</p>
+            </div>
+          </div>
+        </section>
+
+        {/* System Status */}
+        <section className="mt-12">
+          <div className="bg-slate-900 p-8 border-[3px] border-slate-900 shadow-[10px_10px_0px_0px_rgba(37,99,235,1)] rounded-lg">
+            <div className="flex justify-between items-center">
+              <div>
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Status do Sistema</span>
+                <div className="text-3xl font-black text-white mt-2 italic tracking-tighter uppercase">
+                  Online
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">PostgreSQL Conectado</span>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* FOOTER TÉCNICO */}
-        <footer className="mt-20 py-6 border-t-[3px] border-slate-200 flex justify-between">
+        <footer className="mt-16 py-6 border-t-[3px] border-slate-200 flex justify-between">
           <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em]">STR_GENETICS_SYSTEM_MODULE_LOADED</span>
           <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em]">2026 © PROD_ENVIRONMENT</span>
         </footer>
