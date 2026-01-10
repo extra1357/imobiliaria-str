@@ -69,7 +69,7 @@ export default function Home() {
         }));
         
         setProperties(mapped);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Critical Error [STR Genetics]:", err);
       } finally {
         setIsLoading(false);
@@ -127,7 +127,7 @@ export default function Home() {
       const prompt = `[NOVO LEAD PERSISTIDO - STR GENETICS]\n\nID: ${leadId}\nCLIENTE: ${leadForm.name}\nCONTATO: ${leadForm.phone}\nE-MAIL: ${leadForm.email}\nINTERESSE: ${leadForm.property}\nDATA: ${leadForm.datetime || 'Imediato'}\nMENSAGEM: ${leadForm.message}`;
       setAgentPrompt(prompt);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao processar lead:", err);
       alert('Erro ao salvar lead. Verifique a conexão com o banco de dados.');
     } finally {
@@ -210,7 +210,7 @@ export default function Home() {
             {filteredProperties.map(p => (
               <article key={p.id} className="card">
                 <Swiper navigation={true} pagination={{clickable:true}} modules={[Navigation, Pagination, Autoplay]} autoplay={{delay: 5000}} className="card-swiper">
-                  {p.imagens.length > 0 ? p.imagens.map((img, i) => (
+                  {p.imagens.length > 0 ? p.imagens.map((img: any, i: number) => (
                     <SwiperSlide key={i}><img src={img} alt={p.title} /></SwiperSlide>
                   )) : <SwiperSlide><div style={{background:'#f1f5f9', height:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}>Sem imagem</div></SwiperSlide>}
                 </Swiper>

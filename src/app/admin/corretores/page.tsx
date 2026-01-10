@@ -9,7 +9,7 @@ export default function CorretoresPage() {
 
   useEffect(() => {
     fetch('/api/corretores')
-      .then(res => res.json())
+      .then((res: any) => res.json())
       .then((data: any) => {
         setCorretores(Array.isArray(data) ? data : []);
         setLoading(false);
@@ -69,13 +69,13 @@ export default function CorretoresPage() {
           <div className="bg-white p-6 rounded-lg shadow">
             <p className="text-gray-500 text-sm">Vendas Realizadas</p>
             <p className="text-3xl font-bold text-purple-600">
-              {corretores.reduce((acc, c) => acc + (c._count?.vendas || 0), 0)}
+              {corretores.reduce((acc: any, c: any) => acc + (c._count?.vendas || 0), 0)}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <p className="text-gray-500 text-sm">Aluguéis Ativos</p>
             <p className="text-3xl font-bold text-orange-600">
-              {corretores.reduce((acc, c) => acc + (c._count?.alugueis || 0), 0)}
+              {corretores.reduce((acc: any, c: any) => acc + (c._count?.alugueis || 0), 0)}
             </p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function CorretoresPage() {
                   </td>
                 </tr>
               ) : (
-                corretores.map((corretor) => (
+                corretores.map((corretor: any) => (
                   <tr key={corretor.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center">

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Corpo da requisição vazio' }, { status: 400 });
     }
 
-    const body = JSON.parse(text);
+    const body: any = JSON.parse(text);
 
     // Validação: Para uma consulta, precisamos do Lead e do Imóvel
     if (!body.leadId || !body.imovelId) {

@@ -73,7 +73,7 @@ export default function NovoProprietario() {
         cpf: ''
       })
 
-    } catch (err) {
+    } catch (err: any) {
       // Captura erros de rede ou erros lançados acima
       setError(err instanceof Error ? err.message : 'Erro desconhecido ao comunicar com o servidor.')
       console.error('Erro no processo de cadastro:', err)
@@ -89,7 +89,7 @@ export default function NovoProprietario() {
         await navigator.clipboard.writeText(proprietarioId)
         setCopySuccess(true)
         setTimeout(() => setCopySuccess(false), 3000)
-      } catch (err) {
+      } catch (err: any) {
         console.error('Falha ao copiar:', err);
         // Fallback simples caso a permissão seja negada (raro em apps modernos)
       }

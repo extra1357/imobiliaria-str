@@ -84,20 +84,20 @@ export default function NovoContratoAluguelPage() {
   useEffect(() => {
     // Carregar imóveis disponíveis para aluguel
     fetch('/api/imoveis?disponivel=true')
-      .then(res => res.json())
-      .then(data => setImoveis(Array.isArray(data) ? data : []))
+      .then((res: any) => res.json())
+      .then((data: any) => setImoveis(Array.isArray(data) ? data : []))
       .catch(console.error);
 
     // Carregar leads
     fetch('/api/leads')
-      .then(res => res.json())
-      .then(data => setLeads(Array.isArray(data) ? data : []))
+      .then((res: any) => res.json())
+      .then((data: any) => setLeads(Array.isArray(data) ? data : []))
       .catch(console.error);
 
     // Carregar corretores
     fetch('/api/corretores?ativo=true')
-      .then(res => res.json())
-      .then(data => setCorretores(Array.isArray(data) ? data : []))
+      .then((res: any) => res.json())
+      .then((data: any) => setCorretores(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, []);
 
@@ -690,12 +690,12 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Selecione o Imóvel *</label>
               <select
                 value={form.imovelId}
-                onChange={(e) => handleImovelChange(e.target.value)}
+                onChange={(e: any) => handleImovelChange(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">Selecione...</option>
-                {imoveis.map((imovel) => (
+                {imoveis.map((imovel: any) => (
                   <option key={imovel.id} value={imovel.id}>
                     {imovel.tipo} - {imovel.endereco}, {imovel.cidade}
                   </option>
@@ -706,7 +706,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Finalidade</label>
               <select
                 value={form.finalidade}
-                onChange={(e) => setForm({ ...form, finalidade: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, finalidade: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="residencial">Residencial</option>
@@ -733,11 +733,11 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Lead Existente (opcional)</label>
               <select
                 value={form.inquilinoId}
-                onChange={(e) => handleInquilinoChange(e.target.value)}
+                onChange={(e: any) => handleInquilinoChange(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Novo inquilino...</option>
-                {leads.map((lead) => (
+                {leads.map((lead: any) => (
                   <option key={lead.id} value={lead.id}>
                     {lead.nome} - {lead.telefone}
                   </option>
@@ -749,7 +749,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoNome}
-                onChange={(e) => setForm({ ...form, inquilinoNome: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoNome: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -759,7 +759,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoCpf}
-                onChange={(e) => setForm({ ...form, inquilinoCpf: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoCpf: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="000.000.000-00"
               />
@@ -769,7 +769,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoRg}
-                onChange={(e) => setForm({ ...form, inquilinoRg: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoRg: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -778,7 +778,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoNacionalidade}
-                onChange={(e) => setForm({ ...form, inquilinoNacionalidade: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoNacionalidade: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -786,7 +786,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Estado Civil</label>
               <select
                 value={form.inquilinoEstadoCivil}
-                onChange={(e) => setForm({ ...form, inquilinoEstadoCivil: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoEstadoCivil: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="solteiro(a)">Solteiro(a)</option>
@@ -801,7 +801,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoProfissao}
-                onChange={(e) => setForm({ ...form, inquilinoProfissao: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoProfissao: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -810,7 +810,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="tel"
                 value={form.inquilinoTelefone}
-                onChange={(e) => setForm({ ...form, inquilinoTelefone: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoTelefone: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -819,7 +819,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="email"
                 value={form.inquilinoEmail}
-                onChange={(e) => setForm({ ...form, inquilinoEmail: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoEmail: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -828,7 +828,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="text"
                 value={form.inquilinoEndereco}
-                onChange={(e) => setForm({ ...form, inquilinoEndereco: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, inquilinoEndereco: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -841,12 +841,12 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Corretor *</label>
               <select
                 value={form.corretorId}
-                onChange={(e) => setForm({ ...form, corretorId: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, corretorId: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">Selecione...</option>
-                {corretores.map((corretor) => (
+                {corretores.map((corretor: any) => (
                   <option key={corretor.id} value={corretor.id}>
                     {corretor.nome} - CRECI: {corretor.creci}
                   </option>
@@ -863,7 +863,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="number"
                 value={form.valorAluguel}
-                onChange={(e) => setForm({ ...form, valorAluguel: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, valorAluguel: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="0,00"
                 required
@@ -874,7 +874,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="number"
                 value={form.valorCondominio}
-                onChange={(e) => setForm({ ...form, valorCondominio: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, valorCondominio: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="0,00"
               />
@@ -884,7 +884,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="number"
                 value={form.valorIPTU}
-                onChange={(e) => setForm({ ...form, valorIPTU: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, valorIPTU: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="0,00"
               />
@@ -898,7 +898,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Garantia</label>
               <select
                 value={form.tipoGarantia}
-                onChange={(e) => setForm({ ...form, tipoGarantia: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, tipoGarantia: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="caucao">Caução (depósito)</option>
@@ -912,7 +912,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="number"
                 value={form.valorGarantia}
-                onChange={(e) => setForm({ ...form, valorGarantia: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, valorGarantia: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="0,00"
               />
@@ -927,7 +927,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="date"
                 value={form.dataInicio}
-                onChange={(e) => handleDataInicioChange(e.target.value)}
+                onChange={(e: any) => handleDataInicioChange(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -936,7 +936,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Duração</label>
               <select
                 value={form.duracaoMeses}
-                onChange={(e) => handleDuracaoChange(e.target.value)}
+                onChange={(e: any) => handleDuracaoChange(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="12">12 meses</option>
@@ -958,7 +958,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Dia Vencimento</label>
               <select
                 value={form.diaVencimento}
-                onChange={(e) => setForm({ ...form, diaVencimento: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, diaVencimento: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 {[1, 5, 10, 15, 20, 25].map(dia => (
@@ -975,7 +975,7 @@ export default function NovoContratoAluguelPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Índice de Reajuste</label>
               <select
                 value={form.indiceReajuste}
-                onChange={(e) => setForm({ ...form, indiceReajuste: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, indiceReajuste: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="IGPM">IGP-M (FGV)</option>
@@ -988,7 +988,7 @@ export default function NovoContratoAluguelPage() {
               <input
                 type="number"
                 value={form.taxaAdministracao}
-                onChange={(e) => setForm({ ...form, taxaAdministracao: e.target.value })}
+                onChange={(e: any) => setForm({ ...form, taxaAdministracao: e.target.value })}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="10"
               />
@@ -1000,7 +1000,7 @@ export default function NovoContratoAluguelPage() {
           <div className="mb-8">
             <textarea
               value={form.clausulasAdicionais}
-              onChange={(e) => setForm({ ...form, clausulasAdicionais: e.target.value })}
+              onChange={(e: any) => setForm({ ...form, clausulasAdicionais: e.target.value })}
               rows={4}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Adicione cláusulas específicas para este contrato (opcional)"

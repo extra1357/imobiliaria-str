@@ -41,7 +41,7 @@ export default function PerformancePage() {
         <div className="bg-white p-8 rounded-2xl border border-gray-200 h-80 flex flex-col">
           <h3 className="text-xs font-black text-gray-900 uppercase mb-auto">Volume de Captura (7 dias)</h3>
           <div className="flex items-end justify-between gap-2 h-40">
-            {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
+            {[40, 70, 45, 90, 65, 80, 50].map((h: any, i: number) => (
               <div key={i} className="bg-blue-600 w-full rounded-t-lg transition-all hover:bg-blue-400" style={{ height: `${h}%` }}></div>
             ))}
           </div>
@@ -54,7 +54,7 @@ export default function PerformancePage() {
         <div className="bg-white p-8 rounded-2xl border border-gray-200">
            <h3 className="text-xs font-black text-gray-900 uppercase mb-6">Demanda por Região</h3>
            <div className="space-y-4">
-              {['São Paulo', 'Barueri', 'Santana de Parnaíba'].map((cidade, i) => (
+              {['São Paulo', 'Barueri', 'Santana de Parnaíba'].map((cidade: any, i: number) => (
                 <div key={i}>
                   <div className="flex justify-between text-xs font-bold mb-1 uppercase">
                     <span>{cidade}</span>

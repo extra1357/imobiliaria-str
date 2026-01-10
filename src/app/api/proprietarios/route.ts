@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
           }),
         },
       });
-    } catch (auditError) {
+    } catch (auditError: any) {
       // Advertência: Se a auditoria falhar, a criação do proprietário deve continuar
       console.warn('⚠️ Erro ao registrar auditoria (não crítico):', auditError);
     }

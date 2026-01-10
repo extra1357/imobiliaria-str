@@ -9,7 +9,7 @@ export default function AlugueisPage() {
 
   useEffect(() => {
     fetch('/api/alugueis')
-      .then(res => res.json())
+      .then((res: any) => res.json())
       .then((data: any) => {
         setAlugueis(Array.isArray(data) ? data : []);
         setLoading(false);
@@ -37,11 +37,11 @@ export default function AlugueisPage() {
 
   const totalMensal = alugueis
     .filter(a => a.status === 'ativo')
-    .reduce((acc, a) => acc + Number(a.valorTotal || 0), 0);
+    .reduce((acc: any, a: any) => acc + Number(a.valorTotal || 0), 0);
 
   const taxaAdmMensal = alugueis
     .filter(a => a.status === 'ativo')
-    .reduce((acc, a) => acc + (Number(a.valorAluguel || 0) * Number(a.taxaAdministracao || 10) / 100), 0);
+    .reduce((acc: any, a: any) => acc + (Number(a.valorAluguel || 0) * Number(a.taxaAdministracao || 10) / 100), 0);
 
   if (loading) {
     return (
@@ -125,7 +125,7 @@ export default function AlugueisPage() {
                   </td>
                 </tr>
               ) : (
-                alugueis.map((aluguel) => (
+                alugueis.map((aluguel: any) => (
                   <tr key={aluguel.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>

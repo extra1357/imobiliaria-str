@@ -1,7 +1,7 @@
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/database/prisma-client'
 import { successResponse, errorResponse } from '@/utils/api-response'
 

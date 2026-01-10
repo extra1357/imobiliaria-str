@@ -1,7 +1,7 @@
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { successResponse, errorResponse } from '@/utils/api-response'
 
 export async function GET(req: NextRequest) {

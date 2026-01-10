@@ -91,7 +91,7 @@ export default function RelatoriosAnalise() {
           {cidades.map(cidade => {
             const analiseCidade = analises.filter(a => a.cidade === cidade)
             const ultima = analiseCidade[0] || null
-            const mediaValor = analiseCidade.reduce((acc, a) => acc + Number(a.valorM2), 0) / analiseCidade.length
+            const mediaValor = analiseCidade.reduce((acc: any, a: any) => acc + Number(a.valorM2), 0) / analiseCidade.length
             
             let variacao = 0
             if (analiseCidade.length > 1) {

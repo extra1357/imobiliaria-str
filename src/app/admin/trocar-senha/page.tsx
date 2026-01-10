@@ -73,7 +73,7 @@ export default function TrocarSenhaPage() {
             <input
               type="password"
               value={formData.senhaAtual}
-              onChange={(e) => setFormData({...formData, senhaAtual: e.target.value})}
+              onChange={(e: any) => setFormData({...formData, senhaAtual: e.target.value})}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Digite sua senha atual"
               required
@@ -88,7 +88,7 @@ export default function TrocarSenhaPage() {
             <input
               type="password"
               value={formData.novaSenha}
-              onChange={(e) => setFormData({...formData, novaSenha: e.target.value})}
+              onChange={(e: any) => setFormData({...formData, novaSenha: e.target.value})}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Mínimo 8 caracteres"
               required
@@ -105,7 +105,7 @@ export default function TrocarSenhaPage() {
             <input
               type="password"
               value={formData.confirmarSenha}
-              onChange={(e) => setFormData({...formData, confirmarSenha: e.target.value})}
+              onChange={(e: any) => setFormData({...formData, confirmarSenha: e.target.value})}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Digite novamente"
               required

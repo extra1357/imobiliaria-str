@@ -90,7 +90,7 @@ export default function Toolbox() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.map((section, idx) => {
+          {sections.map((section: any, idx: number) => {
             const SectionIcon = section.icon;
             return (
               <div 
@@ -103,7 +103,7 @@ export default function Toolbox() {
                 </div>
                 
                 <div className="p-4 space-y-2">
-                  {section.items.map((item, itemIdx) => {
+                  {section.items.map((item: any, itemIdx: number) => {
                     const ItemIcon = item.icon;
                     return (
                       <button

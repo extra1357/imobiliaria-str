@@ -63,7 +63,7 @@ export default function NovoImovel() {
     const files = e.target.files;
     if (!files) return;
 
-    Array.from(files).forEach((file) => {
+    Array.from(files).forEach((file: any) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagensBase64(prev => [...prev, reader.result as string]);
@@ -219,7 +219,7 @@ export default function NovoImovel() {
               </div>
               {imagensBase64.length > 0 && (
                 <div className="mt-6 flex flex-wrap gap-4">
-                  {imagensBase64.map((img, i) => (
+                  {imagensBase64.map((img: any, i: number) => (
                     <div key={i} className="w-24 h-24 border-[3px] border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                       <img src={img} alt="Preview" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" />
                     </div>

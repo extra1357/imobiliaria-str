@@ -58,7 +58,7 @@ export default function FunilVendas() {
       {/* Quadro Kanban */}
       <div className="overflow-x-auto pb-6">
         <div className="flex gap-4 min-w-max">
-          {Object.entries(STATUS_LABELS).map(([status, label]) => (
+          {Object.entries(STATUS_LABELS).map(([status, label]: [string, any]) => (
             <div key={status} className="w-80 flex-shrink-0">
               <div className="bg-gray-100 rounded-xl p-3 min-h-[600px] border border-gray-200 shadow-inner">
                 {/* Cabeçalho da Coluna */}

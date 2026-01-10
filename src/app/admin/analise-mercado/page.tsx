@@ -161,7 +161,7 @@ export default function AnaliseMercado() {
             PG_DATABASE_EMPTY_SYNC_REQUIRED
           </div>
         ) : (
-          analises.map((a, index) => (
+          analises.map((a: any, index: number) => (
             <div key={a.id} className="bg-white border-[3px] border-slate-900 p-8 flex flex-col md:flex-row justify-between items-center hover:bg-slate-900 hover:text-white transition-all group cursor-crosshair">
               <div className="flex items-center gap-12">
                 <span className="font-black text-5xl italic text-slate-100 group-hover:text-slate-800 transition-colors select-none italic">

@@ -9,7 +9,7 @@ export default function VendasPage() {
 
   useEffect(() => {
     fetch('/api/vendas')
-      .then(res => res.json())
+      .then((res: any) => res.json())
       .then((data: any) => {
         setVendas(Array.isArray(data) ? data : []);
         setLoading(false);
@@ -46,8 +46,8 @@ export default function VendasPage() {
     cancelada: 'Cancelada'
   };
 
-  const totalVendas = vendas.reduce((acc, v) => acc + Number(v.valorVenda || 0), 0);
-  const totalComissoes = vendas.reduce((acc, v) => acc + Number(v.valorComissao || 0), 0);
+  const totalVendas = vendas.reduce((acc: any, v: any) => acc + Number(v.valorVenda || 0), 0);
+  const totalComissoes = vendas.reduce((acc: any, v: any) => acc + Number(v.valorComissao || 0), 0);
   const vendasConcluidas = vendas.filter(v => v.status === 'concluida').length;
 
   if (loading) {
@@ -130,7 +130,7 @@ export default function VendasPage() {
                   </td>
                 </tr>
               ) : (
-                vendas.map((venda) => (
+                vendas.map((venda: any) => (
                   <tr key={venda.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>

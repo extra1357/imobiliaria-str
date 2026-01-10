@@ -11,7 +11,7 @@ export default function ComissoesPage() {
   useEffect(() => {
     const url = filtroStatus ? `/api/comissoes?status=${filtroStatus}` : '/api/comissoes';
     fetch(url)
-      .then(res => res.json())
+      .then((res: any) => res.json())
       .then((result: any) => {
         setData(result);
         setLoading(false);
@@ -51,7 +51,7 @@ export default function ComissoesPage() {
         const result = await fetch(url).then(r => r.json());
         setData(result);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao atualizar status:', error);
     }
   };
@@ -109,7 +109,7 @@ export default function ComissoesPage() {
             <span className="text-gray-600">Filtrar por status:</span>
             <select
               value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
+              onChange={(e: any) => setFiltroStatus(e.target.value)}
               className="px-4 py-2 border rounded-lg"
             >
               <option value="">Todos</option>

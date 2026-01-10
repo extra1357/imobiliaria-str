@@ -15,7 +15,7 @@ export default function AdminDashboard() {
         if (data.status === "CONECTADO") {
           setStats(prev => ({ ...prev, imoveis: data.estatisticas.total_imoveis_cadastrados }));
         }
-      } catch (e) { 
+      } catch (e: any) { 
         console.error("Erro ao carregar estatísticas"); 
       } finally { 
         setLoading(false); 

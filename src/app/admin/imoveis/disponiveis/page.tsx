@@ -25,7 +25,7 @@ export default function ImoveisDisponiveis() {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           return response.json();
-        } catch (e) {
+        } catch (e: any) {
           if (i === attempts - 1) throw e;
           await new Promise(resolve => setTimeout(resolve, delay));
           delay *= 2;
@@ -41,7 +41,7 @@ export default function ImoveisDisponiveis() {
         const dataArray = Array.isArray(d) ? d : (d.data || []);
         const disponiveis = dataArray.filter((i: Imovel) => i.disponivel)
         setImoveis(disponiveis)
-      } catch (e) {
+      } catch (e: any) {
         console.error("Erro ao carregar imóveis:", e)
         setError("Não foi possível carregar os dados dos imóveis.")
       } finally {
@@ -84,7 +84,7 @@ export default function ImoveisDisponiveis() {
       <h1 className="text-3xl font-extrabold mb-6 text-gray-800 border-b pb-2">Imóveis Disponíveis</h1>
 
       <div className="grid sm:grid-cols-2 gap-6">
-        {imoveis.map((i) => (
+        {imoveis.map((i: any) => (
           <div key={i.id} className="p-4 border rounded-lg shadow bg-white">
             <h2 className="text-xl font-semibold">{i.tipo || "Imóvel"}</h2>
             <p className="text-gray-600">{i.cidade}</p>

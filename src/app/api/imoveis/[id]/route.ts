@@ -58,7 +58,7 @@ export async function PATCH(
           })
         }
       });
-    } catch (auditError) {
+    } catch (auditError: any) {
       console.warn('⚠️ Erro ao registrar auditoria (não crítico):', auditError);
     }
 
