@@ -10,10 +10,10 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'TROQUE');
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, senha } = body;
+    const { email, password } = body;
 
     // Validação básica
-    if (!email || !senha) {
+    if (!email || !password) {
       return NextResponse.json(
         { error: 'Email e senha são obrigatórios' },
         { status: 400 }
@@ -59,12 +59,12 @@ export async function POST(request: NextRequest) {
           error: `Usuário bloqueado temporariamente. Tente novamente em ${minutosRestantes} minutos.`,
           bloqueadoAte: usuario.bloqueadoAte 
         },
-        { status: 423 } // Locked
+        { status: 423 }
       );
     }
 
     // Verificar senha
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaValida = await bcrypt.compare(password, usuario.senha);
 
     if (!senhaValida) {
       // Incrementar tentativas de login
@@ -74,7 +74,6 @@ export async function POST(request: NextRequest) {
         where: { id: usuario.id },
         data: {
           tentativasLogin: tentativas,
-          // Bloquear após 5 tentativas por 15 minutos
           bloqueadoAte: tentativas >= 5 
             ? new Date(Date.now() + 15 * 60 * 1000) 
             : null
@@ -107,13 +106,13 @@ export async function POST(request: NextRequest) {
       userId: usuario.id,
       email: usuario.email,
       nome: usuario.nome,
-      role: usuario.role, // SUPER_ADMIN, ADMIN, GERENTE, etc.
+      role: usuario.role,
       corretorId: usuario.corretorId || undefined,
       corretorNome: usuario.corretor?.nome || undefined
     })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setExpirationTime('24h') // Token expira em 24h
+      .setExpirationTime('24h')
       .sign(JWT_SECRET);
 
     // Log de auditoria
@@ -152,7 +151,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24, // 24 horas
+      maxAge: 60 * 60 * 24,
       path: '/'
     });
 
@@ -167,10 +166,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Endpoint de logout
 export async function DELETE(request: NextRequest) {
   try {
-    // Log de auditoria (se tiver usuário no token)
     const token = request.cookies.get('auth-token')?.value;
     
     if (token) {
@@ -191,7 +188,6 @@ export async function DELETE(request: NextRequest) {
       }
     }
 
-    // Limpar cookie
     const response = NextResponse.json({ 
       success: true, 
       message: 'Logout realizado com sucesso' 
@@ -210,7 +206,6 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// Endpoint para verificar token atual
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get('auth-token')?.value;
@@ -225,7 +220,6 @@ export async function GET(request: NextRequest) {
     const { jwtVerify } = await import('jose');
     const { payload } = await jwtVerify(token, JWT_SECRET);
 
-    // Buscar dados atualizados do usuário
     const usuario = await prisma.usuario.findUnique({
       where: { id: payload.userId as string },
       include: {

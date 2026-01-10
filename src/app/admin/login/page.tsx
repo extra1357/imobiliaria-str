@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -21,10 +20,18 @@ export default function LoginPage() {
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      // CORREÇÃO AQUI 👇
+      const text = await response.text();
+      
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error('Resposta inválida do servidor');
+      }
 
       if (!response.ok) throw new Error(data.error || 'Erro ao fazer login');
-
+      
       router.push('/admin/dashboard');
     } catch (err: any) {
       setError(err.message);
@@ -44,7 +51,7 @@ export default function LoginPage() {
             <input
               type="email"
               value={formData.email}
-              onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
               disabled={loading}
@@ -56,7 +63,7 @@ export default function LoginPage() {
             <input
               type="password"
               value={formData.password}
-              onChange={(e: any) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
               disabled={loading}
