@@ -143,7 +143,7 @@ export async function POST(request: Request) {
     // Registrar na auditoria
     await prisma.auditoria.create({
       data: {
-        usuarioId: usuario.id,
+        usuario: { connect: { id: usuario.id } },
         acao: 'SOLICITACAO_RESET_SENHA',
         detalhes: `Reset de senha solicitado para ${email}`,
         ip: request.headers.get('x-forwarded-for') || 'unknown',
