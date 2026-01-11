@@ -18,30 +18,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // Buscar usuário
     const usuario = await prisma.usuario.findUnique({
       where: { email }
     });
 
-    // NÃO revelar se o email existe ou não (segurança)
     if (!usuario) {
       return NextResponse.json({
         message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
       });
     }
 
-    // Verificar se o usuário está ativo
     if (!usuario.ativo) {
       return NextResponse.json({
         message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
       });
     }
 
-    // Gerar token único
     const token = crypto.randomBytes(32).toString('hex');
-    const expiraEm = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+    const expiraEm = new Date(Date.now() + 60 * 60 * 1000);
 
-    // Salvar token no banco
     await prisma.usuario.update({
       where: { id: usuario.id },
       data: {
@@ -50,10 +45,8 @@ export async function POST(request: Request) {
       }
     });
 
-    // URL de redefinição
     const resetUrl = `${process.env.NEXT_PUBLIC_URL}/admin/redefinir-senha?token=${token}`;
 
-    // Enviar email
     await resend.emails.send({
       from: 'STR Imobiliária <onboarding@resend.dev>',
       to: email,
@@ -70,29 +63,21 @@ export async function POST(request: Request) {
             <tr>
               <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                  
-                  <!-- Header -->
                   <tr>
                     <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
                       <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">🏠 STR Imobiliária</h1>
                     </td>
                   </tr>
-
-                  <!-- Conteúdo -->
                   <tr>
                     <td style="padding: 40px;">
                       <h2 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;">Redefinição de Senha</h2>
-                      
                       <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
                         Olá, <strong>${usuario.nome}</strong>!
                       </p>
-                      
                       <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
                         Recebemos uma solicitação para redefinir a senha da sua conta. 
                         Clique no botão abaixo para criar uma nova senha:
                       </p>
-
-                      <!-- Botão -->
                       <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                         <tr>
                           <td align="center">
@@ -102,15 +87,12 @@ export async function POST(request: Request) {
                           </td>
                         </tr>
                       </table>
-
                       <p style="margin: 20px 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
                         Ou copie e cole este link no seu navegador:
                       </p>
-                      
                       <p style="margin: 0 0 20px; padding: 12px; background-color: #f3f4f6; border-radius: 6px; word-break: break-all; font-size: 13px; color: #4b5563;">
                         ${resetUrl}
                       </p>
-
                       <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
                         <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
                           ⏰ <strong>Este link expira em 1 hora.</strong>
@@ -121,8 +103,6 @@ export async function POST(request: Request) {
                       </div>
                     </td>
                   </tr>
-
-                  <!-- Footer -->
                   <tr>
                     <td style="padding: 30px; text-align: center; background-color: #f9fafb; border-radius: 0 0 12px 12px;">
                       <p style="margin: 0; color: #9ca3af; font-size: 13px;">
@@ -130,7 +110,6 @@ export async function POST(request: Request) {
                       </p>
                     </td>
                   </tr>
-
                 </table>
               </td>
             </tr>
@@ -138,17 +117,6 @@ export async function POST(request: Request) {
         </body>
         </html>
       `
-    });
-
-    // Registrar na auditoria
-    await prisma.auditoria.create({
-      data: {
-        usuario: { connect: { id: usuario.id } },
-        acao: 'SOLICITACAO_RESET_SENHA',
-        detalhes: `Reset de senha solicitado para ${email}`,
-        ip: request.headers.get('x-forwarded-for') || 'unknown',
-        userAgent: request.headers.get('user-agent') || 'unknown'
-      }
     });
 
     return NextResponse.json({
