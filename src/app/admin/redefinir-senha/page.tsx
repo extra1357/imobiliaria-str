@@ -1,4 +1,4 @@
-// app/admin/redefinir-senha/page.tsx
+// src/app/admin/redefinir-senha/page.tsx
 'use client';
 import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
@@ -23,14 +23,12 @@ function RedefinirSenhaContent() {
     confirmarSenha: ''
   });
 
-  // Validar token ao carregar a página
   useEffect(() => {
     if (!token) {
       setErro('Token não fornecido');
       setValidando(false);
       return;
     }
-
     validarToken();
   }, [token]);
 
@@ -38,11 +36,9 @@ function RedefinirSenhaContent() {
     try {
       const response = await fetch(`/api/auth/redefinir-senha?token=${token}`);
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || 'Token inválido');
       }
-
       setTokenValido(data.valid);
       setUsuario(data.usuario);
     } catch (err: any) {
@@ -58,42 +54,28 @@ function RedefinirSenhaContent() {
     setErro('');
     setSucesso('');
 
-    // Validações
     if (formData.novaSenha.length < 6) {
       setErro('A senha deve ter no mínimo 6 caracteres');
       return;
     }
-
     if (formData.novaSenha !== formData.confirmarSenha) {
       setErro('As senhas não coincidem');
       return;
     }
 
     setLoading(true);
-
     try {
       const response = await fetch('/api/auth/redefinir-senha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token,
-          novaSenha: formData.novaSenha
-        })
+        body: JSON.stringify({ token, novaSenha: formData.novaSenha })
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao redefinir senha');
       }
-
       setSucesso(data.message);
-      
-      // Redirecionar para login após 2 segundos
-      setTimeout(() => {
-        router.push('/admin/login');
-      }, 2000);
-
+      setTimeout(() => router.push('/admin/login'), 2000);
     } catch (err: any) {
       setErro(err.message || 'Erro ao processar solicitação');
     } finally {
@@ -101,7 +83,6 @@ function RedefinirSenhaContent() {
     }
   };
 
-  // Tela de carregamento
   if (validando) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -113,7 +94,6 @@ function RedefinirSenhaContent() {
     );
   }
 
-  // Token inválido
   if (!tokenValido) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -122,16 +102,10 @@ function RedefinirSenhaContent() {
           <h1 className="text-2xl font-bold mb-4 text-red-600">Token Inválido</h1>
           <p className="text-gray-600 mb-6">{erro}</p>
           <div className="space-y-3">
-            <Link 
-              href="/admin/esqueci-senha"
-              className="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-            >
+            <Link href="/admin/esqueci-senha" className="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
               Solicitar novo reset
             </Link>
-            <Link 
-              href="/admin/login"
-              className="block w-full text-blue-600 hover:text-blue-700 font-medium"
-            >
+            <Link href="/admin/login" className="block w-full text-blue-600 hover:text-blue-700 font-medium">
               Voltar para o login
             </Link>
           </div>
@@ -140,7 +114,6 @@ function RedefinirSenhaContent() {
     );
   }
 
-  // Formulário de nova senha
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
@@ -158,59 +131,29 @@ function RedefinirSenhaContent() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold mb-2">Nova Senha</label>
-            <input
-              type="password"
-              value={formData.novaSenha}
-              onChange={(e) => setFormData({ ...formData, novaSenha: e.target.value })}
-              required
-              minLength={6}
-              placeholder="Mínimo 6 caracteres"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              disabled={loading || !!sucesso}
-            />
+            <input type="password" value={formData.novaSenha} onChange={(e) => setFormData({ ...formData, novaSenha: e.target.value })} required minLength={6} placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
           </div>
-
           <div>
             <label className="block text-sm font-semibold mb-2">Confirmar Senha</label>
-            <input
-              type="password"
-              value={formData.confirmarSenha}
-              onChange={(e) => setFormData({ ...formData, confirmarSenha: e.target.value })}
-              required
-              minLength={6}
-              placeholder="Digite a senha novamente"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              disabled={loading || !!sucesso}
-            />
+            <input type="password" value={formData.confirmarSenha} onChange={(e) => setFormData({ ...formData, confirmarSenha: e.target.value })} required minLength={6} placeholder="Digite a senha novamente" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
           </div>
-
           {erro && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               ❌ {erro}
             </div>
           )}
-
           {sucesso && (
             <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
               ✅ {sucesso}
               <p className="mt-2 text-xs">Redirecionando para o login...</p>
             </div>
           )}
-
-          <button
-            type="submit"
-            disabled={loading || !!sucesso}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
+          <button type="submit" disabled={loading || !!sucesso} className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors">
             {loading ? 'Salvando...' : sucesso ? 'Senha Alterada!' : 'Redefinir Senha'}
           </button>
-
           {!sucesso && (
             <div className="text-center">
-              <Link 
-                href="/admin/login"
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-              >
+              <Link href="/admin/login" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
                 ← Voltar para o login
               </Link>
             </div>
@@ -221,7 +164,6 @@ function RedefinirSenhaContent() {
   );
 }
 
-// Componente principal com Suspense
 export default function RedefinirSenhaPage() {
   return (
     <Suspense fallback={
