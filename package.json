@@ -46,6 +46,7 @@
     "react-dom": "^18.2.0",
     "react-medium-image-zoom": "^5.4.0",
     "recharts": "^2.10.3",
+    "resend": "^6.7.0",
     "swiper": "^11.1.15",
     "zod": "^3.25.76"
   },

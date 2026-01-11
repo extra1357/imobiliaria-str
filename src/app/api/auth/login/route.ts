@@ -10,10 +10,16 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'TROQUE');
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('🔍 BODY RECEBIDO:', body);
+    
     const { email, password } = body;
+    
+    console.log('📧 Email recebido:', email);
+    console.log('🔑 Password recebido:', password);
 
     // Validação básica
     if (!email || !password) {
+      console.log('❌ Email ou password vazios!');
       return NextResponse.json(
         { error: 'Email e senha são obrigatórios' },
         { status: 400 }
@@ -34,15 +40,23 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    console.log('👤 Usuário encontrado:', usuario ? 'SIM' : 'NÃO');
+
     if (!usuario) {
+      console.log('❌ Usuário não encontrado no banco');
       return NextResponse.json(
         { error: 'Credenciais inválidas' },
         { status: 401 }
       );
     }
 
+    console.log('✅ Usuário encontrado:', usuario.email);
+    console.log('📊 Ativo:', usuario.ativo);
+    console.log('🔒 Bloqueado até:', usuario.bloqueadoAte);
+
     // Verificar se usuário está ativo
     if (!usuario.ativo) {
+      console.log('❌ Usuário está INATIVO');
       return NextResponse.json(
         { error: 'Usuário desativado. Entre em contato com o administrador.' },
         { status: 403 }
@@ -54,6 +68,7 @@ export async function POST(request: NextRequest) {
       const minutosRestantes = Math.ceil(
         (usuario.bloqueadoAte.getTime() - Date.now()) / 60000
       );
+      console.log('❌ Usuário BLOQUEADO por', minutosRestantes, 'minutos');
       return NextResponse.json(
         { 
           error: `Usuário bloqueado temporariamente. Tente novamente em ${minutosRestantes} minutos.`,
@@ -64,9 +79,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar senha
+    console.log('🔍 Comparando senhas...');
+    console.log('Senha digitada:', password);
+    console.log('Hash no banco:', usuario.senha);
+    
     const senhaValida = await bcrypt.compare(password, usuario.senha);
+    
+    console.log('✅ Senha válida?', senhaValida);
 
     if (!senhaValida) {
+      console.log('❌ SENHA INVÁLIDA!');
       // Incrementar tentativas de login
       const tentativas = (usuario.tentativasLogin || 0) + 1;
       
@@ -88,6 +110,8 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+
+    console.log('🎉 LOGIN VÁLIDO! Criando token...');
 
     // ===== LOGIN VÁLIDO =====
 
@@ -155,10 +179,11 @@ export async function POST(request: NextRequest) {
       path: '/'
     });
 
+    console.log('✅ Resposta enviada com sucesso!');
     return response;
 
   } catch (error: any) {
-    console.error('Erro no login:', error);
+    console.error('💥 ERRO NO LOGIN:', error);
     return NextResponse.json(
       { error: 'Erro interno no servidor' },
       { status: 500 }

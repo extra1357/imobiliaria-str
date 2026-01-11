@@ -354,6 +354,12 @@ model Usuario {
   tentativasLogin  Int       @default(0)
   ultimoLogin      DateTime?
   role             Role      @default(VISUALIZADOR)
+  
+  // ⬇️⬇️⬇️ CAMPOS PARA RESET DE SENHA - ADICIONADOS ⬇️⬇️⬇️
+  resetToken        String?   @db.VarChar(255)
+  resetTokenExpira  DateTime?
+  // ⬆️⬆️⬆️ FIM DOS CAMPOS DE RESET DE SENHA ⬆️⬆️⬆️
+  
   corretor         Corretor? @relation(fields: [corretorId], references: [id])
 
   @@index([email])
