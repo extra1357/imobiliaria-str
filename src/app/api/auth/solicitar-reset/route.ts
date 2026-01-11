@@ -4,12 +4,22 @@ import { PrismaClient } from '@prisma/client';
 import { Resend } from 'resend';
 import crypto from 'crypto';
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const body = await request.json();
+    const { email } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -19,17 +29,12 @@ export async function POST(request: Request) {
     }
 
     const usuario = await prisma.usuario.findUnique({
-      where: { email }
+      where: { email: email.toLowerCase().trim() }
     });
 
-    if (!usuario) {
+    if (!usuario || !usuario.ativo) {
       return NextResponse.json({
-        message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
-      });
-    }
-
-    if (!usuario.ativo) {
-      return NextResponse.json({
+        success: true,
         message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
       });
     }
@@ -45,11 +50,12 @@ export async function POST(request: Request) {
       }
     });
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_URL}/admin/redefinir-senha?token=${token}`;
+    const baseUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+    const resetUrl = `${baseUrl}/admin/redefinir-senha?token=${token}`;
 
     await resend.emails.send({
       from: 'STR Imobiliária <onboarding@resend.dev>',
-      to: email,
+      to: usuario.email,
       subject: 'Redefinição de Senha - STR Imobiliária',
       html: `
         <!DOCTYPE html>
@@ -65,7 +71,7 @@ export async function POST(request: Request) {
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                   <tr>
                     <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
-                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">🏠 STR Imobiliária</h1>
+                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">🏢 STR Imobiliária</h1>
                     </td>
                   </tr>
                   <tr>
@@ -120,13 +126,17 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
+      success: true,
       message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
     });
 
   } catch (error) {
-    console.error('Erro ao solicitar reset de senha:', error);
+    console.error('❌ Erro ao solicitar reset de senha:', error);
     return NextResponse.json(
-      { error: 'Erro ao processar solicitação' },
+      { 
+        success: false,
+        error: 'Erro ao processar solicitação. Tente novamente.' 
+      },
       { status: 500 }
     );
   }
