@@ -32,6 +32,7 @@ export default function LoginPage() {
         throw new Error(data.error || 'Erro ao fazer login');
       }
 
+      // Redirecionar para o dashboard
       router.push('/admin/dashboard');
       
     } catch (err: any) {
@@ -45,14 +46,17 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
         
+        {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🏠</div>
           <h1 className="text-3xl font-bold text-gray-800">STR Imobiliária</h1>
           <p className="text-gray-500 mt-2">Faça login para continuar</p>
         </div>
         
+        {/* Formulário */}
         <form onSubmit={handleSubmit} className="space-y-6">
           
+          {/* Email */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-gray-700">
               Email
@@ -68,6 +72,7 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Senha */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-gray-700">
               Senha
@@ -83,12 +88,14 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Erro */}
           {erro && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               ❌ {erro}
             </div>
           )}
 
+          {/* Botão de Login */}
           <button
             type="submit"
             disabled={loading}
@@ -107,6 +114,7 @@ export default function LoginPage() {
             )}
           </button>
 
+          {/* Link "Esqueci minha senha" - IMPORTANTE! */}
           <div className="text-center mt-4">
             <Link 
               href="/admin/esqueci-senha"
@@ -118,6 +126,7 @@ export default function LoginPage() {
 
         </form>
 
+        {/* Rodapé */}
         <div className="mt-8 text-center text-gray-500 text-xs">
           <p>&copy; 2026 STR Imobiliária. Todos os direitos reservados.</p>
         </div>
