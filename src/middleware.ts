@@ -16,6 +16,10 @@ const PUBLIC_ROUTES = [
   '/admin/login',
   '/imoveis-publicos',
   '/api/auth/login',
+  '/admin/esqueci-senha',
+  '/admin/redefinir-senha',
+  '/api/auth/solicitar-reset',
+  '/api/auth/redefinir-senha',
   '/api/imoveis/publico',
   '/api/busca',
 ];
