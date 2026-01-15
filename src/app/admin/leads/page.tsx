@@ -16,7 +16,7 @@ export default function LeadsPage() {
         return r.json();
       })
       .then(d => {
-        const dados = Array.isArray(d) ? d : (d.data || []);
+        const dados = Array.isArray(d) ? d : (d.leads || []);
         setLeads(dados);
         setLoading(false);
       })
