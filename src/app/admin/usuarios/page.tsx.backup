@@ -86,7 +86,7 @@ export default function UsuariosPage() {
   const [viewPermissions, setViewPermissions] = useState<RoleType | null>(null);
   
   const currentUserRole: RoleType = 'ADMIN';
-  
+
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -104,16 +104,13 @@ export default function UsuariosPage() {
 
   async function fetchUsuarios() {
     try {
-      const response = await fetch('/api/usuarios');
-      const data = await response.json();
-      
-      if (data.success) {
-        setUsuarios(data.usuarios);
-      } else {
-        console.error('Erro ao buscar usuários:', data.error);
-      }
+      setUsuarios([
+        { id: '1', nome: 'Admin Sistema', email: 'admin@str.com', role: 'SUPER_ADMIN', ativo: true, ultimoLogin: new Date(), corretor: null },
+        { id: '2', nome: 'João Gerente', email: 'joao@str.com', role: 'GERENTE', ativo: true, ultimoLogin: new Date(), corretor: null },
+        { id: '3', nome: 'Maria Corretora', email: 'maria@str.com', role: 'CORRETOR', ativo: true, ultimoLogin: new Date(), corretor: { id: 'c1', nome: 'Maria Silva' } }
+      ]);
     } catch (e: any) {
-      console.error('Erro na requisição:', e);
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -121,14 +118,12 @@ export default function UsuariosPage() {
 
   async function fetchCorretores() {
     try {
-      const response = await fetch('/api/corretores');
-      const data = await response.json();
-      
-      if (data.success) {
-        setCorretores(data.corretores || []);
-      }
+      setCorretores([
+        { id: 'c1', nome: 'Carlos Vendedor', creci: '12345' },
+        { id: 'c2', nome: 'Ana Negócios', creci: '67890' }
+      ]);
     } catch (e: any) {
-      console.error('Erro ao buscar corretores:', e);
+      console.error(e);
     }
   }
 
@@ -170,43 +165,29 @@ export default function UsuariosPage() {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
-    
+
     if (!editingUser && !formData.senha) {
       alert('Senha é obrigatória para novo usuário');
       return;
     }
-    
+
     if (formData.senha && formData.senha !== formData.confirmarSenha) {
       alert('As senhas não coincidem');
       return;
     }
-    
+
     if (!canManageUser(currentUserRole, formData.role)) {
       alert('Você não pode criar usuário com este nível de acesso');
       return;
     }
-    
+
     try {
-      const url = editingUser ? `/api/usuarios/${editingUser.id}` : '/api/usuarios';
-      const method = editingUser ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        alert(data.message || 'Usuário salvo com sucesso!');
-        setShowModal(false);
-        fetchUsuarios();
-      } else {
-        alert(data.error || 'Erro ao salvar usuário');
-      }
+      console.log('Salvando:', formData);
+      alert('Usuário salvo com sucesso!');
+      setShowModal(false);
+      fetchUsuarios();
     } catch (e: any) {
-      alert('Erro ao salvar usuário: ' + e.message);
+      alert('Erro ao salvar usuário');
     }
   }
 
@@ -214,22 +195,10 @@ export default function UsuariosPage() {
     if (!confirm(`Deseja ${currentStatus ? 'desativar' : 'ativar'} este usuário?`)) return;
     
     try {
-      const response = await fetch(`/api/usuarios/${userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ativo: !currentStatus })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        alert(data.message || 'Status alterado com sucesso!');
-        fetchUsuarios();
-      } else {
-        alert(data.error || 'Erro ao alterar status');
-      }
+      console.log('Toggle status:', userId);
+      fetchUsuarios();
     } catch (e: any) {
-      alert('Erro ao alterar status: ' + e.message);
+      alert('Erro ao alterar status');
     }
   }
 
@@ -484,6 +453,7 @@ export default function UsuariosPage() {
               </h2>
               <button onClick={() => setViewPermissions(null)} className="text-2xl hover:text-red-400 transition-colors">✕</button>
             </div>
+
             <div className="p-6">
               <p className="text-sm text-slate-600 mb-4 font-medium">{ROLE_DESCRIPTIONS[viewPermissions]}</p>
               
