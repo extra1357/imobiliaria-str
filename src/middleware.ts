@@ -1,6 +1,8 @@
 /**
  * 🛡️ MIDDLEWARE DE SEGURANÇA - STR Imobiliária
  * Atualizado com sistema completo de roles e permissões
+ * 
+ * ✅ CORREÇÃO: Liberado acesso público a /imoveis/[id]
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
@@ -15,12 +17,14 @@ const PUBLIC_ROUTES = [
   '/',
   '/admin/login',
   '/imoveis-publicos',
+  '/imoveis',              // ← ADICIONADO: Página de detalhes públicos
   '/api/auth/login',
   '/admin/esqueci-senha',
   '/admin/redefinir-senha',
   '/api/auth/solicitar-reset',
   '/api/auth/redefinir-senha',
   '/api/imoveis/publico',
+  '/api/imoveis',          // ← ADICIONADO: API pública de imóveis
   '/api/busca',
 ];
 
@@ -38,7 +42,6 @@ const ROUTE_PERMISSIONS: Record<string, Role[]> = {
   '/admin/imoveis': ['SUPER_ADMIN', 'ADMIN', 'GERENTE', 'CORRETOR', 'ASSISTENTE', 'VISUALIZADOR'],
   '/admin/imoveis/novo': ['SUPER_ADMIN', 'ADMIN', 'GERENTE', 'ASSISTENTE'],
   '/api/imoveis/cadastro': ['SUPER_ADMIN', 'ADMIN', 'GERENTE', 'ASSISTENTE'],
-  '/api/imoveis': ['SUPER_ADMIN', 'ADMIN', 'GERENTE', 'CORRETOR', 'ASSISTENTE', 'VISUALIZADOR'],
   
   // === PROPRIETÁRIOS ===
   '/admin/proprietarios': ['SUPER_ADMIN', 'ADMIN', 'GERENTE', 'ASSISTENTE', 'VISUALIZADOR'],
@@ -91,10 +94,21 @@ const ROUTE_PERMISSIONS: Record<string, Role[]> = {
 
 // Função para verificar se é rota pública
 function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(route => 
-    pathname === route || 
-    (route.endsWith('/publico') && pathname.startsWith(route))
-  );
+  return PUBLIC_ROUTES.some(route => {
+    // Correspondência exata
+    if (pathname === route) return true;
+    
+    // Para /imoveis, aceitar /imoveis/[qualquer-id]
+    if (route === '/imoveis' && pathname.startsWith('/imoveis/')) return true;
+    
+    // Para /api/imoveis, aceitar /api/imoveis/[qualquer-coisa] (exceto /api/imoveis/cadastro que é protegida)
+    if (route === '/api/imoveis' && pathname.startsWith('/api/imoveis/') && !pathname.includes('/cadastro')) return true;
+    
+    // Rotas que terminam com /publico
+    if (route.endsWith('/publico') && pathname.startsWith(route)) return true;
+    
+    return false;
+  });
 }
 
 // Função para verificar se usuário tem permissão na rota
@@ -111,8 +125,8 @@ function hasRoutePermission(pathname: string, userRole: Role): boolean {
     }
   }
   
-  // Se não encontrou regra específica, apenas usuários admin+ podem acessar
-  // rotas /admin/* e /api/* não mapeadas
+  // ✅ CORREÇÃO: Se não encontrou regra específica, apenas usuários admin+ podem acessar
+  // rotas /admin/* e /api/* não mapeadas (mas /imoveis/* já foi liberado em PUBLIC_ROUTES)
   if (pathname.startsWith('/admin') || pathname.startsWith('/api')) {
     return ['SUPER_ADMIN', 'ADMIN'].includes(userRole);
   }

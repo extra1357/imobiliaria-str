@@ -20,6 +20,9 @@ interface Imovel {
   imagens: string[];
   description: string;
   features: string[];
+  quartos?: number;
+  banheiros?: number;
+  garagem?: number;
 }
 
 interface Agent {
@@ -45,11 +48,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
-  // Estado para lightbox de imagens com navegação
-  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-
   const agents: Agent[] = [
     { id: 'AG001', name: 'João Silva', phone: '+5511999000001', role: 'Especialista Residencial' },
     { id: 'AG002', name: 'Mariana Alves', phone: '+5511999000002', role: 'Gestora de Lançamentos' }
@@ -59,7 +57,7 @@ export default function Home() {
     async function loadDataFromPostgres() {
       try {
         setIsLoading(true);
-        const res = await fetch('/api/imoveis', { cache: 'no-store' });
+        const res = await fetch('/api/imoveis', { next: { revalidate: 180 } });
         const data = await res.json();
         
         const mapped = data.map((p: any) => ({
@@ -70,7 +68,10 @@ export default function Home() {
           price: Number(p.preco || 0),
           imagens: Array.isArray(p.imagens) ? p.imagens : JSON.parse(p.imagens || '[]'),
           description: String(p.descricao || ''),
-          features: Array.isArray(p.caracteristicas) ? p.caracteristicas : []
+          features: Array.isArray(p.caracteristicas) ? p.caracteristicas : [],
+          quartos: Number(p.quartos || 0),
+          banheiros: Number(p.banheiros || 0),
+          garagem: Number(p.garagem || 0)
         }));
         
         setProperties(mapped);
@@ -97,41 +98,6 @@ export default function Home() {
       return matchSearch && matchType && matchPrice;
     });
   }, [searchQuery, filterType, maxPrice, properties]);
-
-  // Funções do lightbox
-  const openLightbox = (images: string[], index: number) => {
-    setLightboxImages(images);
-    setCurrentImageIndex(index);
-    setIsLightboxOpen(true);
-  };
-
-  const closeLightbox = () => {
-    setIsLightboxOpen(false);
-    setLightboxImages([]);
-    setCurrentImageIndex(0);
-  };
-
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % lightboxImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + lightboxImages.length) % lightboxImages.length);
-  };
-
-  // Teclas do teclado para navegação
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isLightboxOpen) return;
-      
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'ArrowLeft') prevImage();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen, lightboxImages.length]);
 
   const handleSendLead = async () => {
     if(!leadForm.name || !leadForm.phone || !leadForm.email){
@@ -186,122 +152,267 @@ export default function Home() {
         .admin-btn { background:rgba(255,255,255,0.1); color:white; padding:12px 28px; border-radius:12px; border:1px solid rgba(255,255,255,0.3); font-weight:800; cursor:pointer; font-size:14px; transition:0.3s; backdrop-filter: blur(10px); }
         .admin-btn:hover { background:white; color:var(--accent); transform: translateY(-3px); }
         main { padding:40px 20px; max-width:var(--max-width); margin:0 auto; }
-        .filter-bar { background:white; padding:25px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.05); display:flex; gap:20px; margin-bottom:40px; align-items:flex-end; border:1px solid #e2e8f0; }
-        .input-group { display:flex; flex-direction:column; gap:8px; flex:1; }
+        .filter-bar { background:white; padding:25px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.05); display:flex; gap:20px; margin-bottom:40px; align-items:flex-end; border:1px solid #e2e8f0; flex-wrap: wrap; }
+        .input-group { display:flex; flex-direction:column; gap:8px; flex:1; min-width: 200px; }
         .input-group label { font-size:12px; font-weight:800; color:var(--muted); text-transform: uppercase; }
-        input, select, textarea { padding:14px; border-radius:12px; border:1.5px solid #e2e8f0; font-size:15px; background:#f8fafc; width:100%; }
-        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:35px; }
-        .card { background:white; border-radius:24px; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,0.06); border:1px solid #f1f5f9; transition:0.3s ease-out; display:flex; flex-direction:column; }
-        .card:hover { transform: translateY(-10px); box-shadow:0 25px 50px rgba(0,0,0,0.12); }
-        .card-swiper { width:100%; height:280px; }
-        .card-swiper img { width:100%; height:100%; object-fit:cover; cursor:pointer; transition: transform 0.3s; }
-        .card-swiper img:hover { transform: scale(1.05); }
-        .card-body { padding:28px; flex:1; display:flex; flex-direction:column; }
-        .price { font-size:28px; font-weight:900; color:var(--accent); margin-bottom:12px; }
-        .addr { font-size:15px; color:var(--muted); margin-bottom:20px; min-height:48px; }
-        .description-box { 
-          max-height: 96px;
-          overflow-y: auto;
-          font-size: 14px;
-          color: #475569;
-          line-height: 24px;
-          margin-bottom: 15px;
-          padding-right: 8px;
-          border-left: 3px solid #e2e8f0;
-          padding-left: 12px;
-        }
-        .description-box::-webkit-scrollbar { width: 6px; }
-        .description-box::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .description-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .description-box::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .btn-interest { background:var(--accent); color:white; width:100%; padding:18px; border:none; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; text-transform:uppercase; }
-        .btn-interest:disabled { background:#cbd5e1; cursor:not-allowed; }
-        .drawer-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.7); z-index:1999; display: ${isDrawerOpen ? 'block' : 'none'}; backdrop-filter: blur(6px); }
-        .drawer { position:fixed; right:0; top:0; height:100%; width:480px; max-width:100%; background:white; z-index:2000; padding:40px; display: ${isDrawerOpen ? 'flex' : 'none'}; flex-direction:column; box-shadow:-20px 0 60px rgba(0,0,0,0.3); }
-        .field { margin-bottom:20px; display:flex; flex-direction:column; gap:8px; }
-        .field label { font-size:13px; font-weight:800; color:var(--text); text-transform:uppercase; }
-        .prompt-box { background:#0f172a; color:#cbd5e1; padding:20px; border-radius:15px; font-size:13px; margin-top:20px; white-space:pre-wrap; }
-        .float-btn { position:fixed; right:40px; bottom:40px; background:var(--accent); color:white; width:70px; height:70px; border-radius:50%; border:none; cursor:pointer; z-index:1500; font-size:24px; box-shadow:0 15px 35px rgba(30,64,175,0.4); }
+        input, select, textarea { padding:14px; border-radius:12px; border:1.5px solid #e2e8f0; font-size:15px; background:#f8fafc; width:100%; transition: all 0.3s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-light); background: white; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
-        /* Lightbox com navegação */
-        .lightbox-overlay { 
-          position: fixed; 
-          inset: 0; 
-          background: rgba(0,0,0,0.95); 
-          z-index: 3000; 
-          display: ${isLightboxOpen ? 'flex' : 'none'}; 
-          align-items: center; 
-          justify-content: center; 
-          padding: 20px;
-          backdrop-filter: blur(10px);
+        /* ========== OTIMIZAÇÃO 1: GRID COM CARDS NIVELADOS ========== */
+        .grid { 
+          display:grid; 
+          grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); 
+          gap:35px; 
         }
-        .lightbox-image { 
-          max-width: 85%; 
-          max-height: 85vh; 
-          object-fit: contain; 
-          border-radius: 12px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        
+        /* ALTURA FIXA PARA NIVELAR OS CARDS */
+        .card { 
+          background:white; 
+          border-radius:24px; 
+          overflow:hidden; 
+          box-shadow:0 15px 35px rgba(0,0,0,0.06); 
+          border:1px solid #f1f5f9; 
+          transition:0.3s ease-out; 
+          display:flex; 
+          flex-direction:column;
+          height: 600px; /* ← ALTURA FIXA PARA NIVELAR */
         }
-        .lightbox-close { 
-          position: absolute; 
-          top: 30px; 
-          right: 30px; 
-          background: white; 
-          color: #0f172a; 
-          border: none; 
-          width: 50px; 
-          height: 50px; 
-          border-radius: 50%; 
-          font-size: 24px; 
-          cursor: pointer; 
-          font-weight: 900;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-          transition: 0.3s;
-          z-index: 3001;
+        .card:hover { transform: translateY(-10px); box-shadow:0 25px 50px rgba(0,0,0,0.12); }
+        
+        /* ========== OTIMIZAÇÃO 2: SETAS SÓ NO HOVER ========== */
+        .card-swiper { 
+          width:100%; 
+          height:280px; 
+          position: relative;
+          flex-shrink: 0; /* Não encolhe */
         }
-        .lightbox-close:hover {
-          transform: scale(1.1);
-          background: #f1f5f9;
+        .card-swiper img { 
+          width:100%; 
+          height:100%; 
+          object-fit:cover; 
+          cursor:pointer; 
+          transition: transform 0.3s; 
         }
-        .lightbox-nav {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: white;
-          color: #0f172a;
-          border: none;
-          width: 60px;
-          height: 60px;
+        .card-swiper img:hover { transform: scale(1.05); }
+        
+        /* SETAS OCULTAS POR PADRÃO */
+        .card-swiper .swiper-button-next,
+        .card-swiper .swiper-button-prev {
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          background: rgba(255,255,255,0.95);
+          width: 45px;
+          height: 45px;
           border-radius: 50%;
-          font-size: 28px;
-          cursor: pointer;
-          font-weight: 900;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-          transition: 0.3s;
-          z-index: 3001;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .lightbox-nav:hover {
-          transform: translateY(-50%) scale(1.1);
+        
+        /* SETAS APARECEM NO HOVER DO CARD */
+        .card:hover .swiper-button-next,
+        .card:hover .swiper-button-prev {
+          opacity: 1;
+        }
+        
+        .card-swiper .swiper-button-next:after,
+        .card-swiper .swiper-button-prev:after {
+          font-size: 18px;
+          font-weight: 900;
+          color: var(--accent);
+        }
+        
+        .card-swiper .swiper-button-next:hover,
+        .card-swiper .swiper-button-prev:hover {
           background: var(--accent);
+        }
+        
+        .card-swiper .swiper-button-next:hover:after,
+        .card-swiper .swiper-button-prev:hover:after {
           color: white;
         }
-        .lightbox-nav-prev { left: 30px; }
-        .lightbox-nav-next { right: 30px; }
-        .lightbox-counter {
-          position: absolute;
-          bottom: 30px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(255,255,255,0.95);
-          color: #0f172a;
-          padding: 10px 24px;
-          border-radius: 50px;
+        
+        /* PAGINAÇÃO */
+        .card-swiper .swiper-pagination {
+          bottom: 12px;
+        }
+        .card-swiper .swiper-pagination-bullet {
+          background: white;
+          opacity: 0.7;
+          width: 8px;
+          height: 8px;
+        }
+        .card-swiper .swiper-pagination-bullet-active {
+          opacity: 1;
+          background: var(--accent);
+          width: 24px;
+          border-radius: 4px;
+        }
+        
+        .card-body { 
+          padding:28px; 
+          flex:1; 
+          display:flex; 
+          flex-direction:column; 
+          overflow: hidden;
+        }
+        
+        .price { 
+          font-size:28px; 
+          font-weight:900; 
+          color:var(--accent); 
+          margin-bottom:12px; 
+        }
+        
+        /* ENDEREÇO COM TRUNCATE PARA NÃO QUEBRAR LAYOUT */
+        .addr { 
+          font-size:15px; 
+          color:var(--muted); 
+          margin-bottom:20px; 
+          min-height:48px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .addr strong {
+          display: block;
+          color: var(--text);
           font-weight: 800;
+          margin-bottom: 5px;
+        }
+        
+        /* ========== OTIMIZAÇÃO 3: ÍCONES DE CARACTERÍSTICAS ========== */
+        .features-icons {
+          display: flex;
+          gap: 18px;
+          margin: 12px 0;
+          padding: 15px 0;
+          border-top: 2px solid #f1f5f9;
+          border-bottom: 2px solid #f1f5f9;
+          flex-shrink: 0;
+        }
+        .feature-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
           font-size: 14px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          font-weight: 700;
+          color: var(--text);
+        }
+        .feature-item span {
+          font-size: 20px;
+        }
+        
+        /* DESCRIÇÃO COM TRUNCATE (SEM SCROLL) */
+        .description-box { 
+          font-size: 14px;
+          color: #475569;
+          line-height: 1.6;
+          margin-bottom: 15px;
+          border-left: 3px solid #e2e8f0;
+          padding-left: 12px;
+          flex-shrink: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .btn-interest { 
+          background:var(--accent); 
+          color:white; 
+          width:100%; 
+          padding:18px; 
+          border:none; 
+          border-radius:14px; 
+          font-weight:800; 
+          cursor:pointer; 
+          transition:0.3s; 
+          text-transform:uppercase;
+          margin-top: auto; /* Empurra para o final */
+          flex-shrink: 0;
+        }
+        .btn-interest:hover {
+          background: var(--accent-light);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+        }
+        .btn-interest:disabled { background:#cbd5e1; cursor:not-allowed; }
+        
+        /* DRAWER */
+        .drawer-overlay { 
+          position:fixed; 
+          inset:0; 
+          background:rgba(15,23,42,0.7); 
+          z-index:1999; 
+          display: ${isDrawerOpen ? 'block' : 'none'}; 
+          backdrop-filter: blur(6px); 
+        }
+        .drawer { 
+          position:fixed; 
+          right:0; 
+          top:0; 
+          height:100%; 
+          width:480px; 
+          max-width:100%; 
+          background:white; 
+          z-index:2000; 
+          padding:40px; 
+          display: ${isDrawerOpen ? 'flex' : 'none'}; 
+          flex-direction:column; 
+          box-shadow:-20px 0 60px rgba(0,0,0,0.3); 
+          overflow: hidden;
+        }
+        .field { 
+          margin-bottom:20px; 
+          display:flex; 
+          flex-direction:column; 
+          gap:8px; 
+        }
+        .field label { 
+          font-size:13px; 
+          font-weight:800; 
+          color:var(--text); 
+          text-transform:uppercase; 
+        }
+        .prompt-box { 
+          background:#0f172a; 
+          color:#cbd5e1; 
+          padding:20px; 
+          border-radius:15px; 
+          font-size:13px; 
+          margin-top:20px; 
+          white-space:pre-wrap; 
+        }
+        .float-btn { 
+          position:fixed; 
+          right:40px; 
+          bottom:40px; 
+          background:var(--accent); 
+          color:white; 
+          width:70px; 
+          height:70px; 
+          border-radius:50%; 
+          border:none; 
+          cursor:pointer; 
+          z-index:1500; 
+          font-size:24px; 
+          box-shadow:0 15px 35px rgba(30,64,175,0.4); 
+          transition: 0.3s;
+        }
+        .float-btn:hover {
+          transform: scale(1.1);
+          box-shadow:0 20px 40px rgba(30,64,175,0.5);
+        }
+        
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+          .grid { grid-template-columns: 1fr; }
+          .filter-bar { flex-direction: column; }
+          .input-group { min-width: 100%; }
+          .drawer { width: 100%; }
+          .card { height: auto; min-height: 550px; }
         }
       ` }} />
 
@@ -339,7 +450,10 @@ export default function Home() {
         </div>
 
         {isLoading ? (
-          <div style={{textAlign:'center', padding:'100px'}}>Carregando dados do Postgres STR...</div>
+          <div style={{textAlign:'center', padding:'100px', fontSize: '18px', color: '#64748b'}}>
+            <div style={{fontSize: '48px', marginBottom: '20px'}}>⏳</div>
+            Carregando dados do Postgres STR...
+          </div>
         ) : (
           <section className="grid">
             {filteredProperties.map(p => (
@@ -354,14 +468,14 @@ export default function Home() {
                     <SwiperSlide key={i}>
                       <img 
                         src={img} 
-                        alt={p.title} 
-                        onClick={() => openLightbox(p.imagens, i)}
+                        alt={p.title}
+                        onClick={() => router.push(`/imoveis/${p.id}`)}
                       />
                     </SwiperSlide>
                   )) : (
                     <SwiperSlide>
-                      <div style={{background:'#f1f5f9', height:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}>
-                        Sem imagem
+                      <div style={{background:'#f1f5f9', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color: '#94a3b8', fontSize: '16px'}}>
+                        📷 Sem imagem
                       </div>
                     </SwiperSlide>
                   )}
@@ -372,7 +486,31 @@ export default function Home() {
                     {p.type}
                   </div>
                   <div className="price">R$ {p.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
-                  <div className="addr"><strong>{p.title}</strong><br/>{p.addr}</div>
+                  <div className="addr"><strong>{p.title}</strong>{p.addr}</div>
+                  
+                  {/* ÍCONES DE CARACTERÍSTICAS */}
+                  {(p.quartos || p.banheiros || p.garagem) && (
+                    <div className="features-icons">
+                      {p.quartos && p.quartos > 0 && (
+                        <div className="feature-item">
+                          <span>🛏️</span>
+                          {p.quartos}
+                        </div>
+                      )}
+                      {p.banheiros && p.banheiros > 0 && (
+                        <div className="feature-item">
+                          <span>🚿</span>
+                          {p.banheiros}
+                        </div>
+                      )}
+                      {p.garagem && p.garagem > 0 && (
+                        <div className="feature-item">
+                          <span>🚗</span>
+                          {p.garagem}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
                   {p.description && (
                     <div className="description-box">
@@ -397,8 +535,8 @@ export default function Home() {
       <div className="drawer-overlay" onClick={() => setIsDrawerOpen(false)} />
       <aside className="drawer">
         <div className="drawer-header" style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'25px'}}>
-          <h2 style={{margin:0, color:'var(--accent)'}}>Novo Lead Recebido</h2>
-          <button onClick={() => setIsDrawerOpen(false)} style={{background:'none', border:'none', fontSize:28, cursor:'pointer', color: '#94a3b8'}}>✕</button>
+          <h2 style={{margin:0, color:'var(--accent)', fontSize: '24px', fontWeight: '900'}}>Novo Lead Recebido</h2>
+          <button onClick={() => setIsDrawerOpen(false)} style={{background:'none', border:'none', fontSize:28, cursor:'pointer', color: '#94a3b8', transition: '0.3s'}}>✕</button>
         </div>
         
         <div style={{overflowY:'auto', flex:1}}>
@@ -419,45 +557,11 @@ export default function Home() {
             <div style={{marginTop:25}}>
               <label style={{fontSize:11, color:'#94a3b8', fontWeight:900}}>DIRETRIZ PARA O CORRETOR:</label>
               <div className="prompt-box">{agentPrompt}</div>
-              <button style={{marginTop:10, padding:'8px 15px', borderRadius:8, border:'1px solid var(--accent)', color:'var(--accent)', cursor:'pointer', fontWeight:700}} onClick={() => {navigator.clipboard.writeText(agentPrompt); alert('Copiado!');}}>COPIAR PROMPT</button>
+              <button style={{marginTop:10, padding:'8px 15px', borderRadius:8, border:'1px solid var(--accent)', color:'var(--accent)', cursor:'pointer', fontWeight:700, transition: '0.3s'}} onClick={() => {navigator.clipboard.writeText(agentPrompt); alert('Copiado!');}}>COPIAR PROMPT</button>
             </div>
           )}
         </div>
       </aside>
-
-      {/* Lightbox com navegação */}
-      <div className="lightbox-overlay" onClick={closeLightbox}>
-        <button className="lightbox-close" onClick={closeLightbox}>✕</button>
-        
-        {lightboxImages.length > 1 && (
-          <>
-            <button 
-              className="lightbox-nav lightbox-nav-prev" 
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
-            >
-              ‹
-            </button>
-            <button 
-              className="lightbox-nav lightbox-nav-next" 
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            >
-              ›
-            </button>
-            <div className="lightbox-counter">
-              {currentImageIndex + 1} / {lightboxImages.length}
-            </div>
-          </>
-        )}
-        
-        {lightboxImages[currentImageIndex] && (
-          <img 
-            src={lightboxImages[currentImageIndex]} 
-            alt="Imagem ampliada" 
-            className="lightbox-image"
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
-      </div>
 
       <button className="float-btn" onClick={() => setIsDrawerOpen(true)}>💬</button>
 
