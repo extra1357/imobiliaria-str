@@ -1,0 +1,2024 @@
+{
+  "statistics": {
+    "total_vulnerabilities": 201,
+    "critical": 11,
+    "high": 124,
+    "medium": 66,
+    "low": 0,
+    "files_scanned": 139,
+    "lines_scanned": 18627,
+    "security_score": 0
+  },
+  "vulnerabilities": [
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "criar_super_admin.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient()\n\nasync function main() {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "scripts/migrate-to-roles.ts",
+      "line": 14,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function main() {"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/middleware.ts",
+      "line": 155,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// MIDDLEWARE PRINCIPAL\nexport async function middleware(request: NextRequest) {\n  const { pathname } = request.nextUrl;\n  "
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "prisma/seed.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient()\n\nasync function main() {"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "open_middleware",
+      "file": "backup_20260106_220909/middleware.ts",
+      "line": 4,
+      "description": "Middleware completamente aberto (sem proteção)",
+      "recommendation": "Implemente verificação de autenticação no middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport function middleware(request: NextRequest) {\n  // Liberação Total: ignora qualquer checagem de cookie ou sessão\n  return NextResponse.next();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/lib/auth.ts",
+      "line": 17,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function generateToken(payload: JWTPayload): Promise<string> {\n  return await new SignJWT(payload as any)\n    .setProtectedHeader({ alg: 'HS256' })"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/lib/auth.ts",
+      "line": 53,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function getAuthUser(request: NextRequest): Promise<JWTPayload | null> {\n  try {\n    const token = request.cookies.get('auth-token')?.value;"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/robots.txt/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://seudominio.com.br';\n  "
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/imoveis/route.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nexport async function GET("
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/imoveis/route.ts",
+      "line": 6,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(\n  request: Request,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/sitemap.xml/route.ts",
+      "line": 11,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  try {\n    /**"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/admin/analise-mercado/route/route.ts",
+      "line": 11,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  try {\n    const analises = await prisma.analiseMercado.findMany({"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/admin/analise-mercado/route/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/alugueis/route.ts",
+      "line": 38,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar novo aluguel\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/alugueis/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todos os aluguéis\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url);"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/alugueis/route.ts",
+      "line": 38,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar novo aluguel\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/alugueis/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/alugueis/route.ts",
+      "line": 38,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar novo aluguel\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 53,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar comissão manual (bônus, captação, etc)\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 88,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// PATCH - Atualizar status da comissão\nexport async function PATCH(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todas as comissões\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url);"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 53,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar comissão manual (bônus, captação, etc)\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 88,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// PATCH - Atualizar status da comissão\nexport async function PATCH(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/comissoes/route.ts",
+      "line": 53,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar comissão manual (bônus, captação, etc)\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/busca/route.ts",
+      "line": 8,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const { query } = await req.json()"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/busca/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const { query } = await req.json()"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_input_validation",
+      "file": "src/app/api/busca/route.ts",
+      "line": 10,
+      "description": "Dados de entrada sem validação",
+      "recommendation": "Use Zod, Yup ou Joi para validar inputs",
+      "cwe_id": "CWE-20",
+      "code_snippet": "  try {\n    const { query } = await req.json()\n    const resultados = await buscaService.buscaInteligente(query)\n    return successResponse(resultados)"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/busca/route.ts",
+      "line": 2,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\nimport { NextRequest, NextResponse } from 'next/server'"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/busca/route.ts",
+      "line": 8,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const { query } = await req.json()"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/corretores/route.ts",
+      "line": 38,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar novo corretor\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/corretores/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todos os corretores\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url);"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/corretores/route.ts",
+      "line": 38,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar novo corretor\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/corretores/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/corretores/route.ts",
+      "line": 38,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar novo corretor\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/proprietarios/route.ts",
+      "line": 29,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": " */\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/proprietarios/route.ts",
+      "line": 29,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": " */\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/proprietarios/route.ts",
+      "line": 148,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": " */\nexport async function GET(request: NextRequest) {\n  try {\n    const proprietarios = await prisma.proprietario.findMany({"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/proprietarios/route.ts",
+      "line": 5,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/proprietarios/route.ts",
+      "line": 29,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": " */\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/leads/route.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\n// GET - Listar todos os leads"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/leads/route.ts",
+      "line": 32,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar novo lead\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/route.ts",
+      "line": 7,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todos os leads\nexport async function GET(request: NextRequest) {\n  try {\n    const leads = await prisma.lead.findMany({"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/route.ts",
+      "line": 32,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar novo lead\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/leads/route.ts",
+      "line": 32,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar novo lead\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/analises/route.ts",
+      "line": 7,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(req: NextRequest) {\n  try {\n    const cidade = req.nextUrl.searchParams.get('cidade') || 'São Paulo'"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/analises/route.ts",
+      "line": 2,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\nimport { NextRequest, NextResponse } from 'next/server'"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/teste-conexao/route.ts",
+      "line": 4,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  try {\n    // 1. Tenta fazer uma consulta ultra simples (contar registros)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/consultas/route.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nexport async function POST(request: Request) {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/consultas/route.ts",
+      "line": 6,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const text = await request.text();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/consultas/route.ts",
+      "line": 6,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const text = await request.text();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/consultas/route.ts",
+      "line": 44,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  try {\n    const consultas = await prisma.consulta.findMany({"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/consultas/route.ts",
+      "line": 6,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const text = await request.text();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/usuarios/route.ts",
+      "line": 5,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\n// GET - Listar todos os usuários"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/usuarios/route.ts",
+      "line": 41,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar novo usuário\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/usuarios/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todos os usuários\nexport async function GET(request: NextRequest) {\n  try {\n    const usuarios = await prisma.usuario.findMany({"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/usuarios/route.ts",
+      "line": 41,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar novo usuário\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/usuarios/route.ts",
+      "line": 41,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar novo usuário\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/analise-mercado/route.ts",
+      "line": 21,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const body = await req.json()"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/analise-mercado/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(req: NextRequest) {\n  try {\n    const cidade = req.nextUrl.searchParams.get('cidade')"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_input_validation",
+      "file": "src/app/api/analise-mercado/route.ts",
+      "line": 23,
+      "description": "Dados de entrada sem validação",
+      "recommendation": "Use Zod, Yup ou Joi para validar inputs",
+      "cwe_id": "CWE-20",
+      "code_snippet": "  try {\n    const body = await req.json()\n    const analise = await prisma.analiseMercado.create({ data: body })\n    return successResponse(analise, 'Análise criada', 201)"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/analise-mercado/route.ts",
+      "line": 2,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\nimport { NextRequest, NextResponse } from 'next/server'"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/analise-mercado/route.ts",
+      "line": 21,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const body = await req.json()"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/vendas/route.ts",
+      "line": 34,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST - Criar nova venda\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/vendas/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Listar todas as vendas\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url);"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/vendas/route.ts",
+      "line": 34,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST - Criar nova venda\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/vendas/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/vendas/route.ts",
+      "line": 34,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST - Criar nova venda\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/imoveis/route.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient()\n\nexport async function GET(request: NextRequest) {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/imoveis/route.ts",
+      "line": 93,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json()"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/route.ts",
+      "line": 6,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(request: NextRequest) {\n  try {\n    const searchParams = request.nextUrl.searchParams"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/route.ts",
+      "line": 93,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json()"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/imoveis/route.ts",
+      "line": 93,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json()"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "fake_token",
+      "file": "src/app/api/auth/route.ts",
+      "line": 56,
+      "description": "Token de autenticação falso usando apenas ID do usuário",
+      "recommendation": "Implemente JWT real com jsonwebtoken ou jose",
+      "cwe_id": "CWE-287",
+      "code_snippet": "      data: {\n        token: `bearer-${user.id}`,\n        user: userData\n      }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/auth/route.ts",
+      "line": 9,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "// Instância local do Prisma para garantir que o build não quebre por imports externos\nconst prisma = new PrismaClient();\n\nexport async function POST(req: NextRequest) {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/route.ts",
+      "line": 11,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const body = await req.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/route.ts",
+      "line": 11,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const body = await req.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_input_validation",
+      "file": "src/app/api/auth/route.ts",
+      "line": 13,
+      "description": "Dados de entrada sem validação",
+      "recommendation": "Use Zod, Yup ou Joi para validar inputs",
+      "cwe_id": "CWE-20",
+      "code_snippet": "  try {\n    const body = await req.json();\n    const { email, password } = body;\n"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/auth/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/auth/route.ts",
+      "line": 11,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const body = await req.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/relatorios/route.ts",
+      "line": 4,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET() {\n  try {\n    // 1. Busca volumétrica total"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 35,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// PUT - Atualizar lead\nexport async function PUT(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 64,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// DELETE - Deletar lead\nexport async function DELETE(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Buscar lead por ID\nexport async function GET(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 35,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// PUT - Atualizar lead\nexport async function PUT(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 64,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// DELETE - Deletar lead\nexport async function DELETE(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/leads/[id]/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/leads/[id]/historico/route.ts",
+      "line": 5,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// POST: Adiciona um novo ponto na timeline do lead\nexport async function POST(request: Request, { params }: { params: { id: string } }) {\n  try {\n    const { detalhes, tipo } = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/leads/[id]/historico/route.ts",
+      "line": 5,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// POST: Adiciona um novo ponto na timeline do lead\nexport async function POST(request: Request, { params }: { params: { id: string } }) {\n  try {\n    const { detalhes, tipo } = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/leads/[id]/historico/route.ts",
+      "line": 5,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "// POST: Adiciona um novo ponto na timeline do lead\nexport async function POST(request: Request, { params }: { params: { id: string } }) {\n  try {\n    const { detalhes, tipo } = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/consultas/funil/route.ts",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\n// Esta rota agora apenas serve os dados para o seu código gigante acima"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/consultas/funil/route.ts",
+      "line": 7,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// Esta rota agora apenas serve os dados para o seu código gigante acima\nexport async function GET() {\n  try {\n    const consultas = await prisma.consulta.findMany({"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/consultas/[id]/route.ts",
+      "line": 6,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// Atualizar status da consulta\nexport async function PATCH(\n  req: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/consultas/[id]/route.ts",
+      "line": 6,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// Atualizar status da consulta\nexport async function PATCH(\n  req: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/consultas/[id]/route.ts",
+      "line": 37,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// Buscar detalhes da consulta\nexport async function GET(\n  req: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_input_validation",
+      "file": "src/app/api/consultas/[id]/route.ts",
+      "line": 11,
+      "description": "Dados de entrada sem validação",
+      "recommendation": "Use Zod, Yup ou Joi para validar inputs",
+      "cwe_id": "CWE-20",
+      "code_snippet": "  try {\n    const body = await req.json()\n    const { id } = params\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 5,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\n// GET - Buscar um usuário"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 50,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// PUT - Editar usuário\nexport async function PUT(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 122,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "// DELETE - Desativar usuário (soft delete)\nexport async function DELETE(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// GET - Buscar um usuário\nexport async function GET(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 50,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// PUT - Editar usuário\nexport async function PUT(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/usuarios/[id]/route.ts",
+      "line": 122,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// DELETE - Desativar usuário (soft delete)\nexport async function DELETE(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/imoveis/cadastro/route.ts",
+      "line": 4,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/cadastro/route.ts",
+      "line": 4,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/imoveis/cadastro/route.ts",
+      "line": 4,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/publico/route.ts",
+      "line": 10,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url)"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/imoveis/publico/route.ts",
+      "line": 4,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\nexport const runtime = 'nodejs';\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/imoveis/[id]/route.ts",
+      "line": 6,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nexport async function PATCH("
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/imoveis/[id]/route.ts",
+      "line": 8,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function PATCH(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/[id]/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function PATCH(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/imoveis/[id]/route.ts",
+      "line": 90,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function GET(\n  request: NextRequest,\n  { params }: { params: { id: string } }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/change-password/route.ts",
+      "line": 8,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const user = await getAuthUser(req);"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/change-password/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const user = await getAuthUser(req);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_input_validation",
+      "file": "src/app/api/auth/change-password/route.ts",
+      "line": 16,
+      "description": "Dados de entrada sem validação",
+      "recommendation": "Use Zod, Yup ou Joi para validar inputs",
+      "cwe_id": "CWE-20",
+      "code_snippet": "    \n    const { senhaAtual, novaSenha } = await req.json();\n    \n    if (!senhaAtual || !novaSenha) {"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/api/auth/change-password/route.ts",
+      "line": 1,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "export const dynamic = 'force-dynamic';\n\nimport { NextRequest, NextResponse } from 'next/server';"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/auth/change-password/route.ts",
+      "line": 8,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(req: NextRequest) {\n  try {\n    const user = await getAuthUser(req);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/auth/redefinir-senha/route.ts",
+      "line": 6,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nexport async function POST(request: NextRequest) {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/redefinir-senha/route.ts",
+      "line": 8,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const { token, novaSenha } = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/redefinir-senha/route.ts",
+      "line": 8,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const { token, novaSenha } = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/redefinir-senha/route.ts",
+      "line": 92,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "// Endpoint para validar token (opcional - para verificar antes de mostrar formulário)\nexport async function GET(request: NextRequest) {\n  try {\n    const { searchParams } = new URL(request.url);"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "hardcoded_secret",
+      "file": "src/app/api/auth/redefinir-senha/route.ts",
+      "line": 134,
+      "description": "Secret/senha hardcoded no código",
+      "recommendation": "Mova para variáveis de ambiente",
+      "cwe_id": "CWE-798",
+      "code_snippet": "  } catch (error: any) {\n    console.error('Erro ao validar token:', error);\n    return NextResponse.json(\n      { error: 'Erro ao validar token' },"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 6,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\nconst JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'TROQUE');\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 9,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 143,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function DELETE(request: NextRequest) {\n  const response = NextResponse.json({ success: true, message: 'Logout realizado' });\n  response.cookies.delete('auth-token');"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 9,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 143,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function DELETE(request: NextRequest) {\n  const response = NextResponse.json({ success: true, message: 'Logout realizado' });\n  response.cookies.delete('auth-token');"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/auth/login/route.ts",
+      "line": 9,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_rate_limit",
+      "file": "src/app/api/auth/solicitar-reset/route.ts",
+      "line": 19,
+      "description": "Endpoint sem rate limiting",
+      "recommendation": "Implemente rate limiting com Upstash Redis ou similar",
+      "cwe_id": "CWE-770",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "no_cors",
+      "file": "src/app/api/auth/solicitar-reset/route.ts",
+      "line": 19,
+      "description": "API sem configuração CORS",
+      "recommendation": "Configure CORS adequadamente",
+      "cwe_id": "CWE-942",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_csrf",
+      "file": "src/app/api/auth/solicitar-reset/route.ts",
+      "line": 19,
+      "description": "POST sem proteção CSRF",
+      "recommendation": "Implemente tokens CSRF",
+      "cwe_id": "CWE-352",
+      "code_snippet": "\nexport async function POST(request: Request) {\n  try {\n    const body = await request.json();"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "GUIA/GerenciadorImoveis.tsx",
+      "line": 148,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function GerenciadorImoveis() {\n  const [imoveis, setImoveis] = useState<Imovel[]>(initialImoveis);\n  const [proprietarios] = useState<Proprietario[]>(initialProprietarios); "
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "reserva/page.tsx",
+      "line": 4,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Home() {\n  return (\n    <html lang=\"pt-BR\">"
+    },
+    {
+      "severity": "HIGH",
+      "category": "dangerouslySetInnerHTML",
+      "file": "reserva/page.tsx",
+      "line": 13,
+      "description": "Uso de dangerouslySetInnerHTML (risco XSS)",
+      "recommendation": "Sanitize HTML com DOMPurify antes de usar",
+      "cwe_id": "CWE-79",
+      "code_snippet": "      <body style={{ margin: 0, padding: 0 }}>\n        <style dangerouslySetInnerHTML={{ __html: `\n          * { margin: 0; padding: 0; box-sizing: border-box; }\n          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "dangerouslySetInnerHTML",
+      "file": "reserva/page.tsx",
+      "line": 130,
+      "description": "Uso de dangerouslySetInnerHTML (risco XSS)",
+      "recommendation": "Sanitize HTML com DOMPurify antes de usar",
+      "cwe_id": "CWE-79",
+      "code_snippet": "\n        <script dangerouslySetInnerHTML={{ __html: `\n          document.addEventListener('keydown', function(e) {\n            if (e.ctrlKey && e.altKey && e.key === 'r') {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/page.tsx",
+      "line": 35,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Home() {\n  const router = useRouter();\n  const [properties, setProperties] = useState<Imovel[]>([]);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "dangerouslySetInnerHTML",
+      "file": "src/app/page.tsx",
+      "line": 144,
+      "description": "Uso de dangerouslySetInnerHTML (risco XSS)",
+      "recommendation": "Sanitize HTML com DOMPurify antes de usar",
+      "cwe_id": "CWE-79",
+      "code_snippet": "    <>\n      <style dangerouslySetInnerHTML={{ __html: `\n        :root { --bg:#f0f4f8; --card:#ffffff; --accent:#1e40af; --accent-light:#3b82f6; --text:#0f172a; --muted:#64748b; --max-width:1200px; }\n        * { box-sizing: border-box; }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/layout.tsx",
+      "line": 9,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function RootLayout({\n  children,\n}: {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "dangerouslySetInnerHTML",
+      "file": "src/lib/structured-data.tsx",
+      "line": 139,
+      "description": "Uso de dangerouslySetInnerHTML (risco XSS)",
+      "recommendation": "Sanitize HTML com DOMPurify antes de usar",
+      "cwe_id": "CWE-79",
+      "code_snippet": "      type=\"application/ld+json\"\n      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}\n    />\n  );"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/components/page.tsx",
+      "line": 5,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Navbar() {\n  const pathname = usePathname()\n  "
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/proprietarios/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ProprietariosPage() {\n  const [props, setProps] = useState<any[]>([])\n  const [loading, setLoading] = useState<boolean>(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function AdminDashboard() {\n  const router = useRouter();\n  const [stats, setStats] = useState({ imoveis: 0, leads: 0, vendas: 0, alugueis: 0 });"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/gerenciador-imoveis/page.tsx",
+      "line": 107,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "// --------------------------------------------------------------------------------\nexport default function GerenciadorStatusImoveis() {\n  const [imoveis, setImoveis] = useState<Imovel[]>([]);\n  const [proprietarios, setProprietarios] = useState<Proprietario[]>([]);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/toolbox/page.tsx",
+      "line": 19,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Toolbox() {\n  const sections = [\n    {"
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "dynamic_force_open",
+      "file": "src/app/toolbox/page.tsx",
+      "line": 3,
+      "description": "Rota forçada como dinâmica (pode impactar performance)",
+      "recommendation": "Revise se realmente precisa ser dinâmica",
+      "cwe_id": "CWE-400",
+      "code_snippet": "\nexport const dynamic = 'force-dynamic';\n\nimport React from 'react';"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/imoveis-publicos/page.tsx",
+      "line": 5,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ImoveisPublicos() {\n  const [imoveis, setImoveis] = useState<any[]>([])\n  const [filtro, setFiltro] = useState<any>({ tipo: 'todos', maxPreco: 9999999 })"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/proprietarios/novo/page.tsx",
+      "line": 14,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoProprietario() {\n  // Estados de controle da UI\n  const [loading, setLoading] = useState<boolean>(false)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/alugueis/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function AlugueisPage() {\n  const [alugueis, setAlugueis] = useState<any[]>([]);\n  const [loading, setLoading] = useState(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/comissoes/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ComissoesPage() {\n  const [data, setData] = useState<any>({ comissoes: [], totais: { pendente: 0, aprovada: 0, paga: 0 } });\n  const [loading, setLoading] = useState(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/dashboard/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function AdminDashboard() {\n  const router = useRouter();\n  "
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/corretores/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function CorretoresPage() {\n  const [corretores, setCorretores] = useState<any[]>([]);\n  const [loading, setLoading] = useState(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/proprietarios/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ProprietariosPage() {\n  const [props, setProps] = useState<any[]>([])\n  const [loading, setLoading] = useState<boolean>(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/redefinir-senha/page.tsx",
+      "line": 167,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function RedefinirSenhaPage() {\n  return (\n    <Suspense fallback={"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/leads/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function LeadsPage() {\n  const [leads, setLeads] = useState<any[]>([]);\n  const [loading, setLoading] = useState<boolean>(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/performance/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function PerformancePage() {\n  const [data, setData] = useState<any>(null);\n"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/login/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function LoginPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/trocar-senha/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function TrocarSenhaPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/esqueci-senha/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function EsqueciSenhaPage() {\n  const [email, setEmail] = useState('');\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/acesso-negado/page.tsx",
+      "line": 4,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function AcessoNegadoPage({ searchParams }: { searchParams: { from?: string } }) {\n  const tentouAcessar = searchParams?.from || 'recurso desconhecido';\n  "
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/consultas/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ListaConsultas() {\n  const [consultas, setConsultas] = useState<any[]>([])\n  const [loading, setLoading] = useState(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/usuarios/page.tsx",
+      "line": 80,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function UsuariosPage() {\n  const [usuarios, setUsuarios] = useState<Usuario[]>([]);\n  const [corretores, setCorretores] = useState<Corretor[]>([]);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/analise-mercado/page.tsx",
+      "line": 35,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function AnaliseMercadoPage() {\n  const [analisesSalvas, setAnalisesSalvas] = useState<Analise[]>([])\n  const [analisesGeradas, setAnalisesGeradas] = useState<AnaliseDinamica[]>([])"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/vendas/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function VendasPage() {\n  const [vendas, setVendas] = useState<any[]>([]);\n  const [loading, setLoading] = useState(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/imoveis/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ImoveisPage() {\n  const [imoveis, setImoveis] = useState<any[]>([]);\n  const [loading, setLoading] = useState<boolean>(true);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/alugueis/novo/page.tsx",
+      "line": 39,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoContratoAluguelPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/corretores/novo/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoCorretorPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/proprietarios/novo/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoProprietarioPage() {\n  const router = useRouter()\n  const [loading, setLoading] = useState(false)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/leads/novo/page.tsx",
+      "line": 8,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoLead() {\n  const router = useRouter()\n  const [form, setForm] = useState({ "
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/leads/relatorio/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function RelatorioLeads() {\n  const [leads, setLeads] = useState<any[]>([])\n  const [loading, setLoading] = useState(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/consultas/nova/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovaConsultaPage() {\n  const router = useRouter()\n  const [loading, setLoading] = useState(false)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/consultas/historico/page.tsx",
+      "line": 5,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function HistoricoConsultas() {\n  const [consultas, setConsultas] = useState<any[]>([])\n  const [filtro, setFiltro] = useState<string>('todas')"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/consultas/funil/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function FunilVendas() {\n  const [consultas, setConsultas] = useState<any[]>([])\n  const [loading, setLoading] = useState<boolean>(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/analise-mercado/nova/page.tsx",
+      "line": 6,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovaAnalise() {\n  const [loading, setLoading] = useState(false)\n  const [resultado, setResultado] = useState(null)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/analise-mercado/relatorios/page.tsx",
+      "line": 18,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function RelatoriosAnalise() {\n  const [analises, setAnalises] = useState<AnaliseMercado[]>([])\n  const [cidades, setCidades] = useState<string[]>([])"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/vendas/nova/page.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovaVendaPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/imoveis/novo/page.tsx",
+      "line": 23,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoImovel() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/admin/imoveis/disponiveis/page.tsx",
+      "line": 13,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ImoveisDisponiveis() {\n  const [imoveis, setImoveis] = useState<Imovel[]>([])\n  const [loading, setLoading] = useState<boolean>(true)"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/api/alugueis/novo/page.tsx",
+      "line": 39,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function NovoContratoAluguelPage() {\n  const router = useRouter();\n  const [loading, setLoading] = useState(false);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/app/imoveis/[id]/page.tsx",
+      "line": 21,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function ImovelDetalhes({ params }: { params: { id: string } }) {\n  const router = useRouter();\n  const [imovel, setImovel] = useState<Imovel | null>(null);"
+    },
+    {
+      "severity": "HIGH",
+      "category": "dangerouslySetInnerHTML",
+      "file": "src/app/imoveis/[id]/page.tsx",
+      "line": 67,
+      "description": "Uso de dangerouslySetInnerHTML (risco XSS)",
+      "recommendation": "Sanitize HTML com DOMPurify antes de usar",
+      "cwe_id": "CWE-79",
+      "code_snippet": "    <>\n      <style dangerouslySetInnerHTML={{ __html: `\n        * { box-sizing: border-box; margin: 0; padding: 0; }\n        body { font-family: 'Inter', sans-serif; background: #f0f4f8; color: #0f172a; }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/components/graficos/GraficoMercados.tsx",
+      "line": 4,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function GraficoMercado({ dados }: { dados: any[] }) {\n  return (\n    <div className=\"bg-white p-6 rounded-lg\">"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/components/busca/BuscaInteligente.tsx",
+      "line": 4,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function BuscaInteligente() {\n  const [query, setQuery] = useState<string>('')\n  const [resultados, setResultados] = useState<any[]>([])"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/components/ui/Badge.tsx",
+      "line": 7,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Badge({ children, variant = 'neutral', className = '' }: BadgeProps) {\n  const variants = {\n    success: 'badge-success',"
+    },
+    {
+      "severity": "HIGH",
+      "category": "no_auth_check",
+      "file": "src/components/ui/Container.tsx",
+      "line": 10,
+      "description": "Componente/página sem verificação de autenticação",
+      "recommendation": "Adicione verificação de sessão ou proteja com middleware",
+      "cwe_id": "CWE-306",
+      "code_snippet": "\nexport default function Container({ children, title, subtitle, action }: ContainerProps) {\n  return (\n    <div className=\"min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8\">"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "create-admin.js",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function main() {"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "hardcoded_secret",
+      "file": "next.config.js",
+      "line": 26,
+      "description": "Secret/senha hardcoded no código",
+      "recommendation": "Mova para variáveis de ambiente",
+      "cwe_id": "CWE-798",
+      "code_snippet": "        headers: [\n          { key: 'Cache-Control', value: 'no-store, must-revalidate' }\n        ]\n      },"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "hardcoded_secret",
+      "file": "next.config.js",
+      "line": 32,
+      "description": "Secret/senha hardcoded no código",
+      "recommendation": "Mova para variáveis de ambiente",
+      "cwe_id": "CWE-798",
+      "code_snippet": "        headers: [\n          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }\n        ]\n      }"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "test-db.js",
+      "line": 3,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function testarBanco() {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "testar-senha.js",
+      "line": 4,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function testar() {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "test-db-completo.js",
+      "line": 3,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function testarBancoCompleto() {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "desbloquear.js",
+      "line": 2,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "const { PrismaClient } = require('@prisma/client');\nconst prisma = new PrismaClient();\n\nasync function desbloquear() {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "api-test-db.js",
+      "line": 3,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nexport default async function handler(req, res) {"
+    },
+    {
+      "severity": "HIGH",
+      "category": "prisma_per_request",
+      "file": "reset-admin.js",
+      "line": 5,
+      "description": "Nova instância do Prisma por requisição (esgota conexões)",
+      "recommendation": "Use singleton pattern para PrismaClient",
+      "cwe_id": "CWE-404",
+      "code_snippet": "\nconst prisma = new PrismaClient();\n\nasync function criarSuperAdmin() {"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "unencrypted_pii",
+      "file": "prisma/schema.prisma",
+      "line": 97,
+      "description": "Campo 'cpf' sem criptografia (violação LGPD)",
+      "recommendation": "Implemente criptografia AES-256 ou use @db.Text com hash",
+      "cwe_id": "CWE-311",
+      "code_snippet": "cpf         String?   @unique"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "unencrypted_pii",
+      "file": "prisma/schema.prisma",
+      "line": 119,
+      "description": "Campo 'cpf' sem criptografia (violação LGPD)",
+      "recommendation": "Implemente criptografia AES-256 ou use @db.Text com hash",
+      "cwe_id": "CWE-311",
+      "code_snippet": "cpf            String?    @unique"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "unencrypted_pii",
+      "file": "prisma/schema.prisma",
+      "line": 345,
+      "description": "Campo 'senha' sem criptografia (violação LGPD)",
+      "recommendation": "Implemente criptografia AES-256 ou use @db.Text com hash",
+      "cwe_id": "CWE-311",
+      "code_snippet": "senha            String"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "hardcoded_secret",
+      "file": "next.config.js",
+      "line": 26,
+      "description": "Secret/senha hardcoded no código",
+      "recommendation": "Mova para variáveis de ambiente",
+      "cwe_id": "CWE-798",
+      "code_snippet": "        headers: [\n          { key: 'Cache-Control', value: 'no-store, must-revalidate' }\n        ]\n      },"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "hardcoded_secret",
+      "file": "next.config.js",
+      "line": 32,
+      "description": "Secret/senha hardcoded no código",
+      "recommendation": "Mova para variáveis de ambiente",
+      "cwe_id": "CWE-798",
+      "code_snippet": "        headers: [\n          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }\n        ]\n      }"
+    },
+    {
+      "severity": "CRITICAL",
+      "category": "env_committed",
+      "file": ".env",
+      "line": 1,
+      "description": "Arquivo .env não deve ser commitado (contém secrets)",
+      "recommendation": "Adicione .env ao .gitignore e rotacione todos os secrets",
+      "cwe_id": "CWE-540",
+      "code_snippet": "Arquivo .env encontrado no projeto"
+    },
+    {
+      "severity": "HIGH",
+      "category": "exposed_env_var",
+      "file": ".env",
+      "line": 2,
+      "description": "Possível credencial real em arquivo .env",
+      "recommendation": "Verifique se este arquivo não foi commitado e rotacione credenciais",
+      "cwe_id": "CWE-798",
+      "code_snippet": "DATABASE_URL=\"postgresql://neondb_owner:npg_t3XlG7..."
+    },
+    {
+      "severity": "HIGH",
+      "category": "exposed_env_var",
+      "file": ".env",
+      "line": 5,
+      "description": "Possível credencial real em arquivo .env",
+      "recommendation": "Verifique se este arquivo não foi commitado e rotacione credenciais",
+      "cwe_id": "CWE-798",
+      "code_snippet": "JWT_SECRET=7H93jmDy9QK8lJW4s4GS1TkMWaLwI7mP09f9MR7..."
+    },
+    {
+      "severity": "HIGH",
+      "category": "exposed_env_var",
+      "file": ".env",
+      "line": 11,
+      "description": "Possível credencial real em arquivo .env",
+      "recommendation": "Verifique se este arquivo não foi commitado e rotacione credenciais",
+      "cwe_id": "CWE-798",
+      "code_snippet": "RESEND_API_KEY=re_YWTWu58E_LiLEALrxyh2WXraDwVS6RgU..."
+    }
+  ]
+}

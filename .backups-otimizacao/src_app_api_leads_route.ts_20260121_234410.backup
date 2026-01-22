@@ -1,0 +1,122 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const prisma = globalForPrisma.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export async function GET() {
+  try {
+    const leads = await prisma.lead.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        },
+        _count: {
+          select: {
+            consultas: true,
+            vendas: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: leads
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar leads:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao buscar leads',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    // Validação básica
+    if (!body.nome || !body.email || !body.telefone) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Nome, e-mail e telefone são obrigatórios'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se já existe lead com mesmo e-mail
+    const existeEmail = await prisma.lead.findUnique({
+      where: { email: body.email }
+    })
+
+    if (existeEmail) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Já existe um lead com este e-mail'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Criar lead
+    const lead = await prisma.lead.create({
+      data: {
+        nome: body.nome,
+        email: body.email,
+        telefone: body.telefone,
+        cpf: body.cpf || null,
+        origem: body.origem || 'site',
+        status: body.status || 'novo',
+        interesse: body.interesse || null,
+        corretorId: body.corretorId || null,
+        observacoes: body.observacoes || null
+      },
+      include: {
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: lead,
+      message: 'Lead cadastrado com sucesso!'
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao criar lead:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao criar lead',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}

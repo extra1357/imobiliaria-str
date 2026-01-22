@@ -127,7 +127,7 @@ export function usePermission() {
           const data = await res.json();
           setUser(data.user);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erro ao carregar usuário:', error);
       }
     }

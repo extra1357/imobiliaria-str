@@ -1,158 +1,333 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+
+interface Corretor {
+  id: string
+  nome: string
+  email: string
+  telefone: string
+  creci: string
+  ativo: boolean
+  comissaoPadrao: string
+  _count?: {
+    vendas: number
+    comissoes: number
+    leads: number
+    alugueis: number
+  }
+}
 
 export default function CorretoresPage() {
-  const [corretores, setCorretores] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [corretores, setCorretores] = useState<Corretor[]>([])
+  const [loading, setLoading] = useState(true)
+  const [busca, setBusca] = useState('')
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos')
 
   useEffect(() => {
-    fetch('/api/corretores')
-      .then((res: any) => res.json())
-      .then((data: any) => {
-        setCorretores(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+    fetchCorretores()
+  }, [])
 
-  const formatPhone = (phone: string) => {
-    return phone?.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3') || phone;
-  };
+  const fetchCorretores = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch('/api/corretores')
+      const data = await res.json()
+      
+      if (data.success && data.data) {
+        setCorretores(data.data)
+      } else {
+        console.error('Erro ao carregar corretores:', data.error)
+      }
+    } catch (error) {
+      console.error('Erro:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const corretoresFiltrados = corretores.filter(corretor => {
+    const matchStatus = filtroStatus === 'todos' || 
+      (filtroStatus === 'ativo' && corretor.ativo) ||
+      (filtroStatus === 'inativo' && !corretor.ativo)
+    
+    const matchBusca = busca === '' ||
+      corretor.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      corretor.email.toLowerCase().includes(busca.toLowerCase()) ||
+      corretor.creci.toLowerCase().includes(busca.toLowerCase())
+    
+    return matchStatus && matchBusca
+  })
+
+  const calcularStats = () => {
+    return {
+      total: corretores.length,
+      ativos: corretores.filter(c => c.ativo).length,
+      vendas: corretores.reduce((acc, c) => acc + (c._count?.vendas || 0), 0),
+      comissoes: corretores.reduce((acc, c) => acc + (c._count?.comissoes || 0), 0)
+    }
+  }
+
+  const stats = calcularStats()
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="text-center">Carregando...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-7xl mb-6 animate-pulse">👨‍💼</div>
+          <p className="text-2xl font-black text-white uppercase tracking-widest">
+            Carregando corretores...
+          </p>
+        </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Corretores</h1>
-            <p className="text-gray-600">Gerencie sua equipe de corretores</p>
+    <div className="min-h-screen bg-black text-white p-6 lg:p-12">
+      {/* HEADER */}
+      <div className="mb-12 bg-gradient-to-r from-blue-400 to-purple-500 p-1">
+        <div className="bg-black p-8">
+          <div className="flex items-center justify-between flex-wrap gap-6">
+            <div>
+              <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter">
+                CORRETORES
+              </h1>
+              <p className="text-blue-400 font-black text-lg uppercase tracking-widest mt-2">
+                Gerenciamento da equipe
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Link 
+                href="/admin"
+                className="bg-gray-700 text-white px-8 py-4 font-black uppercase hover:bg-gray-600 transition-all text-xl"
+              >
+                ← VOLTAR
+              </Link>
+              <Link 
+                href="/admin/corretores/novo"
+                className="bg-blue-400 text-black px-8 py-4 font-black uppercase hover:bg-blue-300 transition-all text-xl"
+              >
+                + NOVO CORRETOR
+              </Link>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <Link
-              href="/admin"
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-            >
-              ← Voltar
-            </Link>
-            <Link
-              href="/admin/corretores/novo"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-            >
-              + Novo Corretor
-            </Link>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500 text-sm">Total de Corretores</p>
-            <p className="text-3xl font-bold text-blue-600">{corretores.length}</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500 text-sm">Ativos</p>
-            <p className="text-3xl font-bold text-green-600">
-              {corretores.filter(c => c.ativo).length}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500 text-sm">Vendas Realizadas</p>
-            <p className="text-3xl font-bold text-purple-600">
-              {corretores.reduce((acc: any, c: any) => acc + (c._count?.vendas || 0), 0)}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500 text-sm">Aluguéis Ativos</p>
-            <p className="text-3xl font-bold text-orange-600">
-              {corretores.reduce((acc: any, c: any) => acc + (c._count?.alugueis || 0), 0)}
-            </p>
-          </div>
-        </div>
-
-        {/* Lista */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Corretor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CRECI</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contato</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Comissão</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Performance</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {corretores.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                    Nenhum corretor cadastrado ainda.
-                    <Link href="/admin/corretores/novo" className="text-blue-600 hover:underline ml-2">
-                      Cadastrar primeiro corretor
-                    </Link>
-                  </td>
-                </tr>
-              ) : (
-                corretores.map((corretor: any) => (
-                  <tr key={corretor.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                          <span className="text-blue-600 font-semibold">
-                            {corretor.nome?.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{corretor.nome}</p>
-                          <p className="text-sm text-gray-500">{corretor.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-900 font-mono">{corretor.creci}</td>
-                    <td className="px-6 py-4 text-gray-600">{formatPhone(corretor.telefone)}</td>
-                    <td className="px-6 py-4 text-gray-900">{Number(corretor.comissaoPadrao)}%</td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-green-600">{corretor._count?.vendas || 0} vendas</span>
-                        <span className="text-blue-600">{corretor._count?.alugueis || 0} aluguéis</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        corretor.ativo 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {corretor.ativo ? 'Ativo' : 'Inativo'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Link 
-                        href={`/admin/corretores/${corretor.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        Ver detalhes
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
+
+      {/* ESTATÍSTICAS */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+        <StatCard 
+          label="TOTAL"
+          value={stats.total.toString()}
+          color="from-blue-500 to-cyan-500"
+        />
+        <StatCard 
+          label="ATIVOS"
+          value={stats.ativos.toString()}
+          color="from-green-500 to-emerald-500"
+        />
+        <StatCard 
+          label="VENDAS"
+          value={stats.vendas.toString()}
+          color="from-purple-500 to-pink-500"
+        />
+        <StatCard 
+          label="COMISSÕES"
+          value={stats.comissoes.toString()}
+          color="from-yellow-500 to-orange-500"
+        />
+      </div>
+
+      {/* FILTROS */}
+      <div className="bg-white text-black p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-black text-xs uppercase mb-2">
+              🔍 Buscar
+            </label>
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Nome, e-mail ou CRECI..."
+              className="w-full border-4 border-black p-3 font-bold"
+            />
+          </div>
+
+          <div>
+            <label className="block font-black text-xs uppercase mb-2">
+              📊 Status
+            </label>
+            <select
+              value={filtroStatus}
+              onChange={(e) => setFiltroStatus(e.target.value)}
+              className="w-full border-4 border-black p-3 font-bold"
+            >
+              <option value="todos">Todos</option>
+              <option value="ativo">Ativos</option>
+              <option value="inativo">Inativos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* LISTA DE CORRETORES */}
+      <div className="bg-white text-black">
+        {corretoresFiltrados.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-7xl mb-6">👨‍💼</div>
+            <p className="text-3xl font-black">
+              {busca || filtroStatus !== 'todos' 
+                ? 'Nenhum corretor encontrado com os filtros aplicados' 
+                : 'Nenhum corretor cadastrado'
+              }
+            </p>
+            {(busca || filtroStatus !== 'todos') && (
+              <button
+                onClick={() => {
+                  setBusca('')
+                  setFiltroStatus('todos')
+                }}
+                className="mt-6 bg-black text-white px-6 py-3 font-black uppercase"
+              >
+                Limpar Filtros
+              </button>
+            )}
+            {!busca && filtroStatus === 'todos' && (
+              <Link
+                href="/admin/corretores/novo"
+                className="mt-6 inline-block bg-blue-500 text-white px-8 py-4 font-black uppercase"
+              >
+                + Cadastrar Primeiro Corretor
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-900 text-white">
+                <tr>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    CORRETOR
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    CRECI
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    CONTATO
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    COMISSÃO
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    PERFORMANCE
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    STATUS
+                  </th>
+                  <th className="px-6 py-4 text-left font-black uppercase text-xs tracking-widest">
+                    AÇÕES
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-4 divide-black">
+                {corretoresFiltrados.map((corretor) => (
+                  <CorretorRow key={corretor.id} corretor={corretor} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
+}
+
+// COMPONENTE DE CARD ESTATÍSTICO
+function StatCard({ label, value, color }: { label: string, value: string, color: string }) {
+  return (
+    <div className={`bg-gradient-to-br ${color} p-1`}>
+      <div className="bg-black p-6 h-full">
+        <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">
+          {label}
+        </p>
+        <p className="text-4xl font-black text-white">
+          {value}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// COMPONENTE DE LINHA DA TABELA
+function CorretorRow({ corretor }: { corretor: Corretor }) {
+  const formatPhone = (phone: string) => {
+    return phone?.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3') || phone
+  }
+
+  return (
+    <tr className="hover:bg-gray-50 transition-colors">
+      <td className="px-6 py-4">
+        <div className="flex items-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-4">
+            <span className="text-white font-black text-xl">
+              {corretor.nome?.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div>
+            <p className="font-black text-lg">{corretor.nome}</p>
+            <p className="text-sm text-gray-500">{corretor.email}</p>
+          </div>
+        </div>
+      </td>
+      
+      <td className="px-6 py-4">
+        <span className="font-black text-blue-600">{corretor.creci}</span>
+      </td>
+      
+      <td className="px-6 py-4">
+        <span className="font-bold">{formatPhone(corretor.telefone)}</span>
+      </td>
+      
+      <td className="px-6 py-4">
+        <span className="font-black text-green-600">
+          {parseFloat(corretor.comissaoPadrao || '0')}%
+        </span>
+      </td>
+      
+      <td className="px-6 py-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-gray-500">VENDAS:</span>
+            <span className="font-black text-purple-600">{corretor._count?.vendas || 0}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-gray-500">COMISSÕES:</span>
+            <span className="font-black text-green-600">{corretor._count?.comissoes || 0}</span>
+          </div>
+        </div>
+      </td>
+      
+      <td className="px-6 py-4">
+        <span className={`px-4 py-2 font-black text-xs uppercase ${
+          corretor.ativo 
+            ? 'bg-green-500 text-white' 
+            : 'bg-red-500 text-white'
+        }`}>
+          {corretor.ativo ? '✓ ATIVO' : '✗ INATIVO'}
+        </span>
+      </td>
+      
+      <td className="px-6 py-4">
+        <Link
+          href={`/admin/corretores/${corretor.id}`}
+          className="bg-black text-white px-4 py-2 font-black uppercase text-xs hover:bg-gray-800 transition-all inline-block"
+        >
+          VER DETALHES →
+        </Link>
+      </td>
+    </tr>
+  )
 }

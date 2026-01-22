@@ -1,0 +1,132 @@
+import { NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const prisma = globalForPrisma.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export async function GET() {
+  
+    // 🚀 PAGINAÇÃO AUTOMÁTICA
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const skip = (page - 1) * limit
+
+    const total = await prisma.imovel.count()try {
+    const imoveis = await prisma.imovel.findMany({
+      take: limit,
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        proprietario: {
+          select: {
+            id: true,
+            nome: true,
+            telefone: true
+          }
+        },
+        _count: {
+          select: {
+            vendas: true,
+            alugueis: true,
+            consultas: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: imoveis
+    ,
+      pagination: { page, limit, total }
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar imóveis:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao buscar imóveis',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    
+    // Validação básica
+    if (!body.tipo || !body.endereco || !body.cidade || !body.estado || !body.preco) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Campos obrigatórios não preenchidos'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Criar imóvel
+    const imovel = await prisma.imovel.create({
+      data: {
+        tipo: body.tipo,
+        endereco: body.endereco,
+        numero: body.numero || null,
+        complemento: body.complemento || null,
+        bairro: body.bairro || null,
+        cidade: body.cidade,
+        estado: body.estado,
+        cep: body.cep || null,
+        codigo: body.codigo || null,
+        area: body.area || null,
+        quartos: body.quartos ? parseInt(body.quartos) : null,
+        banheiros: body.banheiros ? parseInt(body.banheiros) : null,
+        vagas: body.vagas ? parseInt(body.vagas) : null,
+        preco: body.preco,
+        iptu: body.iptu || null,
+        condominio: body.condominio || null,
+        descricao: body.descricao || null,
+        observacoes: body.observacoes || null,
+        disponivel: body.disponivel !== undefined ? body.disponivel : true,
+        status: body.status || 'ATIVO',
+        proprietarioId: body.proprietarioId || null,
+        fotos: body.fotos || null
+      },
+      include: {
+        proprietario: {
+          select: {
+            id: true,
+            nome: true,
+            telefone: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: imovel,
+      message: 'Imóvel cadastrado com sucesso!'
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao criar imóvel:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao criar imóvel',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}

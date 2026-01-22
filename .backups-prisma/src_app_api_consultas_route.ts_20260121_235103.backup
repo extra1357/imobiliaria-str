@@ -1,0 +1,146 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const prisma = globalForPrisma.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export async function GET() {
+  
+    // 🚀 PAGINAÇÃO AUTOMÁTICA
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const skip = (page - 1) * limit
+
+    const total = await prisma.consulta.count()try {
+    const consultas = await prisma.consulta.findMany({
+      take: limit,
+      skip: skip,
+      orderBy: {
+        dataAgendada: 'desc'
+      },
+      include: {
+        lead: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            telefone: true
+          }
+        },
+        imovel: {
+          select: {
+            id: true,
+            tipo: true,
+            endereco: true,
+            cidade: true,
+            estado: true,
+            preco: true,
+            codigo: true
+          }
+        },
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: consultas
+    ,
+      pagination: { page, limit, total }
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar consultas:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao buscar consultas',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    // Validação básica
+    if (!body.leadId || !body.imovelId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Lead e imóvel são obrigatórios'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Criar consulta
+    const consulta = await prisma.consulta.create({
+      data: {
+        leadId: body.leadId,
+        imovelId: body.imovelId,
+        corretorId: body.corretorId || null,
+        tipo: body.tipo || 'visita',
+        status: body.status || 'agendada',
+        dataAgendada: body.dataAgendada ? new Date(body.dataAgendada) : null,
+        observacoes: body.observacoes || null
+      },
+      include: {
+        lead: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            telefone: true
+          }
+        },
+        imovel: {
+          select: {
+            id: true,
+            tipo: true,
+            endereco: true,
+            cidade: true,
+            preco: true
+          }
+        },
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: consulta,
+      message: 'Consulta agendada com sucesso!'
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao criar consulta:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao criar consulta',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}

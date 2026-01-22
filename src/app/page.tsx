@@ -175,7 +175,7 @@ export default function Home() {
           transition:0.3s ease-out; 
           display:flex; 
           flex-direction:column;
-          height: 600px; /* ← ALTURA FIXA PARA NIVELAR */
+          height: 510px; /* ← ALTURA OTIMIZADA */
         }
         .card:hover { transform: translateY(-10px); box-shadow:0 25px 50px rgba(0,0,0,0.12); }
         
@@ -248,7 +248,7 @@ export default function Home() {
         }
         
         .card-body { 
-          padding:28px; 
+          padding:24px; 
           flex:1; 
           display:flex; 
           flex-direction:column; 
@@ -256,67 +256,57 @@ export default function Home() {
         }
         
         .price { 
-          font-size:28px; 
+          font-size:22px; 
           font-weight:900; 
           color:var(--accent); 
-          margin-bottom:12px; 
+          margin-bottom:10px;
+          line-height: 1.2;
+          word-break: break-word;
         }
         
         /* ENDEREÇO COM TRUNCATE PARA NÃO QUEBRAR LAYOUT */
         .addr { 
-          font-size:15px; 
+          font-size:14px; 
           color:var(--muted); 
-          margin-bottom:20px; 
-          min-height:48px;
+          margin-bottom:15px; 
+          min-height:42px;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-overflow: ellipsis;
+          line-height: 1.5;
         }
         .addr strong {
           display: block;
           color: var(--text);
           font-weight: 800;
-          margin-bottom: 5px;
+          margin-bottom: 4px;
+          font-size: 15px;
         }
         
         /* ========== OTIMIZAÇÃO 3: ÍCONES DE CARACTERÍSTICAS ========== */
         .features-icons {
           display: flex;
-          gap: 18px;
-          margin: 12px 0;
-          padding: 15px 0;
+          gap: 15px;
+          margin: 8px 0 12px 0;
+          padding: 12px 0;
           border-top: 2px solid #f1f5f9;
           border-bottom: 2px solid #f1f5f9;
           flex-shrink: 0;
+          min-height: 55px;
         }
         .feature-item {
           display: flex;
           align-items: center;
-          gap: 6px;
-          font-size: 14px;
+          gap: 5px;
+          font-size: 13px;
           font-weight: 700;
           color: var(--text);
         }
         .feature-item span {
-          font-size: 20px;
-        }
-        
-        /* DESCRIÇÃO COM TRUNCATE (SEM SCROLL) */
-        .description-box { 
-          font-size: 14px;
-          color: #475569;
-          line-height: 1.6;
-          margin-bottom: 15px;
-          border-left: 3px solid #e2e8f0;
-          padding-left: 12px;
-          flex-shrink: 0;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          font-size: 18px;
+          line-height: 1;
         }
         
         .btn-interest { 
@@ -362,7 +352,7 @@ export default function Home() {
           display: ${isDrawerOpen ? 'flex' : 'none'}; 
           flex-direction:column; 
           box-shadow:-20px 0 60px rgba(0,0,0,0.3); 
-          overflow: hidden;
+          overflow-y: auto;
         }
         .field { 
           margin-bottom:20px; 
@@ -412,7 +402,7 @@ export default function Home() {
           .filter-bar { flex-direction: column; }
           .input-group { min-width: 100%; }
           .drawer { width: 100%; }
-          .card { height: auto; min-height: 550px; }
+          .card { height: auto; min-height: 480px; }
         }
       ` }} />
 
@@ -509,12 +499,6 @@ export default function Home() {
                           {p.garagem}
                         </div>
                       )}
-                    </div>
-                  )}
-                  
-                  {p.description && (
-                    <div className="description-box">
-                      {p.description}
                     </div>
                   )}
                   

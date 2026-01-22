@@ -1,292 +1,316 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-export default function NovoCorretorPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+export default function CadastrarCorretor() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [erro, setErro] = useState('')
   
-  const [form, setForm] = useState({
+  const [formData, setFormData] = useState({
     nome: '',
     email: '',
     telefone: '',
     cpf: '',
     creci: '',
+    dataAdmissao: new Date().toISOString().split('T')[0],
+    ativo: true,
     banco: '',
     agencia: '',
     conta: '',
     tipoConta: 'corrente',
     pix: '',
-    comissaoPadrao: '50',
+    comissaoPadrao: '5',
     observacoes: ''
-  });
+  })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault()
+    setErro('')
+    
+    // Validação básica
+    if (!formData.nome || !formData.email || !formData.telefone || !formData.creci) {
+      setErro('Preencha todos os campos obrigatórios!')
+      return
+    }
+
+    setLoading(true)
 
     try {
       const response = await fetch('/api/corretores', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          comissaoPadrao: parseFloat(form.comissaoPadrao)
-        })
-      });
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao cadastrar corretor');
+      // Verificar se a resposta tem conteúdo
+      const text = await response.text()
+      
+      if (!text) {
+        throw new Error('Resposta vazia do servidor')
       }
 
-      router.push('/admin/corretores');
-    } catch (err: any) {
-      setError(err.message);
+      const data = JSON.parse(text)
+
+      if (data.success) {
+        alert('✅ Corretor cadastrado com sucesso!')
+        router.push('/admin/corretores')
+      } else {
+        setErro(data.error || 'Erro ao cadastrar corretor')
+      }
+
+    } catch (error: any) {
+      console.error('Erro:', error)
+      setErro('Erro ao cadastrar corretor: ' + error.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Novo Corretor</h1>
-            <p className="text-gray-600">Cadastre um novo corretor na equipe</p>
-          </div>
-          <Link
-            href="/admin/corretores"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-          >
-            ← Voltar
-          </Link>
-        </div>
-
-        {/* Formulário */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8">
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {/* Dados Pessoais */}
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Dados Pessoais</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div className="min-h-screen bg-black text-white p-6 lg:p-12">
+      {/* HEADER */}
+      <div className="mb-12 bg-gradient-to-r from-yellow-400 to-pink-500 p-1">
+        <div className="bg-black p-8">
+          <div className="flex items-center justify-between flex-wrap gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nome Completo *
-              </label>
-              <input
-                type="text"
-                name="nome"
-                value={form.nome}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Nome do corretor"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                CRECI *
-              </label>
-              <input
-                type="text"
-                name="creci"
-                value={form.creci}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Ex: 123456-F"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="email@exemplo.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Telefone *
-              </label>
-              <input
-                type="tel"
-                name="telefone"
-                value={form.telefone}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="(11) 99999-9999"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                CPF
-              </label>
-              <input
-                type="text"
-                name="cpf"
-                value={form.cpf}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="000.000.000-00"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Comissão Padrão (%)
-              </label>
-              <input
-                type="number"
-                name="comissaoPadrao"
-                value={form.comissaoPadrao}
-                onChange={handleChange}
-                min="0"
-                max="100"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="50"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Percentual da comissão da imobiliária que vai para o corretor
+              <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter">
+                NOVO CORRETOR
+              </h1>
+              <p className="text-yellow-400 font-black text-lg uppercase tracking-widest mt-2">
+                Cadastro de corretor
               </p>
             </div>
+            <Link 
+              href="/admin/corretores"
+              className="bg-yellow-400 text-black px-8 py-4 font-black uppercase hover:bg-yellow-300 transition-all text-xl"
+            >
+              ← VOLTAR
+            </Link>
           </div>
+        </div>
+      </div>
 
-          {/* Dados Bancários */}
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Dados Bancários</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      {/* ERRO */}
+      {erro && (
+        <div className="mb-8 bg-red-500 text-white p-6 border-l-8 border-red-700">
+          <p className="font-black text-xl">❌ {erro}</p>
+        </div>
+      )}
+
+      {/* FORMULÁRIO */}
+      <form onSubmit={handleSubmit} className="bg-white text-black p-8">
+        {/* DADOS PESSOAIS */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-black uppercase mb-6 border-b-4 border-yellow-400 pb-4">
+            📋 DADOS PESSOAIS
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <InputField
+              label="Nome Completo *"
+              name="nome"
+              value={formData.nome}
+              onChange={handleChange}
+              required
+            />
+            
+            <InputField
+              label="E-mail *"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            
+            <InputField
+              label="Telefone *"
+              name="telefone"
+              value={formData.telefone}
+              onChange={handleChange}
+              placeholder="(00) 00000-0000"
+              required
+            />
+            
+            <InputField
+              label="CPF"
+              name="cpf"
+              value={formData.cpf}
+              onChange={handleChange}
+              placeholder="000.000.000-00"
+            />
+            
+            <InputField
+              label="CRECI *"
+              name="creci"
+              value={formData.creci}
+              onChange={handleChange}
+              required
+            />
+            
+            <InputField
+              label="Data de Admissão *"
+              name="dataAdmissao"
+              type="date"
+              value={formData.dataAdmissao}
+              onChange={handleChange}
+              required
+            />
+            
+            <InputField
+              label="Comissão Padrão (%)"
+              name="comissaoPadrao"
+              type="number"
+              value={formData.comissaoPadrao}
+              onChange={handleChange}
+              min="0"
+              max="100"
+              step="0.01"
+            />
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Banco
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="ativo"
+                  checked={formData.ativo}
+                  onChange={handleChange}
+                  className="w-6 h-6"
+                />
+                <span className="font-black uppercase text-sm">Corretor Ativo</span>
               </label>
-              <input
-                type="text"
-                name="banco"
-                value={form.banco}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Ex: Banco do Brasil"
-              />
             </div>
+          </div>
+        </div>
 
+        {/* DADOS BANCÁRIOS */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-black uppercase mb-6 border-b-4 border-blue-400 pb-4">
+            🏦 DADOS BANCÁRIOS
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <InputField
+              label="Banco"
+              name="banco"
+              value={formData.banco}
+              onChange={handleChange}
+              placeholder="Ex: Bradesco"
+            />
+            
+            <InputField
+              label="Agência"
+              name="agencia"
+              value={formData.agencia}
+              onChange={handleChange}
+              placeholder="Ex: 1234"
+            />
+            
+            <InputField
+              label="Conta"
+              name="conta"
+              value={formData.conta}
+              onChange={handleChange}
+              placeholder="Ex: 12345-6"
+            />
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Agência
-              </label>
-              <input
-                type="text"
-                name="agencia"
-                value={form.agencia}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="0000"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Conta
-              </label>
-              <input
-                type="text"
-                name="conta"
-                value={form.conta}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="00000-0"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block font-black text-xs uppercase mb-2">
                 Tipo de Conta
               </label>
               <select
                 name="tipoConta"
-                value={form.tipoConta}
+                value={formData.tipoConta}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full border-4 border-black p-4 font-bold uppercase text-sm"
               >
-                <option value="corrente">Conta Corrente</option>
+                <option value="corrente">Corrente</option>
                 <option value="poupanca">Poupança</option>
               </select>
             </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Chave PIX
-              </label>
-              <input
-                type="text"
-                name="pix"
-                value={form.pix}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="CPF, email, telefone ou chave aleatória"
-              />
-            </div>
-          </div>
-
-          {/* Observações */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Observações
-            </label>
-            <textarea
-              name="observacoes"
-              value={form.observacoes}
+            
+            <InputField
+              label="Chave PIX"
+              name="pix"
+              value={formData.pix}
               onChange={handleChange}
-              rows={3}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Informações adicionais sobre o corretor"
+              placeholder="CPF, E-mail, Celular ou Chave Aleatória"
+              className="lg:col-span-2"
             />
           </div>
+        </div>
 
-          {/* Botões */}
-          <div className="flex justify-end gap-4">
-            <Link
-              href="/admin/corretores"
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-            >
-              Cancelar
-            </Link>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading ? 'Salvando...' : 'Cadastrar Corretor'}
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* OBSERVAÇÕES */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-black uppercase mb-6 border-b-4 border-pink-400 pb-4">
+            📝 OBSERVAÇÕES
+          </h2>
+          
+          <textarea
+            name="observacoes"
+            value={formData.observacoes}
+            onChange={handleChange}
+            rows={4}
+            className="w-full border-4 border-black p-4 font-bold"
+            placeholder="Observações gerais sobre o corretor..."
+          />
+        </div>
+
+        {/* BOTÕES */}
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 bg-gradient-to-r from-yellow-400 to-pink-500 text-black px-8 py-6 font-black text-xl uppercase hover:opacity-90 transition-all disabled:opacity-50"
+          >
+            {loading ? '⏳ CADASTRANDO...' : '✓ CADASTRAR CORRETOR'}
+          </button>
+          
+          <Link
+            href="/admin/corretores"
+            className="bg-gray-800 text-white px-8 py-6 font-black text-xl uppercase hover:bg-gray-700 transition-all"
+          >
+            ✗ CANCELAR
+          </Link>
+        </div>
+      </form>
     </div>
-  );
+  )
+}
+
+// COMPONENTE DE INPUT
+function InputField({ 
+  label, 
+  className = '',
+  ...props 
+}: { 
+  label: string
+  className?: string
+  [key: string]: any 
+}) {
+  return (
+    <div className={className}>
+      <label className="block font-black text-xs uppercase mb-2">
+        {label}
+      </label>
+      <input
+        {...props}
+        className="w-full border-4 border-black p-4 font-bold uppercase text-sm placeholder:text-gray-400"
+      />
+    </div>
+  )
 }

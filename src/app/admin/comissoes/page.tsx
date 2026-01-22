@@ -1,208 +1,356 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+
+interface Comissao {
+  id: string
+  tipo: string
+  valorBase: string
+  percentual: string
+  valorComissao: string
+  status: string
+  dataPrevista: string | null
+  dataPagamento: string | null
+  observacoes: string | null
+  corretor: {
+    id: string
+    nome: string
+    creci: string
+  }
+  venda?: {
+    id: string
+    imovel: {
+      endereco: string
+      codigo: string | null
+      tipo: string
+    }
+  } | null
+  aluguel?: {
+    id: string
+    imovel: {
+      endereco: string
+      codigo: string | null
+      tipo: string
+    }
+  } | null
+}
 
 export default function ComissoesPage() {
-  const [data, setData] = useState<any>({ comissoes: [], totais: { pendente: 0, aprovada: 0, paga: 0 } });
-  const [loading, setLoading] = useState(true);
-  const [filtroStatus, setFiltroStatus] = useState('');
+  const [comissoes, setComissoes] = useState<Comissao[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos')
+  const [filtroTipo, setFiltroTipo] = useState<string>('todos')
+  const [busca, setBusca] = useState('')
 
   useEffect(() => {
-    const url = filtroStatus ? `/api/comissoes?status=${filtroStatus}` : '/api/comissoes';
-    fetch(url)
-      .then((res: any) => res.json())
-      .then((result: any) => {
-        setData(result);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [filtroStatus]);
+    fetchComissoes()
+  }, [])
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
-  const formatDate = (date: string) => {
-    return date ? new Date(date).toLocaleDateString('pt-BR') : '-';
-  };
-
-  const statusColors: Record<string, string> = {
-    pendente: 'bg-yellow-100 text-yellow-800',
-    aprovada: 'bg-blue-100 text-blue-800',
-    paga: 'bg-green-100 text-green-800',
-    cancelada: 'bg-red-100 text-red-800'
-  };
-
-  const handleStatusChange = async (id: string, novoStatus: string) => {
+  const fetchComissoes = async () => {
     try {
-      const response = await fetch('/api/comissoes', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: novoStatus })
-      });
-
-      if (response.ok) {
-        // Recarrega os dados
-        const url = filtroStatus ? `/api/comissoes?status=${filtroStatus}` : '/api/comissoes';
-        const result = await fetch(url).then(r => r.json());
-        setData(result);
+      setLoading(true)
+      const res = await fetch('/api/comissoes')
+      const data = await res.json()
+      
+      if (data.success) {
+        setComissoes(data.data || [])
+      } else {
+        alert('Erro ao carregar comissões')
       }
-    } catch (error: any) {
-      console.error('Erro ao atualizar status:', error);
+    } catch (error) {
+      console.error('Erro:', error)
+      alert('Erro ao carregar comissões')
+    } finally {
+      setLoading(false)
     }
-  };
+  }
+
+  const calcularTotais = () => {
+    const total = comissoes.reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const pendentes = comissoes
+      .filter(c => c.status === 'pendente')
+      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const aprovadas = comissoes
+      .filter(c => c.status === 'aprovada')
+      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const pagas = comissoes
+      .filter(c => c.status === 'paga')
+      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    
+    return { total, pendentes, aprovadas, pagas }
+  }
+
+  const comissoesFiltradas = comissoes.filter(comissao => {
+    const matchStatus = filtroStatus === 'todos' || comissao.status === filtroStatus
+    const matchTipo = filtroTipo === 'todos' || comissao.tipo === filtroTipo
+    const matchBusca = busca === '' || 
+      comissao.corretor.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      comissao.corretor.creci.toLowerCase().includes(busca.toLowerCase())
+    
+    return matchStatus && matchTipo && matchBusca
+  })
+
+  const totais = calcularTotais()
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="text-center">Carregando...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-7xl mb-6 animate-pulse">💵</div>
+          <p className="text-2xl font-black text-white uppercase tracking-widest">
+            Carregando comissões...
+          </p>
+        </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+    <div className="min-h-screen bg-black text-white p-6 lg:p-12">
+      {/* HEADER */}
+      <div className="mb-12 bg-gradient-to-r from-green-400 to-emerald-500 p-1">
+        <div className="bg-black p-8">
+          <div className="flex items-center justify-between flex-wrap gap-6">
+            <div>
+              <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter">
+                COMISSÕES
+              </h1>
+              <p className="text-green-400 font-black text-lg uppercase tracking-widest mt-2">
+                Gerenciamento de comissões
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Link 
+                href="/admin/comissoes/novo"
+                className="bg-green-400 text-black px-8 py-4 font-black uppercase hover:bg-green-300 transition-all text-xl"
+              >
+                + NOVA COMISSÃO
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ESTATÍSTICAS */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+        <StatCard 
+          label="TOTAL"
+          value={`R$ ${totais.total.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`}
+          color="from-purple-500 to-pink-500"
+        />
+        <StatCard 
+          label="PENDENTES"
+          value={`R$ ${totais.pendentes.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`}
+          color="from-yellow-500 to-orange-500"
+        />
+        <StatCard 
+          label="APROVADAS"
+          value={`R$ ${totais.aprovadas.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`}
+          color="from-blue-500 to-cyan-500"
+        />
+        <StatCard 
+          label="PAGAS"
+          value={`R$ ${totais.pagas.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`}
+          color="from-green-500 to-emerald-500"
+        />
+      </div>
+
+      {/* FILTROS */}
+      <div className="bg-white text-black p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Comissões</h1>
-            <p className="text-gray-600">Controle de comissões dos corretores</p>
+            <label className="block font-black text-xs uppercase mb-2">
+              🔍 Buscar
+            </label>
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Nome do corretor ou CRECI..."
+              className="w-full border-4 border-black p-3 font-bold"
+            />
           </div>
-          <Link
-            href="/admin"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-          >
-            ← Voltar
-          </Link>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500">
-            <p className="text-gray-500 text-sm">Pendentes</p>
-            <p className="text-2xl font-bold text-yellow-600">
-              {formatCurrency(data.totais.pendente)}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
-            <p className="text-gray-500 text-sm">Aprovadas (a pagar)</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {formatCurrency(data.totais.aprovada)}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
-            <p className="text-gray-500 text-sm">Pagas</p>
-            <p className="text-2xl font-bold text-green-600">
-              {formatCurrency(data.totais.paga)}
-            </p>
-          </div>
-        </div>
-
-        {/* Filtros */}
-        <div className="bg-white p-4 rounded-lg shadow mb-6">
-          <div className="flex gap-4 items-center">
-            <span className="text-gray-600">Filtrar por status:</span>
+          <div>
+            <label className="block font-black text-xs uppercase mb-2">
+              📊 Status
+            </label>
             <select
               value={filtroStatus}
-              onChange={(e: any) => setFiltroStatus(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
+              onChange={(e) => setFiltroStatus(e.target.value)}
+              className="w-full border-4 border-black p-3 font-bold"
             >
-              <option value="">Todos</option>
-              <option value="pendente">Pendentes</option>
-              <option value="aprovada">Aprovadas</option>
-              <option value="paga">Pagas</option>
-              <option value="cancelada">Canceladas</option>
+              <option value="todos">Todos</option>
+              <option value="pendente">Pendente</option>
+              <option value="aprovada">Aprovada</option>
+              <option value="paga">Paga</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-black text-xs uppercase mb-2">
+              🏷️ Tipo
+            </label>
+            <select
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+              className="w-full border-4 border-black p-3 font-bold"
+            >
+              <option value="todos">Todos</option>
+              <option value="venda">Venda</option>
+              <option value="aluguel">Aluguel</option>
+              <option value="entrada">Entrada</option>
+              <option value="renovacao">Renovação</option>
             </select>
           </div>
         </div>
+      </div>
 
-        {/* Lista */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Corretor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Referência</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor Base</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">%</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Comissão</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {data.comissoes.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                    Nenhuma comissão encontrada.
-                  </td>
-                </tr>
-              ) : (
-                data.comissoes.map((comissao: any) => (
-                  <tr key={comissao.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-gray-900">{comissao.corretor?.nome}</p>
-                      <p className="text-sm text-gray-500">{comissao.corretor?.creci}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        comissao.tipo === 'VENDA' ? 'bg-green-100 text-green-800' :
-                        comissao.tipo === 'ALUGUEL' ? 'bg-orange-100 text-orange-800' :
-                        'bg-purple-100 text-purple-800'
-                      }`}>
-                        {comissao.tipo}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {comissao.venda?.imovel?.endereco || 
-                       comissao.aluguel?.imovel?.endereco || 
-                       'Bônus/Outros'}
-                    </td>
-                    <td className="px-6 py-4 text-gray-900">
-                      {formatCurrency(Number(comissao.valorBase))}
-                    </td>
-                    <td className="px-6 py-4 text-gray-900">
-                      {Number(comissao.percentual)}%
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-green-600">
-                      {formatCurrency(Number(comissao.valorComissao))}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[comissao.status]}`}>
-                        {comissao.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      {comissao.status === 'pendente' && (
-                        <button
-                          onClick={() => handleStatusChange(comissao.id, 'aprovada')}
-                          className="text-blue-600 hover:underline text-sm mr-2"
-                        >
-                          Aprovar
-                        </button>
-                      )}
-                      {comissao.status === 'aprovada' && (
-                        <button
-                          onClick={() => handleStatusChange(comissao.id, 'paga')}
-                          className="text-green-600 hover:underline text-sm"
-                        >
-                          Marcar Paga
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      {/* LISTA DE COMISSÕES */}
+      <div className="bg-white text-black">
+        {comissoesFiltradas.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-7xl mb-6">💵</div>
+            <p className="text-3xl font-black">Nenhuma comissão encontrada</p>
+            {(filtroStatus !== 'todos' || filtroTipo !== 'todos' || busca !== '') && (
+              <button
+                onClick={() => {
+                  setFiltroStatus('todos')
+                  setFiltroTipo('todos')
+                  setBusca('')
+                }}
+                className="mt-6 bg-black text-white px-6 py-3 font-black uppercase"
+              >
+                Limpar Filtros
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="divide-y-4 divide-black">
+            {comissoesFiltradas.map((comissao) => (
+              <ComissaoCard key={comissao.id} comissao={comissao} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  );
+  )
+}
+
+// COMPONENTE DE CARD ESTATÍSTICO
+function StatCard({ label, value, color }: { label: string, value: string, color: string }) {
+  return (
+    <div className={`bg-gradient-to-br ${color} p-1`}>
+      <div className="bg-black p-6 h-full">
+        <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">
+          {label}
+        </p>
+        <p className="text-3xl font-black text-white">
+          {value}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// COMPONENTE DE CARD DE COMISSÃO
+function ComissaoCard({ comissao }: { comissao: Comissao }) {
+  const imovel = comissao.venda?.imovel || comissao.aluguel?.imovel
+  
+  const statusColors = {
+    paga: 'bg-green-500 text-white',
+    aprovada: 'bg-blue-500 text-white',
+    pendente: 'bg-yellow-500 text-black',
+    cancelada: 'bg-red-500 text-white'
+  }
+  
+  const statusColor = statusColors[comissao.status as keyof typeof statusColors] || statusColors.pendente
+  
+  return (
+    <div className="p-6 hover:bg-gray-50 transition-colors">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-4 mb-2">
+            <h3 className="font-black text-2xl uppercase">{comissao.tipo}</h3>
+            <span className={`px-4 py-2 font-black text-xs uppercase ${statusColor}`}>
+              {comissao.status}
+            </span>
+          </div>
+          
+          {imovel && (
+            <div className="text-gray-600 mb-2">
+              <p className="font-bold">{imovel.tipo} - {imovel.endereco}</p>
+              {imovel.codigo && (
+                <p className="text-xs">CÓD: {imovel.codigo}</p>
+              )}
+            </div>
+          )}
+          
+          <div className="flex items-center gap-4 text-sm">
+            <span className="font-bold text-gray-700">
+              👤 {comissao.corretor.nome}
+            </span>
+            <span className="text-gray-500">
+              CRECI: {comissao.corretor.creci}
+            </span>
+          </div>
+        </div>
+
+        <Link
+          href={`/admin/comissoes/${comissao.id}`}
+          className="bg-black text-white px-6 py-3 font-black uppercase text-sm hover:bg-gray-800 transition-all"
+        >
+          VER DETALHES →
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-4 border-t-2 border-gray-200">
+        <DataBox 
+          label="VALOR BASE" 
+          value={`R$ ${parseFloat(comissao.valorBase || '0').toLocaleString('pt-BR')}`}
+        />
+        <DataBox 
+          label="PERCENTUAL" 
+          value={`${parseFloat(comissao.percentual || '0')}%`}
+        />
+        <DataBox 
+          label="COMISSÃO" 
+          value={`R$ ${parseFloat(comissao.valorComissao || '0').toLocaleString('pt-BR')}`}
+          highlight="green"
+        />
+        <DataBox 
+          label="PREVISÃO" 
+          value={comissao.dataPrevista 
+            ? new Date(comissao.dataPrevista).toLocaleDateString('pt-BR')
+            : '-'
+          }
+        />
+        <DataBox 
+          label="PAGAMENTO" 
+          value={comissao.dataPagamento 
+            ? new Date(comissao.dataPagamento).toLocaleDateString('pt-BR')
+            : '-'
+          }
+          highlight={comissao.dataPagamento ? 'green' : undefined}
+        />
+      </div>
+    </div>
+  )
+}
+
+function DataBox({ label, value, highlight }: { 
+  label: string
+  value: string
+  highlight?: 'green' 
+}) {
+  const valueColor = highlight === 'green' ? 'text-green-600' : 'text-black'
+  
+  return (
+    <div>
+      <p className="text-xs font-black text-gray-500 uppercase mb-1">{label}</p>
+      <p className={`font-black text-lg ${valueColor}`}>{value}</p>
+    </div>
+  )
 }

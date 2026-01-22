@@ -1,0 +1,143 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const prisma = globalForPrisma.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export async function GET() {
+  
+    // 🚀 PAGINAÇÃO AUTOMÁTICA
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const skip = (page - 1) * limit
+
+    const total = await prisma.comissao.count()try {
+    const comissoes = await prisma.comissao.findMany({
+      take: limit,
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        },
+        venda: {
+          select: {
+            id: true,
+            imovel: {
+              select: {
+                endereco: true,
+                codigo: true,
+                tipo: true
+              }
+            }
+          }
+        },
+        aluguel: {
+          select: {
+            id: true,
+            imovel: {
+              select: {
+                endereco: true,
+                codigo: true,
+                tipo: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: comissoes
+    ,
+      pagination: { page, limit, total }
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar comissões:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao buscar comissões',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    // Validação básica
+    if (!body.corretorId || !body.tipo || !body.valorBase || !body.percentual) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Campos obrigatórios não preenchidos'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Calcular valor da comissão
+    const valorBase = parseFloat(body.valorBase)
+    const percentual = parseFloat(body.percentual)
+    const valorComissao = (valorBase * percentual) / 100
+
+    // Criar comissão
+    const comissao = await prisma.comissao.create({
+      data: {
+        corretorId: body.corretorId,
+        vendaId: body.vendaId || null,
+        aluguelId: body.aluguelId || null,
+        tipo: body.tipo,
+        valorBase: valorBase.toString(),
+        percentual: percentual.toString(),
+        valorComissao: valorComissao.toString(),
+        status: body.status || 'pendente',
+        dataPrevista: body.dataPrevista || null,
+        dataPagamento: body.dataPagamento || null,
+        observacoes: body.observacoes || null
+      },
+      include: {
+        corretor: {
+          select: {
+            id: true,
+            nome: true,
+            creci: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: comissao,
+      message: 'Comissão criada com sucesso!'
+    })
+
+  } catch (error: any) {
+    console.error('❌ Erro ao criar comissão:', error)
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erro ao criar comissão',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  }
+}
