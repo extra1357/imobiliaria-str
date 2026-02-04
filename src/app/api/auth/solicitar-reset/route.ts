@@ -1,5 +1,7 @@
+export const dynamic = 'force-dynamic';
+
 // src/app/api/auth/solicitar-reset/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { Resend } from 'resend';
 import crypto from 'crypto';
@@ -130,7 +132,7 @@ export async function POST(request: Request) {
       message: 'Se o email existir, você receberá instruções para redefinir sua senha.'
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Erro ao solicitar reset de senha:', error);
     return NextResponse.json(
       { 

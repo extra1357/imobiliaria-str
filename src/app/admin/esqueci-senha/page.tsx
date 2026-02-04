@@ -1,5 +1,7 @@
-// app/admin/esqueci-senha/page.tsx
 'use client';
+export const dynamic = 'force-dynamic';
+
+
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -53,7 +55,7 @@ export default function EsqueciSenhaPage() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: any) => setEmail(e.target.value)}
               required
               placeholder="seu@email.com"
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"

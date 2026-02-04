@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { PrismaClient } from '@prisma/client'
 
 // Previne a criação de múltiplas instâncias do Prisma em Desenvolvimento

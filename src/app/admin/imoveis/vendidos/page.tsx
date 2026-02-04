@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -56,7 +59,7 @@ export default function ImoveisVendidos() {
       if (data.success) {
         setVendas(data.data || [])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar vendas:', error)
       alert('Erro ao carregar dados')
     } finally {
@@ -76,8 +79,8 @@ export default function ImoveisVendidos() {
   })
 
   const calcularEstatisticas = () => {
-    const total = filteredVendas.reduce((acc, v) => acc + parseFloat(v.valorVenda.toString()), 0)
-    const comissoes = filteredVendas.reduce((acc, v) => acc + parseFloat(v.valorComissao.toString()), 0)
+    const total = filteredVendas.reduce((acc: any, v: any) => acc + parseFloat(v.valorVenda.toString()), 0)
+    const comissoes = filteredVendas.reduce((acc: any, v: any) => acc + parseFloat(v.valorComissao.toString()), 0)
     const finalizadas = filteredVendas.filter(v => v.status === 'finalizada').length
     
     return { total, comissoes, finalizadas, quantidade: filteredVendas.length }
@@ -237,7 +240,7 @@ export default function ImoveisVendidos() {
                 </tr>
               </thead>
               <tbody>
-                {filteredVendas.map((venda, index) => {
+                {filteredVendas.map((venda: any, index: number) => {
                   const statusConfig: any = {
                     proposta: { cor: 'bg-yellow-100 text-yellow-600', label: 'Proposta' },
                     aprovada: { cor: 'bg-blue-100 text-blue-600', label: 'Aprovada' },

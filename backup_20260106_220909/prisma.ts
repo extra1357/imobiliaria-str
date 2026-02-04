@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 ﻿import { PrismaClient } from '@prisma/client'
 
 // Cria um objeto global para armazenar a instância do Prisma Client

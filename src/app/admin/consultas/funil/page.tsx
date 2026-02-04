@@ -1,4 +1,7 @@
 'use client'
+
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react'
 import { STATUS_LABELS, STATUS_CORES } from '@/types/funil'
 import Container from '@/components/ui/Container'

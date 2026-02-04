@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 // types/prisma.ts
 // Tipos gerados automaticamente baseados no schema.prisma
 

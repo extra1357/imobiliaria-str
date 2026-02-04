@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 /**
  * 🛡️ MIDDLEWARE DE SEGURANÇA - STR Imobiliária
  * Atualizado com sistema completo de roles e permissões

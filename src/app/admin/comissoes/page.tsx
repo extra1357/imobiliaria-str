@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
@@ -58,7 +61,7 @@ export default function ComissoesPage() {
       } else {
         alert('Erro ao carregar comissões')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro:', error)
       alert('Erro ao carregar comissões')
     } finally {
@@ -67,16 +70,16 @@ export default function ComissoesPage() {
   }
 
   const calcularTotais = () => {
-    const total = comissoes.reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const total = comissoes.reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
     const pendentes = comissoes
       .filter(c => c.status === 'pendente')
-      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+      .reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
     const aprovadas = comissoes
       .filter(c => c.status === 'aprovada')
-      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+      .reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
     const pagas = comissoes
       .filter(c => c.status === 'paga')
-      .reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+      .reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
     
     return { total, pendentes, aprovadas, pagas }
   }
@@ -166,7 +169,7 @@ export default function ComissoesPage() {
             <input
               type="text"
               value={busca}
-              onChange={(e) => setBusca(e.target.value)}
+              onChange={(e: any) => setBusca(e.target.value)}
               placeholder="Nome do corretor ou CRECI..."
               className="w-full border-4 border-black p-3 font-bold"
             />
@@ -178,7 +181,7 @@ export default function ComissoesPage() {
             </label>
             <select
               value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
+              onChange={(e: any) => setFiltroStatus(e.target.value)}
               className="w-full border-4 border-black p-3 font-bold"
             >
               <option value="todos">Todos</option>
@@ -195,7 +198,7 @@ export default function ComissoesPage() {
             </label>
             <select
               value={filtroTipo}
-              onChange={(e) => setFiltroTipo(e.target.value)}
+              onChange={(e: any) => setFiltroTipo(e.target.value)}
               className="w-full border-4 border-black p-3 font-bold"
             >
               <option value="todos">Todos</option>
@@ -229,7 +232,7 @@ export default function ComissoesPage() {
           </div>
         ) : (
           <div className="divide-y-4 divide-black">
-            {comissoesFiltradas.map((comissao) => (
+            {comissoesFiltradas.map((comissao: any) => (
               <ComissaoCard key={comissao.id} comissao={comissao} />
             ))}
           </div>

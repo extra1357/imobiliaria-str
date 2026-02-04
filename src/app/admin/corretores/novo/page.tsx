@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -63,7 +66,7 @@ export default function CadastrarCorretor() {
         throw new Error('Resposta vazia do servidor')
       }
 
-      const data = JSON.parse(text)
+      const data: any = JSON.parse(text)
 
       if (data.success) {
         alert('✅ Corretor cadastrado com sucesso!')

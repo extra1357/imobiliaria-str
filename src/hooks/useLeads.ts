@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
 
 export function useLeads() {

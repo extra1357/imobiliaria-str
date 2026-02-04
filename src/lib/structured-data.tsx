@@ -75,7 +75,7 @@ export function gerarSchemaListagem(imoveis: ImovelSchema[], baseUrl: string) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: imoveis.slice(0, 20).map((imovel, index) => ({
+    itemListElement: imoveis.slice(0, 20).map((imovel: any, index: number) => ({
       '@type': 'ListItem',
       position: index + 1,
       item: {

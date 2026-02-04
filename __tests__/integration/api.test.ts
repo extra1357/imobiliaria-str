@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 describe('API Integration', () => {
   const baseUrl = 'http://localhost:3000/api'
 

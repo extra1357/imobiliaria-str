@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 export const apiService = {
   async get(url: string) {
     const response = await fetch(url, {

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 /**
  * 🔄 SCRIPT DE MIGRAÇÃO SEGURA - Adicionar Sistema de Roles
  * 

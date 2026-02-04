@@ -1,0 +1,78 @@
+import os
+import shutil
+
+ROOT = os.getcwd()
+APP_DIR = os.path.join(ROOT, "app")
+
+if not os.path.isdir(APP_DIR):
+    print("❌ Pasta 'app/' não encontrada. Execute na raiz do projeto Next.js.")
+    exit(1)
+
+conflicts = []
+
+for root, dirs, files in os.walk(APP_DIR):
+    for file in files:
+        path = os.path.join(root, file)
+
+        if (
+            "sitemap" in path
+            and (file == "route.ts" or file.startswith("sitemap"))
+        ):
+            conflicts.append(path)
+
+print("\n🔍 Arquivos relacionados a sitemap encontrados:\n")
+for c in conflicts:
+    print(" -", c)
+
+# Identificação
+metadata_sitemap = [
+    p for p in conflicts
+    if p.endswith("app/sitemap.ts") or p.endswith("app/sitemap.js")
+]
+
+route_sitemaps = [
+    p for p in conflicts
+    if "sitemap.xml" in p and "route.ts" in p
+]
+
+optional_catch_all = [
+    p for p in conflicts
+    if "[[..." in p
+]
+
+print("\n📌 Diagnóstico:")
+
+if metadata_sitemap and (route_sitemaps or optional_catch_all):
+    print("⚠️ Conflito detectado: Metadata API + Route Handler\n")
+
+    to_remove = route_sitemaps + optional_catch_all
+
+    for path in to_remove:
+        backup = path + ".bak"
+        print(f"🗑️ Removendo rota conflitante:\n   {path}")
+        print(f"📦 Backup criado em:\n   {backup}\n")
+
+        shutil.move(path, backup)
+
+elif len(route_sitemaps) + len(optional_catch_all) > 1:
+    print("⚠️ Múltiplas rotas sitemap.xml detectadas\n")
+
+    # mantém a primeira, remove o resto
+    to_keep = route_sitemaps[0]
+    to_remove = route_sitemaps[1:] + optional_catch_all
+
+    print(f"✅ Mantendo:\n   {to_keep}\n")
+
+    for path in to_remove:
+        backup = path + ".bak"
+        print(f"🗑️ Removendo:\n   {path}")
+        print(f"📦 Backup:\n   {backup}\n")
+
+        shutil.move(path, backup)
+
+else:
+    print("✅ Nenhum conflito detectado. Sitemap está OK.\n")
+
+print("🚀 Processo finalizado.")
+print("👉 Agora rode: npm run dev\n")
+

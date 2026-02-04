@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -82,7 +85,7 @@ export default function NovaConsultaPage() {
         setCorretores(dataCorretores.data || [])
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar dados:', error)
       setErro('Erro ao carregar dados do formulário')
     } finally {
@@ -220,7 +223,7 @@ export default function NovaConsultaPage() {
                 className="w-full border-4 border-black p-4 font-bold uppercase text-sm"
               >
                 <option value="">SELECIONE O CLIENTE</option>
-                {leads.map((lead) => (
+                {leads.map((lead: any) => (
                   <option key={lead.id} value={lead.id}>
                     {lead.nome} - {lead.email} - {lead.telefone}
                   </option>
@@ -241,7 +244,7 @@ export default function NovaConsultaPage() {
                 className="w-full border-4 border-black p-4 font-bold uppercase text-sm"
               >
                 <option value="">SELECIONE O IMÓVEL</option>
-                {imoveis.map((imovel) => (
+                {imoveis.map((imovel: any) => (
                   <option key={imovel.id} value={imovel.id}>
                     {imovel.tipo} - {imovel.endereco}, {imovel.cidade}/{imovel.estado} - 
                     R$ {parseFloat(imovel.preco || '0').toLocaleString('pt-BR')}
@@ -263,7 +266,7 @@ export default function NovaConsultaPage() {
                 className="w-full border-4 border-black p-4 font-bold uppercase text-sm"
               >
                 <option value="">SEM CORRETOR</option>
-                {corretores.map((corretor) => (
+                {corretores.map((corretor: any) => (
                   <option key={corretor.id} value={corretor.id}>
                     {corretor.nome} - CRECI: {corretor.creci}
                   </option>

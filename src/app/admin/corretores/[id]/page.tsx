@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
@@ -100,7 +103,7 @@ export default function DetalhesCorretor() {
       } else {
         alert('Erro ao carregar corretor')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro:', error)
       alert('Erro ao carregar dados')
     } finally {
@@ -110,10 +113,10 @@ export default function DetalhesCorretor() {
 
   const calcularStats = () => {
     const totalVendas = vendas.length
-    const valorTotalVendas = vendas.reduce((acc, v) => acc + parseFloat(v.valorVenda || '0'), 0)
-    const totalComissoes = comissoes.reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
-    const pendentes = comissoes.filter(c => c.status === 'pendente').reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
-    const pagas = comissoes.filter(c => c.status === 'paga').reduce((acc, c) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const valorTotalVendas = vendas.reduce((acc: any, v: any) => acc + parseFloat(v.valorVenda || '0'), 0)
+    const totalComissoes = comissoes.reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const pendentes = comissoes.filter(c => c.status === 'pendente').reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
+    const pagas = comissoes.filter(c => c.status === 'paga').reduce((acc: any, c: any) => acc + parseFloat(c.valorComissao || '0'), 0)
     
     return { totalVendas, valorTotalVendas, totalComissoes, pendentes, pagas }
   }
@@ -283,7 +286,7 @@ export default function DetalhesCorretor() {
                 <EmptyState icon="💰" message="Nenhuma venda registrada" />
               ) : (
                 <div className="space-y-4">
-                  {vendas.map((venda) => (
+                  {vendas.map((venda: any) => (
                     <VendaCard key={venda.id} venda={venda} />
                   ))}
                 </div>
@@ -298,7 +301,7 @@ export default function DetalhesCorretor() {
                 <EmptyState icon="💵" message="Nenhuma comissão registrada" />
               ) : (
                 <div className="space-y-4">
-                  {comissoes.map((comissao) => (
+                  {comissoes.map((comissao: any) => (
                     <ComissaoCard key={comissao.id} comissao={comissao} />
                   ))}
                 </div>

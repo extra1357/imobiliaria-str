@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Container from '@/components/ui/Container'
@@ -67,7 +70,7 @@ export default function AnaliseMercadoPage() {
         setAnalisesGeradas(analisesPorCidade)
       }
 
-    } catch (err) {
+    } catch (err: any) {
       console.error('Erro ao carregar dados:', err)
       setError('Erro ao carregar análises de mercado')
     } finally {
@@ -112,11 +115,11 @@ export default function AnaliseMercadoPage() {
         cidade,
         estado,
         totalImoveis: imoveisCidade.length,
-        valorM2Medio: valoresM2.length > 0 ? valoresM2.reduce((a, b) => a + b, 0) / valoresM2.length : 0,
+        valorM2Medio: valoresM2.length > 0 ? valoresM2.reduce((a: any, b: any) => a + b, 0) / valoresM2.length : 0,
         valorMinimo: Math.min(...precos),
         valorMaximo: Math.max(...precos),
-        precoMedio: precos.reduce((a, b) => a + b, 0) / precos.length,
-        metragemMedia: metragens.reduce((a, b) => a + b, 0) / metragens.length,
+        precoMedio: precos.reduce((a: any, b: any) => a + b, 0) / precos.length,
+        metragemMedia: metragens.reduce((a: any, b: any) => a + b, 0) / metragens.length,
         tiposMaisComuns
       }
     }).sort((a, b) => b.totalImoveis - a.totalImoveis)
@@ -153,7 +156,7 @@ export default function AnaliseMercadoPage() {
       } else {
         throw new Error('Erro ao salvar análise')
       }
-    } catch (err) {
+    } catch (err: any) {
       alert('❌ Erro ao salvar análise')
     } finally {
       setGerandoAnalise(false)
@@ -223,7 +226,7 @@ export default function AnaliseMercadoPage() {
               </div>
             ) : (
               <div className="grid gap-6">
-                {analisesGeradas.map((analise, idx) => (
+                {analisesGeradas.map((analise: any, idx: number) => (
                   <div key={idx} className="bg-white rounded-xl shadow-sm border p-6">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">

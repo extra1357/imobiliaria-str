@@ -1,3 +1,8 @@
+
+
+// src/app/admin/login/page.tsx
+
+
 // src/app/admin/login/page.tsx
 'use client';
 import { useState } from 'react';
@@ -64,7 +69,7 @@ export default function LoginPage() {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
               required
               placeholder="seu@email.com"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -80,7 +85,7 @@ export default function LoginPage() {
             <input
               type="password"
               value={formData.senha}
-              onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
+              onChange={(e: any) => setFormData({ ...formData, senha: e.target.value })}
               required
               placeholder="••••••••"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"

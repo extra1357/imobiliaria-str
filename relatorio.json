@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-02-03T23:21:16.055030",
+  "projeto": ".",
+  "anomalias_encontradas": 7,
+  "anomalias_corrigidas": 0,
+  "problemas_criticos": 2,
+  "anomalias": [
+    {
+      "tipo": "DATABASE_POOL_CONFIG",
+      "arquivo": ".env",
+      "linha": 2,
+      "descricao": "DATABASE_URL do Neon sem configuração de pool adequada",
+      "severidade": "alta",
+      "corrigivel": true,
+      "sugestao_correcao": "Adicionar ?pgbouncer=true&connection_limit=1 na URL"
+    },
+    {
+      "tipo": "VARIAVEL_AMBIENTE_AUSENTE",
+      "arquivo": ".env",
+      "linha": 0,
+      "descricao": "Variável NEXTAUTH_SECRET não encontrada",
+      "severidade": "alta",
+      "corrigivel": false,
+      "sugestao_correcao": "Adicionar NEXTAUTH_SECRET=<valor> no .env"
+    },
+    {
+      "tipo": "VARIAVEL_AMBIENTE_AUSENTE",
+      "arquivo": ".env",
+      "linha": 0,
+      "descricao": "Variável NEXTAUTH_URL não encontrada",
+      "severidade": "alta",
+      "corrigivel": false,
+      "sugestao_correcao": "Adicionar NEXTAUTH_URL=<valor> no .env"
+    },
+    {
+      "tipo": "TIMEOUT_CONFIG_AUSENTE",
+      "arquivo": "next.config.js",
+      "linha": 0,
+      "descricao": "staticPageGenerationTimeout não configurado",
+      "severidade": "alta",
+      "corrigivel": true,
+      "sugestao_correcao": "Adicionar staticPageGenerationTimeout: 180"
+    },
+    {
+      "tipo": "IMAGE_CONFIG_AUSENTE",
+      "arquivo": "next.config.js",
+      "linha": 0,
+      "descricao": "Configuração de imagens ausente",
+      "severidade": "baixa",
+      "corrigivel": true,
+      "sugestao_correcao": "Adicionar configuração de images com domínios permitidos"
+    },
+    {
+      "tipo": "IMPORT_SERVIDOR_EM_CLIENTE",
+      "arquivo": "src/app/admin/consultas/funil/page.tsx",
+      "linha": 0,
+      "descricao": "Componente cliente importando código de servidor",
+      "severidade": "critica",
+      "corrigivel": true,
+      "sugestao_correcao": "Mover lógica de banco para Server Actions ou Route Handlers"
+    },
+    {
+      "tipo": "IMPORT_SERVIDOR_EM_CLIENTE",
+      "arquivo": "src/app/admin/analise-mercado/nova/page.tsx",
+      "linha": 0,
+      "descricao": "Componente cliente importando código de servidor",
+      "severidade": "critica",
+      "corrigivel": true,
+      "sugestao_correcao": "Mover lógica de banco para Server Actions ou Route Handlers"
+    }
+  ]
+}

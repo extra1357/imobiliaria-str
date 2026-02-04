@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 // src/lib/prisma.ts
 import { PrismaClient } from '@prisma/client';
 

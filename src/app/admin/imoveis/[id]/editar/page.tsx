@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
@@ -61,7 +64,7 @@ export default function EditarImovel() {
       if (data.success) {
         setProprietarios(data.data || [])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar proprietários:', error)
     }
   }
@@ -99,7 +102,7 @@ export default function EditarImovel() {
           imagens: Array.isArray(imovel.imagens) ? imovel.imagens : []
         })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar imóvel:', error)
       alert('Erro ao carregar dados do imóvel')
     } finally {
@@ -537,7 +540,7 @@ export default function EditarImovel() {
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
-            {form.caracteristicas.map((c, i) => (
+            {form.caracteristicas.map((c: any, i: number) => (
               <span key={i} className="bg-blue-100 text-blue-600 px-4 py-2 font-bold text-sm flex items-center gap-2">
                 {c}
                 <button onClick={() => removerCaracteristica(i)} className="text-red-600 font-black">×</button>
@@ -569,7 +572,7 @@ export default function EditarImovel() {
             </button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {form.imagens.map((img, i) => (
+            {form.imagens.map((img: any, i: number) => (
               <div key={i} className="relative group">
                 <img src={img} alt={`Imagem ${i + 1}`} className="w-full h-40 object-cover border-4 border-slate-900" />
                 <button

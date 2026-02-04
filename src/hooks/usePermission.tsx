@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 // hooks/usePermission.ts
 'use client';
 

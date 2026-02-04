@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
@@ -53,7 +56,7 @@ export default function ConsultasPage() {
       } else {
         console.error('Erro ao carregar consultas:', data.error)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro:', error)
     } finally {
       setLoading(false)
@@ -159,7 +162,7 @@ export default function ConsultasPage() {
             <input
               type="text"
               value={busca}
-              onChange={(e) => setBusca(e.target.value)}
+              onChange={(e: any) => setBusca(e.target.value)}
               placeholder="Nome do cliente ou endereço..."
               className="w-full border-4 border-black p-3 font-bold"
             />
@@ -171,7 +174,7 @@ export default function ConsultasPage() {
             </label>
             <select
               value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
+              onChange={(e: any) => setFiltroStatus(e.target.value)}
               className="w-full border-4 border-black p-3 font-bold"
             >
               <option value="todos">Todos</option>
@@ -218,7 +221,7 @@ export default function ConsultasPage() {
           </div>
         ) : (
           <div className="divide-y-4 divide-black">
-            {consultasFiltradas.map((consulta) => (
+            {consultasFiltradas.map((consulta: any) => (
               <ConsultaCard key={consulta.id} consulta={consulta} />
             ))}
           </div>

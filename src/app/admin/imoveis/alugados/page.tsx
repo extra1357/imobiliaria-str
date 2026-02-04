@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -50,7 +53,7 @@ export default function ImoveisAlugados() {
       if (data.success) {
         setAlugueis(data.data || [])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao carregar aluguéis:', error)
       alert('Erro ao carregar dados')
     } finally {
@@ -157,7 +160,7 @@ export default function ImoveisAlugados() {
             Receita Mensal
           </p>
           <p className="text-4xl font-black text-slate-900">
-            R$ {filteredAlugueis.reduce((acc, a) => acc + parseFloat(a.valorTotal.toString()), 0).toLocaleString('pt-BR')}
+            R$ {filteredAlugueis.reduce((acc: any, a: any) => acc + parseFloat(a.valorTotal.toString()), 0).toLocaleString('pt-BR')}
           </p>
         </div>
 
@@ -212,7 +215,7 @@ export default function ImoveisAlugados() {
                 </tr>
               </thead>
               <tbody>
-                {filteredAlugueis.map((aluguel, index) => {
+                {filteredAlugueis.map((aluguel: any, index: number) => {
                   const diasRestantes = calcularDiasRestantes(aluguel.dataFim)
                   const statusCor = diasRestantes < 0 ? 'bg-red-100 text-red-600' : 
                                    diasRestantes <= 30 ? 'bg-orange-100 text-orange-600' : 

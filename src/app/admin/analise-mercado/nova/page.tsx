@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -202,7 +205,7 @@ export default function NovaAnalise() {
               "Execute range calculation (Min/Max/Avg)",
               "Apply Trend Detection Algorithm",
               "Generate strategic investment insights"
-            ].map((text, i) => (
+            ].map((text: any, i: number) => (
               <li key={i} className="flex items-center gap-4 group">
                 <span className="text-blue-500 font-black text-xl select-none group-hover:translate-x-2 transition-transform">0{i+1}</span>
                 <span className="text-sm font-bold uppercase tracking-widest text-slate-300">{text}</span>

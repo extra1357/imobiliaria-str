@@ -1,5 +1,8 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
+
 import { useState, FormEvent, ChangeEvent } from 'react'
 // Este componente não utiliza o router do Next.js para ser compatível com qualquer ambiente React.
 

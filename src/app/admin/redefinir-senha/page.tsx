@@ -1,5 +1,7 @@
-// src/app/admin/redefinir-senha/page.tsx
 'use client';
+export const dynamic = 'force-dynamic';
+
+
 import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -131,11 +133,11 @@ function RedefinirSenhaContent() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold mb-2">Nova Senha</label>
-            <input type="password" value={formData.novaSenha} onChange={(e) => setFormData({ ...formData, novaSenha: e.target.value })} required minLength={6} placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
+            <input type="password" value={formData.novaSenha} onChange={(e: any) => setFormData({ ...formData, novaSenha: e.target.value })} required minLength={6} placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2">Confirmar Senha</label>
-            <input type="password" value={formData.confirmarSenha} onChange={(e) => setFormData({ ...formData, confirmarSenha: e.target.value })} required minLength={6} placeholder="Digite a senha novamente" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
+            <input type="password" value={formData.confirmarSenha} onChange={(e: any) => setFormData({ ...formData, confirmarSenha: e.target.value })} required minLength={6} placeholder="Digite a senha novamente" className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" disabled={loading || !!sucesso} />
           </div>
           {erro && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
