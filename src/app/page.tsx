@@ -1,13 +1,14 @@
-import ListaImoveisClient from './components/ListaImoveisClient'
 import { buscarImoveis } from '@/lib/imoveis'
+import ListaImoveisClient from './components/ListaImoveisClient'
+import Footer from './components/Footer'
 
-export const metadata = {
-  title: 'Imóveis à venda | Imobiliária Perto',
-  description: 'Casas e apartamentos à venda em São Paulo e região'
-}
-
-export default async function Page() {
+export default async function HomePage() {
   const imoveis = await buscarImoveis()
-  return <ListaImoveisClient initialData={imoveis} />
-}
 
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <ListaImoveisClient initialData={imoveis} />
+      <Footer />
+    </div>
+  )
+}
