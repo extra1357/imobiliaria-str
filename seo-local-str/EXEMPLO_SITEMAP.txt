@@ -1,0 +1,88 @@
+// EXEMPLO: Como adicionar ao src/app/sitemap.ts
+// Cole este código NO FINAL do seu arquivo sitemap.ts existente
+
+// ============================================
+// ADICIONAR ESTAS ROTAS AO SITEMAP EXISTENTE
+// ============================================
+
+// URLs das páginas de cidade para SEO local
+const cidadesURLs: MetadataRoute.Sitemap = [
+  {
+    url: 'https://www.imobiliariaperto.com.br/imoveis-salto',
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.9,
+  },
+  {
+    url: 'https://www.imobiliariaperto.com.br/imoveis-itu',
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.9,
+  },
+  {
+    url: 'https://www.imobiliariaperto.com.br/imoveis-indaiatuba',
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.9,
+  },
+];
+
+// ============================================
+// NO RETURN FINAL, ADICIONE cidadesURLs
+// ============================================
+
+// Exemplo de como deve ficar o return:
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    // ... suas rotas existentes ...
+    
+    // Adicionar as rotas de cidade:
+    ...cidadesURLs,
+  ];
+}
+
+// ============================================
+// EXEMPLO COMPLETO DE SITEMAP.TS
+// ============================================
+
+/*
+import { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://www.imobiliariaperto.com.br',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: 'https://www.imobiliariaperto.com.br/imoveis-publicos',
+      lastModified: new Date(),
+      changeFrequency: 'hourly',
+      priority: 0.9,
+    },
+    // ... outras rotas ...
+    
+    // PÁGINAS DE CIDADE (SEO LOCAL)
+    {
+      url: 'https://www.imobiliariaperto.com.br/imoveis-salto',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: 'https://www.imobiliariaperto.com.br/imoveis-itu',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: 'https://www.imobiliariaperto.com.br/imoveis-indaiatuba',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+  ];
+}
+*/
