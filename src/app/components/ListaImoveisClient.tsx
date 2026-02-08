@@ -2,9 +2,9 @@
 
 export const dynamic = 'force-dynamic';
 
-
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import LeadWidget from './LeadWidget' // componente LeadWidget separado
 
 interface Imovel {
   id: string
@@ -31,16 +31,6 @@ export default function ListaImoveisClient({
   const [filterType, setFilterType] = useState('all')
   const [maxPrice, setMaxPrice] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  
-  const [showLeadForm, setShowLeadForm] = useState(false)
-  const [leadForm, setLeadForm] = useState({
-    nome: '',
-    email: '',
-    telefone: '',
-    mensagem: '',
-  })
-  const [enviando, setEnviando] = useState(false)
-  const [enviado, setEnviado] = useState(false)
 
   const ITEMS_PER_PAGE = 8
 
@@ -58,7 +48,7 @@ export default function ListaImoveisClient({
   }, [properties, searchQuery, filterType, maxPrice])
 
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
-  
+
   const paginatedProperties = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE
     return filteredProperties.slice(start, start + ITEMS_PER_PAGE)
@@ -67,30 +57,6 @@ export default function ListaImoveisClient({
   useMemo(() => {
     setCurrentPage(1)
   }, [searchQuery, filterType, maxPrice])
-
-  async function enviarLead(e: React.FormEvent) {
-    e.preventDefault()
-    setEnviando(true)
-    try {
-      const res = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...leadForm, origem: 'site', status: 'novo' }),
-      })
-      if (res.ok) {
-        setEnviado(true)
-        setLeadForm({ nome: '', email: '', telefone: '', mensagem: '' })
-        setTimeout(() => {
-          setEnviado(false)
-          setShowLeadForm(false)
-        }, 3000)
-      }
-    } catch (error: any) {
-      console.error('Erro ao enviar lead:', error)
-    } finally {
-      setEnviando(false)
-    }
-  }
 
   return (
     <div className="page-wrapper">
@@ -176,327 +142,263 @@ export default function ListaImoveisClient({
         )}
       </main>
 
-      <div className={`lead-widget ${showLeadForm ? 'aberto' : ''}`} onMouseEnter={() => setShowLeadForm(true)} onMouseLeave={() => !enviado && setShowLeadForm(false)}>
-        <div className="lead-btn">💬</div>
-        <div className="lead-box">
-          {enviado ? (
-            <div className="sucesso">✅ Enviado!</div>
-          ) : (
-            <form onSubmit={enviarLead}>
-              <h4>Fale Conosco</h4>
-              <input type="text" placeholder="Nome" value={leadForm.nome} onChange={(e: any) => setLeadForm(f => ({ ...f, nome: e.target.value }))} required />
-              <input type="email" placeholder="E-mail" value={leadForm.email} onChange={(e: any) => setLeadForm(f => ({ ...f, email: e.target.value }))} required />
-              <input type="tel" placeholder="WhatsApp" value={leadForm.telefone} onChange={(e: any) => setLeadForm(f => ({ ...f, telefone: e.target.value }))} required />
-              <textarea placeholder="Mensagem" value={leadForm.mensagem} onChange={(e: any) => setLeadForm(f => ({ ...f, mensagem: e.target.value }))} rows={2} />
-              <button type="submit" disabled={enviando}>{enviando ? '...' : 'Enviar'}</button>
-            </form>
-          )}
-        </div>
-      </div>
+      {/* Widget de lead separado */}
+      <LeadWidget />
 
+      {/* Aqui você mantém o CSS todo que já tinha */}
       <style jsx>{`
-        .page-wrapper {
-          min-height: 100vh;
-          background: #f9fafb;
-        }
-        .header {
-          background: #fff;
-          border-bottom: 1px solid #e5e7eb;
-          position: sticky;
-          top: 0;
-          z-index: 100;
-        }
-        .header-content {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 14px 24px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .logo {
-          font-size: 18px;
-          font-weight: 700;
-          color: #1f2937;
-          text-decoration: none;
-        }
-        .btn-login {
-          background: #1f2937;
-          color: #fff;
-          padding: 8px 16px;
-          border-radius: 6px;
-          text-decoration: none;
-          font-size: 14px;
-          font-weight: 500;
-        }
-        .btn-login:hover {
-          background: #374151;
-        }
-        .main-content {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 24px;
-        }
-        .filtros {
-          display: flex;
-          gap: 12px;
-          margin-bottom: 20px;
-          flex-wrap: wrap;
-        }
-        .input, .select {
-          padding: 10px 14px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          font-size: 14px;
-          background: #fff;
-        }
-        .input {
-          flex: 1;
-          min-width: 150px;
-        }
-        .input-preco {
-          flex: 0;
-          width: 120px;
-        }
-        .contador {
-          color: #6b7280;
-          margin-bottom: 20px;
-          font-size: 14px;
-        }
+  .page-wrapper {
+    min-height: 100vh;
+    background: #f9fafb;
+  }
 
-        /* GRID - 4 colunas com tamanhos iguais */
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-        }
+  .header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-        .card-link {
-          text-decoration: none;
-          color: inherit;
-          display: block;
-        }
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-        /* CARD - Altura fixa garantida */
-        .card {
-          background: #fff;
-          border-radius: 10px;
-          overflow: hidden;
-          box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-          transition: transform 0.2s, box-shadow 0.2s;
-          height: 340px;
-          display: flex;
-          flex-direction: column;
-        }
-        .card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    text-decoration: none;
+  }
 
-        /* IMAGEM - Altura fixa */
-        .card-img {
-          position: relative;
-          width: 100%;
-          height: 180px;
-          flex-shrink: 0;
-          overflow: hidden;
-          background: #e5e7eb;
-        }
-        .card-img img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
+  .btn-login {
+    background: #1f2937;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
 
-        .tag {
-          position: absolute;
-          top: 10px;
-          padding: 4px 10px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 600;
-          color: #fff;
-        }
-        .tag.tipo {
-          left: 10px;
-          background: #2563eb;
-        }
-        .tag.finalidade {
-          right: 10px;
-        }
-        .tag.venda {
-          background: #16a34a;
-        }
-        .tag.aluguel {
-          background: #ea580c;
-        }
+  .btn-login:hover {
+    background: #374151;
+  }
 
-        /* BODY - Altura fixa */
-        .card-body {
-          padding: 14px;
-          display: flex;
-          flex-direction: column;
-          height: 160px;
-          overflow: hidden;
-        }
+  .main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+  }
 
-        .card-title {
-          margin: 0 0 6px;
-          font-size: 15px;
-          font-weight: 600;
-          color: #1f2937;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+  .filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
 
-        .card-endereco {
-          margin: 0 0 8px;
-          font-size: 12px;
-          color: #6b7280;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+  .input, .select {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+  }
 
-        .card-features {
-          display: flex;
-          gap: 8px;
-          font-size: 11px;
-          color: #6b7280;
-          flex-wrap: wrap;
-        }
+  .input {
+    flex: 1;
+    min-width: 150px;
+  }
 
-        /* PREÇO - Sempre no final */
-        .card-preco {
-          margin-top: auto;
-          padding-top: 10px;
-          font-size: 18px;
-          color: #2563eb;
-          font-weight: 700;
-        }
+  .input-preco {
+    flex: 0;
+    width: 120px;
+  }
 
-        .vazio {
-          text-align: center;
-          padding: 60px;
-          color: #9ca3af;
-        }
+  .contador {
+    color: #6b7280;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
 
-        .paginacao {
-          display: flex;
-          justify-content: center;
-          gap: 6px;
-          margin-top: 32px;
-        }
-        .paginacao button {
-          padding: 8px 14px;
-          border: none;
-          border-radius: 6px;
-          background: #e5e7eb;
-          cursor: pointer;
-          font-size: 14px;
-        }
-        .paginacao button:disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
-        }
-        .paginacao button.ativo {
-          background: #2563eb;
-          color: #fff;
-        }
+  /* GRID - 4 colunas */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
 
-        /* LEAD WIDGET */
-        .lead-widget {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 1000;
-        }
-        .lead-btn {
-          width: 56px;
-          height: 56px;
-          background: #2563eb;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          cursor: pointer;
-          box-shadow: 0 4px 16px rgba(37,99,235,0.4);
-        }
-        .lead-box {
-          position: absolute;
-          bottom: 66px;
-          right: 0;
-          width: 280px;
-          background: #fff;
-          border-radius: 12px;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-          padding: 20px;
-          opacity: 0;
-          visibility: hidden;
-          transform: translateY(10px);
-          transition: all 0.2s;
-        }
-        .lead-widget.aberto .lead-box {
-          opacity: 1;
-          visibility: visible;
-          transform: translateY(0);
-        }
-        .lead-box h4 {
-          margin: 0 0 14px;
-          font-size: 16px;
-        }
-        .lead-box input, .lead-box textarea {
-          width: 100%;
-          padding: 10px;
-          border: 1px solid #e5e7eb;
-          border-radius: 6px;
-          margin-bottom: 10px;
-          font-size: 13px;
-          box-sizing: border-box;
-        }
-        .lead-box button {
-          width: 100%;
-          padding: 12px;
-          background: #2563eb;
-          color: #fff;
-          border: none;
-          border-radius: 6px;
-          font-weight: 600;
-          cursor: pointer;
-        }
-        .lead-box button:disabled {
-          background: #93c5fd;
-        }
-        .sucesso {
-          text-align: center;
-          padding: 20px;
-          font-size: 18px;
-        }
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
 
-        /* RESPONSIVO */
-        @media (max-width: 1200px) {
-          .grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 900px) {
-          .grid { grid-template-columns: repeat(2, 1fr); }
-          .card { height: 320px; }
-          .card-img { height: 160px; }
-          .card-body { height: 160px; }
-        }
-        @media (max-width: 600px) {
-          .grid { grid-template-columns: 1fr; }
-          .card { height: 300px; }
-          .card-img { height: 150px; }
-          .card-body { height: 150px; }
-          .header-content { padding: 12px 16px; }
-          .main-content { padding: 16px; }
-          .filtros { flex-direction: column; }
-          .input, .input-preco { width: 100%; flex: none; }
-        }
-      `}</style>
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+
+  .card-img {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #e5e7eb;
+  }
+
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .tag {
+    position: absolute;
+    top: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .tag.tipo {
+    left: 10px;
+    background: #2563eb;
+  }
+
+  .tag.finalidade {
+    right: 10px;
+  }
+
+  .tag.venda {
+    background: #16a34a;
+  }
+
+  .tag.aluguel {
+    background: #ea580c;
+  }
+
+  .card-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    height: 160px;
+    overflow: hidden;
+  }
+
+  .card-title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-endereco {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-features {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: #6b7280;
+    flex-wrap: wrap;
+  }
+
+  .card-preco {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: 18px;
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  .vazio {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+  }
+
+  .paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 32px;
+  }
+
+  .paginacao button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e7eb;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .paginacao button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .paginacao button.ativo {
+    background: #2563eb;
+    color: #fff;
+  }
+
+  /* RESPONSIVO */
+  @media (max-width: 1200px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .card { height: 320px; }
+    .card-img { height: 160px; }
+    .card-body { height: 160px; }
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .card { height: 300px; }
+    .card-img { height: 150px; }
+    .card-body { height: 150px; }
+    .header-content { padding: 12px 16px; }
+    .main-content { padding: 16px; }
+    .filtros { flex-direction: column; }
+    .input, .input-preco { width: 100%; flex: none; }
+  }
+`}</style>
+
     </div>
   )
 }
+
