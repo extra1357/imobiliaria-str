@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   
   // Verificação do Google Search Console
   verification: {
-    google: 'VGfmJGkqdjqaKZO74GVmrmh9JoPIt3g2A8ehuXrHMIY',
+    google: '9Qoi_kEa_An-0Z-_ew6c4aeMOpivzegRmbyuJWWkek8',
   },
   
   // Configurações de robots otimizadas
