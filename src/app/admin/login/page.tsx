@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
@@ -31,9 +31,6 @@ export default function LoginPage() {
         throw new Error(data.error || 'Erro ao fazer login');
       }
 
-      // Usa window.location para forçar reload completo,
-      // garantindo que o middleware leia o cookie auth-token recém setado.
-      // router.push() é client-side e não recarrega o middleware.
       const redirect = searchParams.get('redirect') || '/admin/dashboard';
       window.location.href = redirect;
 
@@ -125,5 +122,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
