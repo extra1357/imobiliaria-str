@@ -171,7 +171,7 @@ export default function EditarImovel() {
     setSucesso('')
     try {
       const res = await fetch(`/api/imoveis/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
