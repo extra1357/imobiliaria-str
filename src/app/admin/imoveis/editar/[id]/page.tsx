@@ -165,6 +165,17 @@ export default function EditarImovel() {
     setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
   }
 
+  const handleExcluir = async () => {
+    if (!confirm(`Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.`)) return;
+    try {
+      const res = await fetch(`/api/imoveis/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Erro ao excluir');
+      router.push('/admin/imoveis');
+    } catch (err) {
+      setErro('Erro ao excluir imóvel. Tente novamente.');
+    }
+  };
+
   const handleSalvar = async () => {
     setSaving(true)
     setErro('')
@@ -684,6 +695,9 @@ export default function EditarImovel() {
       {/* RODAPÉ */}
       <div style={styles.footer}>
         <Link href="/admin/imoveis" style={styles.btnSecundario}>← Cancelar</Link>
+        <button onClick={handleExcluir} style={{ ...styles.btnSalvar, background: '#dc2626' }}>
+          🗑️ Excluir Imóvel
+        </button>
         <button onClick={handleSalvar} disabled={saving} style={styles.btnSalvar}>
           {saving ? '⏳ Salvando...' : '💾 Salvar Alterações'}
         </button>

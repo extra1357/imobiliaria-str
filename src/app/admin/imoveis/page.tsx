@@ -11,6 +11,17 @@ export default function ImoveisPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const excluirImovel = async (id: string, tipo: string) => {
+    if (!confirm(`Tem certeza que deseja excluir este ${tipo}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      const res = await fetch(`/api/imoveis/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Erro ao excluir');
+      setImoveis(prev => prev.filter(i => i.id !== id));
+    } catch (err) {
+      alert('Erro ao excluir imóvel. Tente novamente.');
+    }
+  };
+
   const buscarImoveis = async () => {
     setLoading(true);
     try {
@@ -153,6 +164,7 @@ export default function ImoveisPage() {
                       Editar
                     </Link>
                     <button 
+                      onClick={() => excluirImovel(i.id, i.tipo)}
                       className="flex-1 bg-red-500 border-[3px] border-slate-900 text-white text-center py-3 font-black text-[11px] uppercase tracking-widest hover:bg-red-700 transition-all shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] hover:shadow-none"
                     >
                       Excluir

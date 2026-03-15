@@ -133,3 +133,20 @@ export async function GET(
     await prisma.$disconnect();
   }
 }
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    await prisma.imovel.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    if (error?.code === 'P2025') {
+      return NextResponse.json({ error: 'Imóvel não encontrado' }, { status: 404 });
+    }
+    return NextResponse.json({ error: 'Erro ao excluir imóvel' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
+}
