@@ -33,7 +33,10 @@ export async function buscarImoveis(cidade?: string) {
 }
 
 export async function buscarImovelPorId(id: string) {
-  const imovel = await prisma.imovel.findUnique({ where: { id } });
+  // Aceita tanto ID (UUID) quanto slug para SEO
+  const imovel = await prisma.imovel.findFirst({
+    where: { OR: [{ id }, { slug: id }] }
+  });
   if (!imovel) return null;
 
   return {
