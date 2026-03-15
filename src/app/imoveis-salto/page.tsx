@@ -285,7 +285,7 @@ export default async function ImoveisSaltoPage() {
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-2xl font-bold text-blue-600">
-                          R$ {preco.toLocaleString('pt-BR')}
+                          R$ {new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(preco))}
                           {imovel.finalidade === 'aluguel' && '/mês'}
                         </span>
                         {imovel.destaque && (

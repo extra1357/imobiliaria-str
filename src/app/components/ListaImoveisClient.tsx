@@ -141,7 +141,7 @@ export default function ListaImoveisClient({ initialData, cidadeAtual }: ListaIm
                       {p.garagem ? <span>🚗 {p.garagem}</span> : null}
                       {p.metragem ? <span>📐 {p.metragem}m²</span> : null}
                     </div>
-                    <div className="card-preco">R$ {p.price.toLocaleString('pt-BR')}</div>
+                    <div className="card-preco">R$ {new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(p.price))}</div>
                   </div>
                 </article>
               </Link>

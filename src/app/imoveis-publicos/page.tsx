@@ -159,7 +159,7 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
                     </div>
                     <div className="border-t pt-3">
                       <p className="text-2xl font-bold text-green-600">
-                        R$ {preco.toLocaleString('pt-BR')}
+                        R$ {new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(preco))}
                         {imovel.finalidade === 'aluguel' && <span className="text-sm text-gray-500">/mês</span>}
                       </p>
                     </div>

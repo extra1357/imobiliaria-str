@@ -46,7 +46,7 @@ export default function BuscaInteligente() {
             <h3 className="font-bold">{im.tipo} - {im.cidade}</h3>
             <p>{im.endereco}</p>
             <p className="text-lg font-semibold mt-2">
-              R$ {im.preco.toLocaleString('pt-BR')}
+              R$ {new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(im.preco))}
             </p>
           </div>
         ))}

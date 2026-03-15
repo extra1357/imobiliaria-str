@@ -129,7 +129,7 @@ export default function GaleriaImovel({
           <div className="mb-8">
             <p className="text-sm text-gray-600 mb-2 font-semibold uppercase tracking-wide">Valor</p>
             <p className="text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              R$ {preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(preco)}
             </p>
           </div>
         )}
