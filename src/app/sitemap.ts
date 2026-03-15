@@ -10,9 +10,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Buscar todos os imóveis ativos com mais informações para SEO
     const imoveis = await prisma.imovel.findMany({
       where: {
-        status: 'disponivel',
+        status: 'ATIVO',
       },
       select: {
+        slug: true,
         id: true,
         updatedAt: true,
         tipo: true, // Para criar URLs mais específicas
@@ -84,7 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // URLs dinâmicas dos imóveis individuais
     const imovelRoutes: MetadataRoute.Sitemap = imoveis.map((imovel) => ({
-      url: `${baseUrl}/imoveis/${imovel.id}`,
+      url: `${baseUrl}/imoveis/${imovel.slug || imovel.id}`,
       lastModified: imovel.updatedAt,
       changeFrequency: 'weekly' as const,
       priority: 0.75, // Ajustei para dar mais peso às categorias
