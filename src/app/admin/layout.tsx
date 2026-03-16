@@ -103,7 +103,7 @@ function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const crumbs = pathname.split("/").filter(Boolean).map((p, i, a) => ({ label: p.charAt(0).toUpperCase() + p.slice(1).replace(/-/g, " "), href: "/" + a.slice(0, i + 1).join("/"), isLast: i === a.length - 1 }));
-  const logout = async () => { await fetch("/api/auth/logout", { method: "POST" }); router.push("/admin/login"); };
+  const logout = async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/admin/login"; };
 
   return (
     <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
