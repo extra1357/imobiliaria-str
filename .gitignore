@@ -22,3 +22,5 @@ connection_string.txt
 
 # Logs de scripts
 scripts/**/*.log
+.vercel
+.env*.local
