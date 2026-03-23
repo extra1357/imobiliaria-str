@@ -1,9 +1,9 @@
 export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateSlug, generateCodigo } from '@/lib/generateSlug';
 
-// GET: Lista todos os imóveis com dados do proprietário
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -28,67 +28,85 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST: Cria um novo imóvel
 export async function POST(request: Request) {
   try {
-    // Para evitar 413 do Next.js/Vercel com Base64 muito grandes
     const body = await request.json();
-    console.log('📦 Recebido para salvar:', body.codigo || 'Novo Imóvel');
+    const { 
+      tipo, 
+      endereco, 
+      cidade, 
+      estado,
+      preco, 
+      metragem,
+      quartos,
+      banheiros,
+      vagas,
+      descricao,
+      proprietarioId,
+      imagens,
+      finalidade,
+      cep,
+      suites,
+      precoAluguel,
+      caracteristicas,
+      destaque
+    } = body;
 
-    const codigo = body.codigo || generateCodigo(body.tipo);
-    
-    // Fallback seguro caso o split do endereço falhe
-    const bairroFallback = body.endereco && body.endereco.includes(',') 
-      ? body.endereco.split(',')[1]?.trim() 
-      : '';
+    // Validação dos campos obrigatórios que o site público precisa para renderizar
+    if (!tipo || !endereco || !cidade || !estado || !preco || !metragem || !proprietarioId) {
+      return NextResponse.json({ 
+        error: "Campos obrigatórios faltando", 
+        campos: "tipo, endereco, cidade, estado, preco, metragem, proprietarioId" 
+      }, { status: 400 });
+    }
 
+    // Extração segura do bairro para alimentar as páginas de cidades
+    const bairroExtraido = endereco.split(',')[1]?.trim() || body.bairro || '';
+
+    const codigo = body.codigo || generateCodigo(tipo);
     const slug = generateSlug({
-      tipo: body.tipo,
-      cidade: body.cidade,
-      bairro: body.bairro || bairroFallback,
-      quartos: parseInt(body.quartos) || 0,
-      codigo,
+      tipo,
+      cidade,
+      bairro: bairroExtraido,
+      quartos: quartos ? parseInt(quartos) : 0,
+      codigo
     });
 
     const novoImovel = await prisma.imovel.create({
       data: {
-        tipo: body.tipo,
-        endereco: body.endereco,
-        cidade: body.cidade,
-        estado: body.estado,
-        preco: Number(body.preco) || 0,
-        metragem: Number(body.metragem) || 0,
-        quartos: parseInt(body.quartos) || 0,
-        banheiros: parseInt(body.banheiros) || 0,
-        vagas: parseInt(body.vagas) || 0,
-        descricao: body.descricao || '',
-        status: body.status || 'ATIVO',
-        disponivel: body.disponivel !== undefined ? body.disponivel : true,
-        imagens: body.imagens || [], // Se for Base64, garanta que não passe de 4.5MB no total na Vercel
-        proprietarioId: body.proprietarioId,
-        finalidade: body.finalidade || 'venda',
-        bairro: body.bairro || null,
-        cep: body.cep || null,
-        suites: parseInt(body.suites) || 0,
-        precoAluguel: body.precoAluguel ? Number(body.precoAluguel) : null,
-        caracteristicas: body.caracteristicas || [],
-        destaque: body.destaque || false,
+        tipo,
+        endereco,
+        cidade,
+        estado,
+        preco: parseFloat(preco),
+        metragem: parseFloat(metragem),
+        quartos: quartos ? parseInt(quartos) : 0,
+        banheiros: banheiros ? parseInt(banheiros) : 0,
+        vagas: vagas ? parseInt(vagas) : 0,
+        descricao: descricao || null,
+        proprietarioId,
+        imagens: Array.isArray(imagens) ? imagens : (imagens ? [imagens] : []),
+        status: 'ATIVO', // Força o status exigido pela rota /publico
+        disponivel: true, // Força a disponibilidade exigida pela rota /publico
         codigo,
         slug,
-      },
+        bairro: bairroExtraido || null,
+        finalidade: finalidade || 'venda',
+        cep: cep || null,
+        suites: suites ? parseInt(suites) : 0,
+        precoAluguel: precoAluguel ? parseFloat(precoAluguel) : null,
+        caracteristicas: caracteristicas || [],
+        destaque: destaque || false,
+      }
     });
 
-    return NextResponse.json(novoImovel);
+    return NextResponse.json(novoImovel, { status: 201 });
   } catch (error: any) {
-    console.error('❌ Erro ao salvar imóvel:', error);
-    return NextResponse.json(
-      { error: 'Erro ao salvar no banco', detalhes: error.message },
-      { status: 500 }
-    );
+    console.error('Erro ao cadastrar imóvel:', error);
+    return NextResponse.json({ error: "Erro ao gravar no banco STR", detalhes: error.message }, { status: 500 });
   }
 }
 
-// DELETE: Remove um imóvel específico
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
