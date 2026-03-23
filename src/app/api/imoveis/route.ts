@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { generateSlug, generateCodigo } from '@/lib/generateSlug';
 
 // GET: Lista todos os imóveis com dados do proprietário
-// Aceita ?cidade=NomeCidade para filtrar por cidade
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -32,14 +31,21 @@ export async function GET(request: NextRequest) {
 // POST: Cria um novo imóvel
 export async function POST(request: Request) {
   try {
+    // Para evitar 413 do Next.js/Vercel com Base64 muito grandes
     const body = await request.json();
-    console.log('📦 Recebido para salvar:', body);
+    console.log('📦 Recebido para salvar:', body.codigo || 'Novo Imóvel');
 
     const codigo = body.codigo || generateCodigo(body.tipo);
+    
+    // Fallback seguro caso o split do endereço falhe
+    const bairroFallback = body.endereco && body.endereco.includes(',') 
+      ? body.endereco.split(',')[1]?.trim() 
+      : '';
+
     const slug = generateSlug({
       tipo: body.tipo,
       cidade: body.cidade,
-      bairro: body.endereco?.split(',')[1]?.trim() || '',
+      bairro: body.bairro || bairroFallback,
       quartos: parseInt(body.quartos) || 0,
       codigo,
     });
@@ -50,15 +56,15 @@ export async function POST(request: Request) {
         endereco: body.endereco,
         cidade: body.cidade,
         estado: body.estado,
-        preco: Number(body.preco),
-        metragem: Number(body.metragem),
+        preco: Number(body.preco) || 0,
+        metragem: Number(body.metragem) || 0,
         quartos: parseInt(body.quartos) || 0,
         banheiros: parseInt(body.banheiros) || 0,
         vagas: parseInt(body.vagas) || 0,
-        descricao: body.descricao,
+        descricao: body.descricao || '',
         status: body.status || 'ATIVO',
         disponivel: body.disponivel !== undefined ? body.disponivel : true,
-        imagens: body.imagens || [],
+        imagens: body.imagens || [], // Se for Base64, garanta que não passe de 4.5MB no total na Vercel
         proprietarioId: body.proprietarioId,
         finalidade: body.finalidade || 'venda',
         bairro: body.bairro || null,
