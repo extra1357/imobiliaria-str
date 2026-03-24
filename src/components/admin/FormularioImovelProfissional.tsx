@@ -1,12 +1,15 @@
 'use client';
-import { useState } from 'react';
-import { compressImage } from '@/lib/compressImage';
+
+import { useState, useEffect, useRef } from 'react';
+
+interface Proprietario {
+  id: string;
+  nome: string;
+  telefone: string;
+  email: string;
+}
+
 export default function FormularioImovelProfissional() {
-  const [loading, setLoading] = useState(false);
-  const [compressing, setCompressing] = useState(false);
-  const [imagensBase64, setImagensBase64] = useState<string[]>([]);
-  const [status, setStatus] = useState({ type: '', message: '' });
-  
   const [formData, setFormData] = useState({
     tipo: 'Casa',
     endereco: '',
@@ -22,43 +25,66 @@ export default function FormularioImovelProfissional() {
     finalidade: 'venda',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [proprietarios, setProprietarios] = useState<Proprietario[]>([]);
+  const [loadingProprietarios, setLoadingProprietarios] = useState(true);
+  const [imagensBase64, setImagensBase64] = useState<string[]>([]);
+  const [compressing, setCompressing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ type: string; message: string }>({ type: '', message: '' });
+
+  // Carrega proprietários ao montar
+  useEffect(() => {
+    fetch('/api/proprietarios')
+      .then(r => r.json())
+      .then(data => {
+        setProprietarios(Array.isArray(data) ? data : []);
+        setLoadingProprietarios(false);
+      })
+      .catch(() => {
+        setStatus({ type: 'error', message: 'Erro ao carregar proprietários. Recarregue a página.' });
+        setLoadingProprietarios(false);
+      });
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    const filesArray = Array.from(files);
-    const novasImagens: string[] = [];
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
     setCompressing(true);
-    setStatus({ type: '', message: '' });
-    for (const file of filesArray) {
-      try {
-        const compressedFile = await compressImage(file, 1280, 0.7);
-        const base64 = await fileToBase64(compressedFile);
-        novasImagens.push(base64);
-      } catch (error) {
-        console.error('Erro ao comprimir imagem:', error);
-        setStatus({ type: 'error', message: `Erro ao processar imagem: ${file.name}` });
-      }
+    const results: string[] = [];
+    for (const file of files) {
+      const base64 = await compressImage(file, 800, 0.7);
+      results.push(base64);
     }
-    setImagensBase64((prev) => [...prev, ...novasImagens]);
+    setImagensBase64(prev => [...prev, ...results]);
     setCompressing(false);
   };
 
-  const removeImage = (indexToRemove: number) => {
-    setImagensBase64((prev) => prev.filter((_, index) => index !== indexToRemove));
+  const removeImage = (idx: number) => {
+    setImagensBase64(prev => prev.filter((_, i) => i !== idx));
   };
 
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
+  async function compressImage(file: File, maxWidth: number, quality: number): Promise<string> {
+    return new Promise((resolve) => {
       const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = Math.min(1, maxWidth / img.width);
+          canvas.width  = img.width  * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = ev.target!.result as string;
+      };
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
     });
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,31 +92,28 @@ export default function FormularioImovelProfissional() {
     setStatus({ type: '', message: '' });
 
     if (!formData.proprietarioId) {
-      setStatus({ type: 'error', message: 'Por favor, selecione um Proprietário.' });
+      setStatus({ type: 'error', message: 'Selecione um proprietário.' });
       setLoading(false);
       return;
     }
 
     try {
-      const payload = {
-        ...formData,
-        imagens: imagensBase64,
-      };
+      const payload = { ...formData, imagens: imagensBase64 };
 
       const res = await fetch('/api/imoveis/cadastro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // ← envia o cookie auth-token
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
 
+      const dadosResposta = await res.json();
+
       if (!res.ok) {
-        const erro = await res.json();
-        throw new Error(erro.error || `Erro ${res.status} ao cadastrar imóvel`);
+        throw new Error(dadosResposta.error || `Erro ${res.status}`);
       }
 
-      const dadosSalvos = await res.json();
-      setStatus({ type: 'success', message: `Imóvel cadastrado com sucesso! Código: ${dadosSalvos.codigo}` });
+      setStatus({ type: 'success', message: `Imóvel cadastrado com sucesso! Código: ${dadosResposta.codigo}` });
       setFormData({ tipo: 'Casa', endereco: '', cidade: '', estado: 'SP', preco: '', metragem: '', quartos: '', banheiros: '', vagas: '', descricao: '', proprietarioId: '', finalidade: 'venda' });
       setImagensBase64([]);
 
@@ -108,6 +131,7 @@ export default function FormularioImovelProfissional() {
           {status.message}
         </div>
       )}
+
       <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Informações Básicas</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -137,6 +161,36 @@ export default function FormularioImovelProfissional() {
       </section>
 
       <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-6">Proprietário</h3>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Selecione o Proprietário</label>
+          {loadingProprietarios ? (
+            <div className="text-sm text-gray-500 py-2">Carregando proprietários...</div>
+          ) : proprietarios.length === 0 ? (
+            <div className="text-sm text-red-600 py-2">
+              Nenhum proprietário cadastrado.{' '}
+              <a href="/admin/proprietarios/novo" className="underline font-medium">Cadastrar agora</a>
+            </div>
+          ) : (
+            <select
+              name="proprietarioId"
+              value={formData.proprietarioId}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200"
+            >
+              <option value="">— Selecione —</option>
+              {proprietarios.map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.nome} — {p.telefone} ({p.email})
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      </section>
+
+      <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Localização e Estrutura</h3>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -153,7 +207,7 @@ export default function FormularioImovelProfissional() {
               <input type="text" name="estado" value={formData.estado} onChange={handleChange} maxLength={2} required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200" />
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">M² Área Útil</label>
               <input type="number" name="metragem" value={formData.metragem} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200" />
@@ -169,10 +223,6 @@ export default function FormularioImovelProfissional() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Vagas</label>
               <input type="number" name="vagas" value={formData.vagas} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200" />
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">ID Proprietário (Temporário)</label>
-              <input type="text" name="proprietarioId" value={formData.proprietarioId} onChange={handleChange} required placeholder="Cole o ID aqui" className="w-full border border-red-300 bg-red-50 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-200" />
             </div>
           </div>
         </div>
@@ -202,9 +252,7 @@ export default function FormularioImovelProfissional() {
               {imagensBase64.map((img, idx) => (
                 <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                   <img src={img} alt="Imóvel preview" className="h-full w-full object-cover" />
-                  <button type="button" onClick={() => removeImage(idx)} className="absolute top-1 right-1 bg-white/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-red-600">
-                    ✕
-                  </button>
+                  <button type="button" onClick={() => removeImage(idx)} className="absolute top-1 right-1 bg-white/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-red-600">✕</button>
                 </div>
               ))}
             </div>
@@ -215,7 +263,7 @@ export default function FormularioImovelProfissional() {
       <div className="flex justify-end pt-6 border-t border-gray-100">
         <button
           type="submit"
-          disabled={loading || compressing}
+          disabled={loading || compressing || loadingProprietarios || proprietarios.length === 0}
           className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md transition-all transform hover:-translate-y-0.5"
         >
           {loading ? <>⏳ Enviando...</> : compressing ? <>✨ Otimizando...</> : <>✅ Finalizar Cadastro do Imóvel</>}
