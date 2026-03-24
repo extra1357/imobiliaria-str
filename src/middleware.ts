@@ -6,9 +6,6 @@ import { jwtVerify } from 'jose'
 const secret = process.env.JWT_SECRET || 'TROQUE_AQUI'
 const JWT_SECRET = new TextEncoder().encode(secret)
 
-/*
-ROLES DO SISTEMA
-*/
 type Role =
   | 'SUPER_ADMIN'
   | 'ADMIN'
@@ -30,9 +27,7 @@ function hasMinRole(userRole: Role, minRole: Role): boolean {
   return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[minRole]
 }
 
-/*
-ROTAS PUBLICAS
-*/
+// ─── Rotas de página públicas ────────────────────────────────────────────────
 const PUBLIC_ROUTES = [
   '/',
   '/admin/login',
@@ -40,35 +35,37 @@ const PUBLIC_ROUTES = [
   '/admin/redefinir-senha',
   '/imoveis',
   '/imoveis-publicos',
+  '/imoveis-salto',
+  '/imoveis-campinas',
+  '/imoveis-indaiatuba',
+  '/imoveis-itu',
+  '/imoveis-porto-feliz',
+  '/imoveis-sorocaba',
 ]
 
-/*
-APIs PUBLICAS
-*/
+// ─── APIs públicas (sem token) ───────────────────────────────────────────────
 const PUBLIC_APIS = [
   '/api/auth/login',
+  '/api/auth/logout',          // ← logout liberado (RSC faz GET aqui)
   '/api/auth/redefinir-senha',
+  '/api/auth/solicitar-reset',
+  '/api/imoveis/publico',      // ← listagem pública de imóveis
+  '/api/busca',                // ← busca pública
 ]
 
-/*
-ROTAS PROTEGIDAS POR ROLE MINIMA
-Qualquer rota não listada aqui exige apenas autenticação.
-*/
+// ─── Rotas protegidas por role mínima ────────────────────────────────────────
 const PROTECTED_ROUTES: { pattern: string; minRole: Role }[] = [
-  { pattern: '/admin/usuarios', minRole: 'ADMIN' },
-  { pattern: '/admin/configuracoes', minRole: 'ADMIN' },
-  { pattern: '/admin/relatorios', minRole: 'GERENTE' },
-  { pattern: '/api/admin/usuarios', minRole: 'ADMIN' },
+  { pattern: '/admin/usuarios',          minRole: 'ADMIN' },
+  { pattern: '/admin/configuracoes',     minRole: 'ADMIN' },
+  { pattern: '/admin/relatorios',        minRole: 'GERENTE' },
+  { pattern: '/api/admin/usuarios',      minRole: 'ADMIN' },
   { pattern: '/api/admin/configuracoes', minRole: 'SUPER_ADMIN' },
 ]
 
 function isPublicRoute(path: string) {
-  return PUBLIC_ROUTES.some(route => {
-    if (path === route) return true
-    // Allow any sub-path under these prefixes
-    if (path.startsWith(route + '/')) return true
-    return false
-  })
+  return PUBLIC_ROUTES.some(route =>
+    path === route || path.startsWith(route + '/')
+  )
 }
 
 function isPublicApi(path: string) {
@@ -80,17 +77,10 @@ function getRequiredRole(path: string): Role | null {
   return match ? match.minRole : null
 }
 
-/*
-VALIDA TOKEN
-*/
 async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload as {
-      userId: string
-      email: string
-      role: Role
-    }
+    return payload as { userId: string; email: string; role: Role }
   } catch {
     return null
   }
@@ -110,16 +100,10 @@ function redirectToLogin(request: NextRequest, pathname: string, deleteCookie = 
   return res
 }
 
-/*
-MIDDLEWARE
-*/
 export async function middleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl
 
-  /*
-  IGNORA ARQUIVOS INTERNOS
-  */
+  // Ignora arquivos estáticos e internos do Next
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
@@ -129,16 +113,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  /*
-  ROTAS / APIs PUBLICAS
-  */
+  // Rotas e APIs públicas passam direto
   if (isPublicRoute(pathname) || isPublicApi(pathname)) {
     return NextResponse.next()
   }
 
-  /*
-  TOKEN
-  */
+  // Verifica token
   const token = request.cookies.get('auth-token')?.value
 
   if (!token) {
@@ -148,9 +128,6 @@ export async function middleware(request: NextRequest) {
     return redirectToLogin(request, pathname)
   }
 
-  /*
-  VALIDA JWT
-  */
   const payload = await verifyToken(token)
 
   if (!payload) {
@@ -160,9 +137,7 @@ export async function middleware(request: NextRequest) {
     return redirectToLogin(request, pathname, true)
   }
 
-  /*
-  VERIFICA ROLE MINIMA
-  */
+  // Verifica role mínima para rotas restritas
   const requiredRole = getRequiredRole(pathname)
 
   if (requiredRole && !hasMinRole(payload.role, requiredRole)) {
@@ -172,13 +147,10 @@ export async function middleware(request: NextRequest) {
         { status: 403 }
       )
     }
-    // Redirect to a forbidden page or dashboard
     return NextResponse.redirect(new URL('/admin/sem-permissao', request.url))
   }
 
-  /*
-  PASSA DADOS DO USUARIO
-  */
+  // Injeta dados do usuário nos headers para as rotas consumirem
   const response = NextResponse.next()
   response.headers.set('x-user-id', payload.userId)
   response.headers.set('x-user-role', payload.role)
@@ -187,12 +159,9 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
-/*
-ROTAS PROTEGIDAS
-*/
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/api/:path*'
-  ]
+    '/api/:path*',
+  ],
 }
