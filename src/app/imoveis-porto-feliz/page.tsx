@@ -331,8 +331,8 @@ export default async function ImoveisPortoFelizPage() {
             <div>
               <h3 className="font-semibold text-lg mb-2">🚗 Localização Privilegiada</h3>
               <p className="text-gray-700">
-                A apenas 15 minutos de Salto, 20 minutos de Itu e 30 minutos de Sorocaba,
-                com acesso pela Rodovia Castelo Branco e estradas estaduais bem conservadas.
+                A aproximadamente 30 minutos de Salto e Itu, e 45 minutos de Sorocaba,
+                com acesso pela Rodovia SP-079 e estradas estaduais bem conservadas.
               </p>
             </div>
             <div>
