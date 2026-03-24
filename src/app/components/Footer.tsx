@@ -98,6 +98,11 @@ export default function Footer() {
                   📝 Blog
                 </a>
               </li>
+              <li>
+                <a href="https://www.tributoimoveis.com.br" target="_blank" rel="noopener noreferrer">
+                  🏛️ Tributo Imóveis
+                </a>
+              </li>
             </ul>
           </div>
 
