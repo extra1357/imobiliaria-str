@@ -77,7 +77,7 @@ export default function FormularioImovelProfissional() {
         imagens: imagensBase64,
       };
 
-      const res = await fetch('/api/imoveis', {
+      const res = await fetch('/api/imoveis/cadastro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // ← envia o cookie auth-token

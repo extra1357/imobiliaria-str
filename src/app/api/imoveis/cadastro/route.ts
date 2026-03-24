@@ -12,45 +12,25 @@ const log = {
   error: (msg: string, data?: unknown) => console.error(`[IMOVEL][ERROR] ${msg}`, data ?? ''),
 };
 
-// ─── Traduz erros do Prisma em respostas HTTP legíveis ───────────────────────
-function prismaErrorMessage(error: unknown): {
-  mensagem: string;
-  codigo?: string;
-  status: number;
-} {
+// ─── Tratamento de erros Prisma ───────────────────────────────────────────────
+function prismaErrorMessage(error: unknown): { mensagem: string; codigo?: string; status: number } {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002':
-        return {
-          mensagem: `Valor duplicado no campo único: ${(error.meta?.target as string[])?.join(', ')}`,
-          codigo: error.code,
-          status: 409,
-        };
+        return { mensagem: `Campo único duplicado: ${(error.meta?.target as string[])?.join(', ')}`, codigo: error.code, status: 409 };
       case 'P2003':
-        return {
-          mensagem: `Chave estrangeira inválida: ${error.meta?.field_name}`,
-          codigo: error.code,
-          status: 400,
-        };
+        return { mensagem: `Chave estrangeira inválida: ${error.meta?.field_name ?? 'proprietarioId'}`, codigo: error.code, status: 400 };
       case 'P2025':
-        return {
-          mensagem: 'Registro relacionado não encontrado no banco',
-          codigo: error.code,
-          status: 404,
-        };
+        return { mensagem: 'Registro relacionado não encontrado', codigo: error.code, status: 404 };
       default:
-        return {
-          mensagem: `Erro Prisma (${error.code}): ${error.message}`,
-          codigo: error.code,
-          status: 500,
-        };
+        return { mensagem: `Erro Prisma ${error.code}: ${error.message}`, codigo: error.code, status: 500 };
     }
   }
   if (error instanceof Prisma.PrismaClientValidationError) {
     return { mensagem: `Dados inválidos enviados ao banco: ${error.message}`, status: 422 };
   }
   if (error instanceof Prisma.PrismaClientInitializationError) {
-    return { mensagem: 'Falha ao conectar no banco de dados (Neon/Prisma init)', status: 503 };
+    return { mensagem: 'Falha ao conectar no banco de dados', status: 503 };
   }
   if (error instanceof Error) {
     return { mensagem: error.message, status: 500 };
@@ -58,13 +38,13 @@ function prismaErrorMessage(error: unknown): {
   return { mensagem: 'Erro interno desconhecido', status: 500 };
 }
 
-// ─── GET — listar imóveis ────────────────────────────────────────────────────
+// ─── GET — listar imóveis ─────────────────────────────────────────────────────
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const cidade     = searchParams.get('cidade')     ?? undefined;
-  const tipo       = searchParams.get('tipo')       ?? undefined;
+  const cidade     = searchParams.get('cidade') ?? undefined;
+  const tipo       = searchParams.get('tipo') ?? undefined;
   const finalidade = searchParams.get('finalidade') ?? undefined;
-  const status     = searchParams.get('status')     ?? 'ATIVO';
+  const status     = searchParams.get('status') ?? 'ATIVO';
 
   log.info('GET /api/imoveis/cadastro', { cidade, tipo, finalidade, status });
 
@@ -77,75 +57,72 @@ export async function GET(request: NextRequest) {
         status,
       },
       orderBy: { createdAt: 'desc' },
-      include: {
-        proprietario: { select: { nome: true, telefone: true, email: true } },
-      },
+      include: { proprietario: { select: { nome: true, telefone: true, email: true } } },
     });
 
-    log.info(`GET /api/imoveis/cadastro → ${imoveis.length} registro(s) retornado(s)`);
+    log.info(`GET → ${imoveis.length} registro(s)`);
     return NextResponse.json(imoveis);
   } catch (error) {
     const { mensagem, codigo, status: httpStatus } = prismaErrorMessage(error);
-    log.error('GET /api/imoveis/cadastro falhou', { mensagem, codigo, raw: error });
+    log.error('GET falhou', { mensagem, codigo, raw: error });
     return NextResponse.json({ error: mensagem, codigo }, { status: httpStatus });
   }
 }
 
-// ─── POST — cadastrar imóvel ─────────────────────────────────────────────────
+// ─── POST — cadastrar imóvel ──────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
   log.info('POST /api/imoveis/cadastro → iniciando');
 
-  // ── Parse do body ──────────────────────────────────────────────────────────
-  let body: Record<string, any>;
+  let body: Record<string, unknown>;
+
   try {
     body = await request.json();
-    log.info('POST /api/imoveis/cadastro → body recebido', body);
   } catch {
-    log.error('POST /api/imoveis/cadastro → body não é JSON válido');
+    log.error('Body inválido (não é JSON)');
     return NextResponse.json({ error: 'Body deve ser JSON válido' }, { status: 400 });
   }
 
-  const {
-    tipo,
-    endereco,
-    cidade,
-    estado,
-    preco,
-    metragem,
-    quartos,
-    banheiros,
-    vagas,
-    suites,
-    descricao,
-    proprietarioId,
-    imagens,
-    finalidade,
-    bairro,
-    cep,
-    caracteristicas,
-    precoAluguel,
-    destaque,
-  } = body;
+  log.info('Body recebido', body);
 
-  // ── Validação dos campos obrigatórios ──────────────────────────────────────
-  const obrigatorios: Record<string, unknown> = {
-    tipo, endereco, cidade, estado, preco, metragem, proprietarioId,
-  };
-  const faltando = Object.entries(obrigatorios)
+  const {
+    tipo, endereco, cidade, estado, preco, metragem,
+    quartos, banheiros, vagas, descricao, proprietarioId,
+    imagens, finalidade, bairro, cep, suites,
+    caracteristicas, precoAluguel, destaque,
+  } = body as Record<string, any>;
+
+  // ── Validação dos campos obrigatórios ────────────────────────────────────────
+  const camposObrigatorios = { tipo, endereco, cidade, estado, preco, metragem, proprietarioId };
+  const faltando = Object.entries(camposObrigatorios)
     .filter(([, v]) => v === undefined || v === null || v === '')
     .map(([k]) => k);
 
   if (faltando.length > 0) {
-    log.warn('POST /api/imoveis/cadastro → campos obrigatórios ausentes', faltando);
-    return NextResponse.json(
-      { error: 'Campos obrigatórios faltando', campos: faltando },
-      { status: 400 }
-    );
+    log.warn('Campos obrigatórios faltando', faltando);
+    return NextResponse.json({ error: 'Campos obrigatórios faltando', campos: faltando }, { status: 400 });
   }
 
-  // ── Geração automática de código e slug ────────────────────────────────────
+  // ── Verificar se o proprietário existe no banco ───────────────────────────────
+  log.info('Verificando proprietário', { proprietarioId });
+  try {
+    const proprietario = await prisma.proprietario.findUnique({ where: { id: proprietarioId } });
+    if (!proprietario) {
+      log.warn('Proprietário não encontrado no banco', { proprietarioId });
+      return NextResponse.json(
+        { error: `Proprietário com ID "${proprietarioId}" não encontrado. Verifique o ID e tente novamente.` },
+        { status: 400 }
+      );
+    }
+    log.info('Proprietário encontrado', { nome: proprietario.nome });
+  } catch (error) {
+    const { mensagem, codigo, status: httpStatus } = prismaErrorMessage(error);
+    log.error('Falha ao buscar proprietário', { mensagem, codigo, raw: error });
+    return NextResponse.json({ error: mensagem, codigo }, { status: httpStatus });
+  }
+
+  // ── Geração de código e slug ──────────────────────────────────────────────────
   const codigo = generateCodigo(tipo);
-  const slug = generateSlug({
+  const slug   = generateSlug({
     tipo,
     cidade,
     bairro: bairro ?? endereco.split(',')[1]?.trim() ?? '',
@@ -153,9 +130,9 @@ export async function POST(request: NextRequest) {
     codigo,
   });
 
-  log.info('POST /api/imoveis/cadastro → slug/código gerados', { codigo, slug });
+  log.info('Código e slug gerados', { codigo, slug });
 
-  // ── Persistência no banco ──────────────────────────────────────────────────
+  // ── Criar imóvel ──────────────────────────────────────────────────────────────
   try {
     const novoImovel = await prisma.imovel.create({
       data: {
@@ -184,24 +161,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    log.info('POST /api/imoveis/cadastro → imóvel criado', {
-      id: novoImovel.id,
-      codigo,
-      slug,
-    });
-
+    log.info('Imóvel criado com sucesso', { id: novoImovel.id, codigo, slug });
     return NextResponse.json(novoImovel, { status: 201 });
+
   } catch (error) {
     const { mensagem, codigo: errCodigo, status: httpStatus } = prismaErrorMessage(error);
-    log.error('POST /api/imoveis/cadastro → falha ao gravar no banco', {
-      mensagem,
-      errCodigo,
-      body,
-      raw: error,
-    });
-    return NextResponse.json(
-      { error: mensagem, codigo: errCodigo },
-      { status: httpStatus }
-    );
+    log.error('Falha ao gravar imóvel', { mensagem, errCodigo, raw: error });
+    return NextResponse.json({ error: mensagem, codigo: errCodigo }, { status: httpStatus });
   }
 }

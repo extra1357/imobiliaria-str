@@ -72,7 +72,7 @@ export default function FormularioImovel() {
         imagens: imagensBase64, // Array de strings base64 comprimidas
       };
 
-      const res = await fetch('/api/imoveis', {
+      const res = await fetch('/api/imoveis/cadastro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
