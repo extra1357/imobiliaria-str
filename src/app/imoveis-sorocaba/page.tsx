@@ -48,7 +48,7 @@ async function getImoveissorocaba() {
     const imoveis = await prisma.imovel.findMany({
       where: {
         cidade: 'Sorocaba',
-        status: 'ATIVO',
+        status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] },
         disponivel: true,
       },
       take: 12,
@@ -83,19 +83,19 @@ async function getEstatisticas() {
   try {
     const [total, casas, apartamentos, aluguel, venda] = await Promise.all([
       prisma.imovel.count({
-        where: { cidade: 'Sorocaba', status: 'ATIVO', disponivel: true },
+        where: { cidade: 'Sorocaba', status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] }, disponivel: true },
       }),
       prisma.imovel.count({
-        where: { cidade: 'Sorocaba', status: 'ATIVO', disponivel: true, tipo: 'Casa' },
+        where: { cidade: 'Sorocaba', status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] }, disponivel: true, tipo: 'Casa' },
       }),
       prisma.imovel.count({
-        where: { cidade: 'Sorocaba', status: 'ATIVO', disponivel: true, tipo: 'Apartamento' },
+        where: { cidade: 'Sorocaba', status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] }, disponivel: true, tipo: 'Apartamento' },
       }),
       prisma.imovel.count({
-        where: { cidade: 'Sorocaba', status: 'ATIVO', disponivel: true, finalidade: 'aluguel' },
+        where: { cidade: 'Sorocaba', status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] }, disponivel: true, finalidade: 'aluguel' },
       }),
       prisma.imovel.count({
-        where: { cidade: 'Sorocaba', status: 'ATIVO', disponivel: true, finalidade: 'venda' },
+        where: { cidade: 'Sorocaba', status: { in: ['ATIVO', 'ALUGADO', 'VENDIDO'] }, disponivel: true, finalidade: 'venda' },
       }),
     ]);
     return { total, casas, apartamentos, aluguel, venda };
