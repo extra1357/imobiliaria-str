@@ -1,4 +1,5 @@
 // src/app/imoveis-salto/page.tsx
+import LeadButton from '@/components/LeadButton';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
