@@ -1,12 +1,15 @@
+﻿import type { Metadata } from 'next';
+export const metadata: Metadata = { robots: { index: false, follow: false } };
+
 'use client'
 
 export const dynamic = 'force-dynamic';
 
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-// Este componente não utiliza o router do Next.js para ser compatível com qualquer ambiente React.
+// Este componente nÃ£o utiliza o router do Next.js para ser compatÃ­vel com qualquer ambiente React.
 
-// Usamos esta interface para garantir que os dados do formulário estejam tipados corretamente
+// Usamos esta interface para garantir que os dados do formulÃ¡rio estejam tipados corretamente
 interface FormData {
   nome: string
   email: string
@@ -22,7 +25,7 @@ export default function NovoProprietario() {
   const [proprietarioId, setProprietarioId] = useState<string | null>(null)
   const [copySuccess, setCopySuccess] = useState<boolean>(false)
 
-  // Estado do formulário
+  // Estado do formulÃ¡rio
   const [formData, setFormData] = useState<FormData>({
     nome: '',
     email: '',
@@ -30,14 +33,14 @@ export default function NovoProprietario() {
     cpf: ''
   })
 
-  // Manipulador de mudança de input
+  // Manipulador de mudanÃ§a de input
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    // Adicione aqui lógica de formatação/máscara se necessário (e.g., para telefone/CPF)
+    // Adicione aqui lÃ³gica de formataÃ§Ã£o/mÃ¡scara se necessÃ¡rio (e.g., para telefone/CPF)
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  // Função para simular a chamada à sua API de backend
+  // FunÃ§Ã£o para simular a chamada Ã  sua API de backend
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -46,7 +49,7 @@ export default function NovoProprietario() {
     setCopySuccess(false)
 
     try {
-      // 1. Chamada à sua API de backend (onde a conexão com PostgreSQL acontece)
+      // 1. Chamada Ã  sua API de backend (onde a conexÃ£o com PostgreSQL acontece)
       const response = await fetch('/api/proprietarios', {
         method: 'POST',
         headers: {
@@ -60,15 +63,15 @@ export default function NovoProprietario() {
       // 2. Tratamento de erro da API
       if (!response.ok) {
         // Assume que a API retorna um objeto { error: "mensagem" } em caso de falha
-        throw new Error(data.error || 'Erro desconhecido ao cadastrar proprietário na API.')
+        throw new Error(data.error || 'Erro desconhecido ao cadastrar proprietÃ¡rio na API.')
       }
 
       // 3. Sucesso
       setSuccess(true)
       // Assume que a API retorna um objeto { data: { id: "novo_id" } }
-      setProprietarioId(data.data?.id || 'ID-Não-Disponível')
+      setProprietarioId(data.data?.id || 'ID-NÃ£o-DisponÃ­vel')
       
-      // Limpar formulário
+      // Limpar formulÃ¡rio
       setFormData({
         nome: '',
         email: '',
@@ -77,7 +80,7 @@ export default function NovoProprietario() {
       })
 
     } catch (err: any) {
-      // Captura erros de rede ou erros lançados acima
+      // Captura erros de rede ou erros lanÃ§ados acima
       setError(err instanceof Error ? err.message : 'Erro desconhecido ao comunicar com o servidor.')
       console.error('Erro no processo de cadastro:', err)
     } finally {
@@ -85,7 +88,7 @@ export default function NovoProprietario() {
     }
   }
 
-  // Função para copiar o ID gerado (compatível com a maioria dos navegadores)
+  // FunÃ§Ã£o para copiar o ID gerado (compatÃ­vel com a maioria dos navegadores)
   const copyToClipboard = async () => {
     if (proprietarioId) {
       try {
@@ -94,23 +97,23 @@ export default function NovoProprietario() {
         setTimeout(() => setCopySuccess(false), 3000)
       } catch (err: any) {
         console.error('Falha ao copiar:', err);
-        // Fallback simples caso a permissão seja negada (raro em apps modernos)
+        // Fallback simples caso a permissÃ£o seja negada (raro em apps modernos)
       }
     }
   }
 
-  // Funções de navegação simuladas (substituem o router.push/back)
+  // FunÃ§Ãµes de navegaÃ§Ã£o simuladas (substituem o router.push/back)
   const handleGoBack = () => {
-    // Numa app Next.js, esta função chamaria router.back()
-    console.log('Ação de Navegação: Voltar à página anterior.');
-    // Limpamos o estado para fins de demonstração
+    // Numa app Next.js, esta funÃ§Ã£o chamaria router.back()
+    console.log('AÃ§Ã£o de NavegaÃ§Ã£o: Voltar Ã  pÃ¡gina anterior.');
+    // Limpamos o estado para fins de demonstraÃ§Ã£o
     setSuccess(false);
     setProprietarioId(null);
   }
   
   const handleNavigateToImovel = () => {
-    // Numa app Next.js, esta função chamaria router.push('/imoveis/novo?proprietarioId=...')
-    console.log(`Ação de Navegação: Ir para a página de Cadastro de Imóvel com ID: ${proprietarioId}.`);
+    // Numa app Next.js, esta funÃ§Ã£o chamaria router.push('/imoveis/novo?proprietarioId=...')
+    console.log(`AÃ§Ã£o de NavegaÃ§Ã£o: Ir para a pÃ¡gina de Cadastro de ImÃ³vel com ID: ${proprietarioId}.`);
     setSuccess(false);
     setProprietarioId(null);
   }
@@ -121,26 +124,26 @@ export default function NovoProprietario() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl p-8"> {/* Sombra e arredondamento aprimorados */}
           <h1 className="text-3xl font-extrabold text-blue-800 mb-8 border-b-4 border-blue-100 pb-3">
-            Cadastrar Novo Proprietário
+            Cadastrar Novo ProprietÃ¡rio
           </h1>
 
-          {/* Área de Notificação de ERRO */}
+          {/* Ãrea de NotificaÃ§Ã£o de ERRO */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-300 rounded-lg shadow-sm">
-              <p className="text-red-700 text-sm font-semibold">❌ Erro no Cadastro:</p>
+              <p className="text-red-700 text-sm font-semibold">âŒ Erro no Cadastro:</p>
               <p className="text-red-600 text-sm mt-1">{error}</p>
             </div>
           )}
 
-          {/* Área de Sucesso e ID Gerado */}
+          {/* Ãrea de Sucesso e ID Gerado */}
           {success && proprietarioId && (
             <div className="mb-6 p-5 bg-green-50 border border-green-400 rounded-xl shadow-lg">
               <p className="text-green-800 font-bold text-lg mb-2 flex items-center gap-2">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Proprietário cadastrado com sucesso!
+                ProprietÃ¡rio cadastrado com sucesso!
               </p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-3 bg-white p-4 rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-700 font-semibold min-w-[120px]">ID do Proprietário:</p>
+                <p className="text-sm text-gray-700 font-semibold min-w-[120px]">ID do ProprietÃ¡rio:</p>
                 <code className="flex-1 px-3 py-2 bg-gray-100 rounded text-sm font-mono break-all text-blue-700">
                   {proprietarioId}
                 </code>
@@ -149,7 +152,7 @@ export default function NovoProprietario() {
                   className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors relative shadow-md active:shadow-none"
                 >
                   Copiar ID
-                  {/* Notificação de sucesso de cópia */}
+                  {/* NotificaÃ§Ã£o de sucesso de cÃ³pia */}
                   {copySuccess && (
                     <span className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-1 rounded-md shadow-xl whitespace-nowrap animate-fadeInOut">
                       Copiado!
@@ -158,13 +161,13 @@ export default function NovoProprietario() {
                 </button>
               </div>
               <p className="text-sm text-gray-600 mt-3 text-center sm:text-left">
-                Use este ID para associar imóveis a este proprietário.
+                Use este ID para associar imÃ³veis a este proprietÃ¡rio.
               </p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campos do Formulário */}
+            {/* Campos do FormulÃ¡rio */}
             {['nome', 'email', 'telefone', 'cpf'].map((fieldKey: any) => {
               const labelMap = {
                 nome: 'Nome Completo',
@@ -173,7 +176,7 @@ export default function NovoProprietario() {
                 cpf: 'CPF'
               };
               const placeholderMap = {
-                nome: 'João da Silva',
+                nome: 'JoÃ£o da Silva',
                 email: 'joao@email.com',
                 telefone: '(11) 99999-9999',
                 cpf: '123.456.789-00'
@@ -200,7 +203,7 @@ export default function NovoProprietario() {
               );
             })}
 
-            {/* Botões */}
+            {/* BotÃµes */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <button
                 type="submit"
@@ -216,7 +219,7 @@ export default function NovoProprietario() {
                     A processar...
                   </span>
                 ) : (
-                  'Cadastrar Proprietário'
+                  'Cadastrar ProprietÃ¡rio'
                 )}
               </button>
               
@@ -230,23 +233,23 @@ export default function NovoProprietario() {
             </div>
           </form>
 
-          {/* Chamada para Ação Pós-Sucesso */}
+          {/* Chamada para AÃ§Ã£o PÃ³s-Sucesso */}
           {success && (
             <div className="mt-8 p-5 bg-indigo-50 border border-indigo-200 rounded-xl text-center shadow-inner">
               <p className="text-base text-indigo-800 font-semibold mb-3">
-                Proprietário criado. Continuar o fluxo de trabalho:
+                ProprietÃ¡rio criado. Continuar o fluxo de trabalho:
               </p>
               <button
                 onClick={handleNavigateToImovel}
                 className="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg"
               >
-                Cadastrar Imóvel (Usando ID Gerado)
+                Cadastrar ImÃ³vel (Usando ID Gerado)
               </button>
             </div>
           )}
         </div>
       </div>
-      {/* Estilo para animação de cópia */}
+      {/* Estilo para animaÃ§Ã£o de cÃ³pia */}
       <style>{`
         @keyframes fadeInOut {
           0%, 100% { opacity: 0; }

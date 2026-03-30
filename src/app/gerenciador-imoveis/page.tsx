@@ -1,3 +1,6 @@
+﻿import type { Metadata } from 'next';
+export const metadata: Metadata = { robots: { index: false, follow: false } };
+
 'use client'
 
 export const dynamic = 'force-dynamic';
@@ -69,7 +72,7 @@ const MessageDisplay: React.FC<{ message: Message; onClose: () => void }> = ({ m
         }
       `}</style>
       <span className="text-xl flex-shrink-0">
-        {message.type === 'success' ? '✅' : message.type === 'error' ? '❌' : 'ℹ️'}
+        {message.type === 'success' ? 'âœ…' : message.type === 'error' ? 'âŒ' : 'â„¹ï¸'}
       </span>
       <p className="font-semibold text-sm">{message.text}</p>
       <button 
@@ -92,14 +95,14 @@ const LoadingSpinner: React.FC = () => (
 
 const EmptyState: React.FC<{ activeTab: string }> = ({ activeTab }) => (
   <div className="text-center py-16 px-4">
-    <div className="text-6xl mb-4">🏘️</div>
+    <div className="text-6xl mb-4">ðŸ˜ï¸</div>
     <p className="text-xl font-semibold text-gray-700 mb-2">
-      Nenhum imóvel {activeTab === 'ativos' ? 'ativo' : 'inativo'} encontrado
+      Nenhum imÃ³vel {activeTab === 'ativos' ? 'ativo' : 'inativo'} encontrado
     </p>
     <p className="text-sm text-gray-500">
       {activeTab === 'ativos' 
-        ? 'Todos os imóveis estão inativos ou não há imóveis cadastrados' 
-        : 'Não há imóveis inativos no momento'}
+        ? 'Todos os imÃ³veis estÃ£o inativos ou nÃ£o hÃ¡ imÃ³veis cadastrados' 
+        : 'NÃ£o hÃ¡ imÃ³veis inativos no momento'}
     </p>
   </div>
 );
@@ -164,8 +167,8 @@ export default function GerenciadorStatusImoveis() {
       setImoveis(imoveisArray);
       
     } catch (error: any) {
-      console.error('Erro ao buscar imóveis:', error);
-      handleMessage('Falha ao carregar lista de imóveis', 'error');
+      console.error('Erro ao buscar imÃ³veis:', error);
+      handleMessage('Falha ao carregar lista de imÃ³veis', 'error');
       setImoveis([]);
     }
   };
@@ -187,7 +190,7 @@ export default function GerenciadorStatusImoveis() {
       setProprietarios(Array.isArray(data) ? data : []);
       
     } catch (error: any) {
-      console.error('Erro ao buscar proprietários:', error);
+      console.error('Erro ao buscar proprietÃ¡rios:', error);
       setProprietarios([]);
     }
   };
@@ -209,7 +212,7 @@ export default function GerenciadorStatusImoveis() {
   };
 
   // --------------------------------------------------------------------------------
-  // MUDANÇA DE STATUS (PATCH API)
+  // MUDANÃ‡A DE STATUS (PATCH API)
   // --------------------------------------------------------------------------------
   const handleMudarStatus = async (id: string, newStatus: StatusImovel) => {
     const imovel = imoveis.find(i => i.id === id);
@@ -217,10 +220,10 @@ export default function GerenciadorStatusImoveis() {
 
     const isActivating = newStatus === 'ATIVO';
     const actionText = isActivating 
-      ? 'REATIVAR este imóvel?\n\n✅ Ele ficará VISÍVEL no site para todos os clientes.' 
-      : `INATIVAR este imóvel como ${newStatus}?\n\n❌ Ele será REMOVIDO da visualização pública no site.`;
+      ? 'REATIVAR este imÃ³vel?\n\nâœ… Ele ficarÃ¡ VISÃVEL no site para todos os clientes.' 
+      : `INATIVAR este imÃ³vel como ${newStatus}?\n\nâŒ Ele serÃ¡ REMOVIDO da visualizaÃ§Ã£o pÃºblica no site.`;
 
-    if (!window.confirm(`${actionText}\n\nImóvel: ${imovel.tipo} - ${imovel.endereco}`)) {
+    if (!window.confirm(`${actionText}\n\nImÃ³vel: ${imovel.tipo} - ${imovel.endereco}`)) {
       return;
     }
     
@@ -260,12 +263,12 @@ export default function GerenciadorStatusImoveis() {
       ));
       
       const feedback = isActivating 
-        ? `✅ Imóvel REATIVADO! Agora está visível no site (${imovel.tipo} - ${imovel.endereco})` 
-        : `✅ Imóvel marcado como ${newStatus}! Removido da visualização pública (${imovel.tipo} - ${imovel.endereco})`;
+        ? `âœ… ImÃ³vel REATIVADO! Agora estÃ¡ visÃ­vel no site (${imovel.tipo} - ${imovel.endereco})` 
+        : `âœ… ImÃ³vel marcado como ${newStatus}! Removido da visualizaÃ§Ã£o pÃºblica (${imovel.tipo} - ${imovel.endereco})`;
         
       handleMessage(feedback, 'success');
       
-      // Recarrega dados para garantir sincronização completa
+      // Recarrega dados para garantir sincronizaÃ§Ã£o completa
       setTimeout(() => {
         fetchImoveis();
       }, 500);
@@ -273,9 +276,9 @@ export default function GerenciadorStatusImoveis() {
     } catch (error: any) {
       console.error('Erro ao mudar status:', error);
       const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-      handleMessage(`❌ Falha ao atualizar: ${errorMsg}`, 'error');
+      handleMessage(`âŒ Falha ao atualizar: ${errorMsg}`, 'error');
       
-      // Reverte mudança local em caso de erro
+      // Reverte mudanÃ§a local em caso de erro
       await fetchImoveis();
       
     } finally {
@@ -309,14 +312,14 @@ export default function GerenciadorStatusImoveis() {
   }, {} as Record<string, string>);
 
   // --------------------------------------------------------------------------------
-  // RENDERIZAÇÃO DA TABELA
+  // RENDERIZAÃ‡ÃƒO DA TABELA
   // --------------------------------------------------------------------------------
   const renderImovelRow = (imovel: Imovel) => {
     const statusConfig: Record<StatusImovel, { bg: string; text: string; icon: string }> = {
-      ATIVO: { bg: 'bg-green-100', text: 'text-green-800', icon: '✅' },
-      VENDIDO: { bg: 'bg-red-100', text: 'text-red-800', icon: '🏷️' },
-      ALUGADO: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: '🔑' },
-      ARQUIVADO: { bg: 'bg-gray-100', text: 'text-gray-800', icon: '📦' },
+      ATIVO: { bg: 'bg-green-100', text: 'text-green-800', icon: 'âœ…' },
+      VENDIDO: { bg: 'bg-red-100', text: 'text-red-800', icon: 'ðŸ·ï¸' },
+      ALUGADO: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'ðŸ”‘' },
+      ARQUIVADO: { bg: 'bg-gray-100', text: 'text-gray-800', icon: 'ðŸ“¦' },
     };
 
     const config = statusConfig[imovel.status];
@@ -337,7 +340,7 @@ export default function GerenciadorStatusImoveis() {
             <div className="relative">
               <img 
                 src={imovel.imagens[0] || 'https://placehold.co/48x48/e5e7eb/6b7280?text=Sem+Foto'}
-                alt="Miniatura do imóvel"
+                alt="Miniatura do imÃ³vel"
                 className="w-14 h-14 object-cover rounded-lg shadow-sm mr-3 border border-gray-200"
                 onError={(e: any) => {
                   e.currentTarget.src = 'https://placehold.co/48x48/e5e7eb/6b7280?text=Erro';
@@ -345,7 +348,7 @@ export default function GerenciadorStatusImoveis() {
               />
               {!imovel.disponivel && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">❌</span>
+                  <span className="text-white text-xs font-bold">âŒ</span>
                 </div>
               )}
             </div>
@@ -367,7 +370,7 @@ export default function GerenciadorStatusImoveis() {
         </td>
         <td className="p-4">
           <div className="text-sm font-bold text-blue-600">{precoFormatado}</div>
-          <div className="text-xs text-gray-500">{imovel.metragem}m²</div>
+          <div className="text-xs text-gray-500">{imovel.metragem}mÂ²</div>
         </td>
         <td className="p-4">
           <div className="flex items-center gap-2">
@@ -375,7 +378,7 @@ export default function GerenciadorStatusImoveis() {
               {config.icon} {imovel.status}
             </span>
             {!imovel.disponivel && imovel.status === 'ATIVO' && (
-              <span className="text-xs text-red-600 font-medium">⚠️ Indisponível</span>
+              <span className="text-xs text-red-600 font-medium">âš ï¸ IndisponÃ­vel</span>
             )}
           </div>
         </td>
@@ -393,11 +396,11 @@ export default function GerenciadorStatusImoveis() {
               disabled={isUpdating || loading}
             >
               <option value="" disabled>
-                {isUpdating ? '⏳ Processando...' : '🔻 Inativar como...'}
+                {isUpdating ? 'â³ Processando...' : 'ðŸ”» Inativar como...'}
               </option>
-              <option value="VENDIDO">🏷️ VENDIDO</option>
-              <option value="ALUGADO">🔑 ALUGADO</option>
-              <option value="ARQUIVADO">📦 ARQUIVADO</option>
+              <option value="VENDIDO">ðŸ·ï¸ VENDIDO</option>
+              <option value="ALUGADO">ðŸ”‘ ALUGADO</option>
+              <option value="ARQUIVADO">ðŸ“¦ ARQUIVADO</option>
             </select>
           ) : (
             <button
@@ -405,7 +408,7 @@ export default function GerenciadorStatusImoveis() {
               className="px-4 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700 transition font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               disabled={isUpdating || loading}
             >
-              {isUpdating ? '⏳ Reativando...' : '✅ Reativar'}
+              {isUpdating ? 'â³ Reativando...' : 'âœ… Reativar'}
             </button>
           )}
         </td>
@@ -419,35 +422,35 @@ export default function GerenciadorStatusImoveis() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">
-            🔑 Gerenciador de Status de Imóveis
+            ðŸ”‘ Gerenciador de Status de ImÃ³veis
           </h1>
           <p className="text-lg text-gray-600">
-            Controle a visibilidade dos imóveis no site público através da exclusão lógica
+            Controle a visibilidade dos imÃ³veis no site pÃºblico atravÃ©s da exclusÃ£o lÃ³gica
           </p>
         </div>
 
         {/* Info Box */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 p-5 mb-6 rounded-xl shadow-sm">
           <div className="flex items-start">
-            <span className="text-3xl mr-4 flex-shrink-0">ℹ️</span>
+            <span className="text-3xl mr-4 flex-shrink-0">â„¹ï¸</span>
             <div>
-              <h3 className="font-bold text-blue-900 mb-2 text-lg">💡 Como funciona a Exclusão Lógica:</h3>
+              <h3 className="font-bold text-blue-900 mb-2 text-lg">ðŸ’¡ Como funciona a ExclusÃ£o LÃ³gica:</h3>
               <ul className="text-sm text-blue-800 space-y-1.5">
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0">•</span>
-                  <span><strong>ATIVO:</strong> Imóvel visível no site para todos os clientes (disponivel = true)</span>
+                  <span className="flex-shrink-0">â€¢</span>
+                  <span><strong>ATIVO:</strong> ImÃ³vel visÃ­vel no site para todos os clientes (disponivel = true)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0">•</span>
-                  <span><strong>VENDIDO/ALUGADO/ARQUIVADO:</strong> Imóvel removido da visualização pública (disponivel = false)</span>
+                  <span className="flex-shrink-0">â€¢</span>
+                  <span><strong>VENDIDO/ALUGADO/ARQUIVADO:</strong> ImÃ³vel removido da visualizaÃ§Ã£o pÃºblica (disponivel = false)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0">•</span>
-                  <span>Os dados permanecem no banco de dados para histórico e relatórios</span>
+                  <span className="flex-shrink-0">â€¢</span>
+                  <span>Os dados permanecem no banco de dados para histÃ³rico e relatÃ³rios</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0">•</span>
-                  <span>A página web filtra automaticamente pelos campos <code className="bg-blue-200 px-1 rounded">status</code> e <code className="bg-blue-200 px-1 rounded">disponivel</code></span>
+                  <span className="flex-shrink-0">â€¢</span>
+                  <span>A pÃ¡gina web filtra automaticamente pelos campos <code className="bg-blue-200 px-1 rounded">status</code> e <code className="bg-blue-200 px-1 rounded">disponivel</code></span>
                 </li>
               </ul>
             </div>
@@ -458,7 +461,7 @@ export default function GerenciadorStatusImoveis() {
         <div className="mb-6">
           <input
             type="text"
-            placeholder="🔍 Buscar por tipo, endereço, cidade ou ID..."
+            placeholder="ðŸ” Buscar por tipo, endereÃ§o, cidade ou ID..."
             value={searchTerm}
             onChange={(e: any) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
@@ -475,8 +478,8 @@ export default function GerenciadorStatusImoveis() {
             }`}
             onClick={() => setActiveTab('ativos')}
           >
-            <span className="text-xl">✅</span>
-            Imóveis Ativos
+            <span className="text-xl">âœ…</span>
+            ImÃ³veis Ativos
             <span className={`ml-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
               activeTab === 'ativos' ? 'bg-green-600 text-white' : 'bg-gray-300 text-gray-700'
             }`}>
@@ -492,8 +495,8 @@ export default function GerenciadorStatusImoveis() {
             }`}
             onClick={() => setActiveTab('inativos')}
           >
-            <span className="text-xl">❌</span>
-            Imóveis Inativos
+            <span className="text-xl">âŒ</span>
+            ImÃ³veis Inativos
             <span className={`ml-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
               activeTab === 'inativos' ? 'bg-red-600 text-white' : 'bg-gray-300 text-gray-700'
             }`}>
@@ -506,12 +509,12 @@ export default function GerenciadorStatusImoveis() {
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 border-b border-blue-700">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              {activeTab === 'ativos' ? '✅ Imóveis Ativos' : '❌ Imóveis Inativos'}
+              {activeTab === 'ativos' ? 'âœ… ImÃ³veis Ativos' : 'âŒ ImÃ³veis Inativos'}
             </h2>
             <p className="text-sm text-blue-100 mt-1">
               {activeTab === 'ativos' 
-                ? `${imoveisFiltrados.length} ${imoveisFiltrados.length === 1 ? 'imóvel visível' : 'imóveis visíveis'} no site` 
-                : `${imoveisFiltrados.length} ${imoveisFiltrados.length === 1 ? 'imóvel removido' : 'imóveis removidos'} da visualização pública`}
+                ? `${imoveisFiltrados.length} ${imoveisFiltrados.length === 1 ? 'imÃ³vel visÃ­vel' : 'imÃ³veis visÃ­veis'} no site` 
+                : `${imoveisFiltrados.length} ${imoveisFiltrados.length === 1 ? 'imÃ³vel removido' : 'imÃ³veis removidos'} da visualizaÃ§Ã£o pÃºblica`}
             </p>
           </div>
           
@@ -520,13 +523,13 @@ export default function GerenciadorStatusImoveis() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Imóvel
+                    ImÃ³vel
                   </th>
                   <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Localização
+                    LocalizaÃ§Ã£o
                   </th>
                   <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Proprietário
+                    ProprietÃ¡rio
                   </th>
                   <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                     Valor
@@ -535,7 +538,7 @@ export default function GerenciadorStatusImoveis() {
                     Status
                   </th>
                   <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Ações
+                    AÃ§Ãµes
                   </th>
                 </tr>
               </thead>
@@ -560,15 +563,15 @@ export default function GerenciadorStatusImoveis() {
           </div>
         </div>
 
-        {/* Estatísticas */}
+        {/* EstatÃ­sticas */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500 hover:shadow-lg transition">
             <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
-            <div className="text-sm text-gray-600 font-medium mt-1">Total de Imóveis</div>
+            <div className="text-sm text-gray-600 font-medium mt-1">Total de ImÃ³veis</div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500 hover:shadow-lg transition">
             <div className="text-3xl font-bold text-green-600">{stats.ativos}</div>
-            <div className="text-sm text-gray-600 font-medium mt-1">Ativos (Visíveis)</div>
+            <div className="text-sm text-gray-600 font-medium mt-1">Ativos (VisÃ­veis)</div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-5 border-l-4 border-red-500 hover:shadow-lg transition">
             <div className="text-3xl font-bold text-red-600">{stats.vendidos}</div>
@@ -584,14 +587,14 @@ export default function GerenciadorStatusImoveis() {
           </div>
         </div>
 
-        {/* Rodapé informativo */}
+        {/* RodapÃ© informativo */}
         <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <span className="text-2xl flex-shrink-0">⚠️</span>
+            <span className="text-2xl flex-shrink-0">âš ï¸</span>
             <div className="text-sm text-amber-800">
-              <strong className="font-bold">Atenção:</strong> Esta página gerencia a exclusão lógica dos imóveis. 
-              Imóveis marcados como VENDIDO, ALUGADO ou ARQUIVADO terão o campo <code className="bg-amber-200 px-1 rounded">disponivel</code> 
-              definido como <code className="bg-amber-200 px-1 rounded">false</code>, removendo-os automaticamente da listagem pública do site.
+              <strong className="font-bold">AtenÃ§Ã£o:</strong> Esta pÃ¡gina gerencia a exclusÃ£o lÃ³gica dos imÃ³veis. 
+              ImÃ³veis marcados como VENDIDO, ALUGADO ou ARQUIVADO terÃ£o o campo <code className="bg-amber-200 px-1 rounded">disponivel</code> 
+              definido como <code className="bg-amber-200 px-1 rounded">false</code>, removendo-os automaticamente da listagem pÃºblica do site.
             </div>
           </div>
         </div>

@@ -1,3 +1,6 @@
+﻿import type { Metadata } from 'next';
+export const metadata: Metadata = { robots: { index: false, follow: false } };
+
 'use client'
 
 export const dynamic = 'force-dynamic';
@@ -33,26 +36,26 @@ export default function Toolbox() {
       items: [
         { name: 'Lista de Leads', path: '/leads', icon: List },
         { name: 'Novo Lead', path: '/leads/novo', icon: Plus },
-        { name: 'Relatório de Leads', path: '/leads/relatorio', icon: FileText }
+        { name: 'RelatÃ³rio de Leads', path: '/leads/relatorio', icon: FileText }
       ]
     },
     {
-      title: 'Imóveis',
+      title: 'ImÃ³veis',
       icon: Home,
       color: 'bg-purple-500',
       items: [
-        { name: 'Lista de Imóveis', path: '/imoveis', icon: List },
-        { name: 'Novo Imóvel', path: '/imoveis/novo', icon: Plus },
-        { name: 'Imóveis Disponíveis', path: '/imoveis/disponiveis', icon: Home }
+        { name: 'Lista de ImÃ³veis', path: '/imoveis', icon: List },
+        { name: 'Novo ImÃ³vel', path: '/imoveis/novo', icon: Plus },
+        { name: 'ImÃ³veis DisponÃ­veis', path: '/imoveis/disponiveis', icon: Home }
       ]
     },
     {
-      title: 'Proprietários',
+      title: 'ProprietÃ¡rios',
       icon: UserCheck,
       color: 'bg-orange-500',
       items: [
-        { name: 'Lista de Proprietários', path: '/proprietarios', icon: List },
-        { name: 'Novo Proprietário', path: '/proprietarios/novo', icon: Plus }
+        { name: 'Lista de ProprietÃ¡rios', path: '/proprietarios', icon: List },
+        { name: 'Novo ProprietÃ¡rio', path: '/proprietarios/novo', icon: Plus }
       ]
     },
     {
@@ -62,17 +65,17 @@ export default function Toolbox() {
       items: [
         { name: 'Agenda de Consultas', path: '/consultas', icon: Calendar },
         { name: 'Nova Consulta', path: '/consultas/nova', icon: Plus },
-        { name: 'Histórico', path: '/consultas/historico', icon: List }
+        { name: 'HistÃ³rico', path: '/consultas/historico', icon: List }
       ]
     },
     {
-      title: 'Análise de Mercado',
+      title: 'AnÃ¡lise de Mercado',
       icon: TrendingUp,
       color: 'bg-cyan-500',
       items: [
-        { name: 'Análises', path: '/analise-mercado', icon: TrendingUp },
-        { name: 'Nova Análise', path: '/analise-mercado/nova', icon: Plus },
-        { name: 'Relatórios', path: '/analise-mercado/relatorios', icon: FileText }
+        { name: 'AnÃ¡lises', path: '/analise-mercado', icon: TrendingUp },
+        { name: 'Nova AnÃ¡lise', path: '/analise-mercado/nova', icon: Plus },
+        { name: 'RelatÃ³rios', path: '/analise-mercado/relatorios', icon: FileText }
       ]
     }
   ];
@@ -85,8 +88,8 @@ export default function Toolbox() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">CRM Imobiliário</h1>
-          <p className="text-gray-600">Painel de Navegação - Acesse todas as funcionalidades</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">CRM ImobiliÃ¡rio</h1>
+          <p className="text-gray-600">Painel de NavegaÃ§Ã£o - Acesse todas as funcionalidades</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -150,11 +153,11 @@ export default function Toolbox() {
             </div>
             <div className="border-l-4 border-purple-500 pl-4">
               <p className="font-semibold text-gray-700">GET /api/imoveis</p>
-              <p className="text-sm text-gray-500">Listar todos os imóveis</p>
+              <p className="text-sm text-gray-500">Listar todos os imÃ³veis</p>
             </div>
             <div className="border-l-4 border-orange-500 pl-4">
               <p className="font-semibold text-gray-700">GET /api/proprietarios</p>
-              <p className="text-sm text-gray-500">Listar proprietários</p>
+              <p className="text-sm text-gray-500">Listar proprietÃ¡rios</p>
             </div>
             <div className="border-l-4 border-red-500 pl-4">
               <p className="font-semibold text-gray-700">GET /api/consultas</p>
@@ -162,7 +165,7 @@ export default function Toolbox() {
             </div>
             <div className="border-l-4 border-cyan-500 pl-4">
               <p className="font-semibold text-gray-700">GET /api/analise-mercado</p>
-              <p className="text-sm text-gray-500">Análises de mercado</p>
+              <p className="text-sm text-gray-500">AnÃ¡lises de mercado</p>
             </div>
           </div>
         </div>

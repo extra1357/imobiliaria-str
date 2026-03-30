@@ -1,3 +1,18 @@
+﻿import type { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'Imoveis para Alugar e Vender | Imobiliaria Perto',
+  description: 'Encontre apartamentos e casas para alugar ou comprar em Salto, Itu, Indaiatuba, Sorocaba, Campinas e Porto Feliz. Imobiliaria Perto.',
+  alternates: { canonical: 'https://www.imobiliariaperto.com.br/imoveis-salto' },
+  openGraph: {
+    title: 'Imoveis | Imobiliaria Perto',
+    description: 'Os melhores imoveis da regiao',
+    url: 'https://www.imobiliariaperto.com.br/imoveis-publicos',
+    siteName: 'Imobiliaria Perto',
+    locale: 'pt_BR',
+    type: 'website',
+  },
+  robots: { index: true, follow: true },
+};
 export const dynamic = 'force-dynamic';
 
 import { prisma } from '@/lib/prisma';
@@ -24,7 +39,7 @@ async function getImoveis(cidade?: string, bairro?: string, tipo?: string) {
     });
     return imoveis;
   } catch (error) {
-    console.error('Erro ao buscar imóveis:', error);
+    console.error('Erro ao buscar imÃ³veis:', error);
     return [];
   }
 }
@@ -43,11 +58,11 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div>
-              <h1 className="text-3xl font-bold">🏢 Imobiliária Perto</h1>
-              <p className="text-blue-200 text-sm">Encontre seu imóvel ideal</p>
+              <h1 className="text-3xl font-bold">ðŸ¢ ImobiliÃ¡ria Perto</h1>
+              <p className="text-blue-200 text-sm">Encontre seu imÃ³vel ideal</p>
             </div>
             <Link href="/admin" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition text-sm">
-              🔐 Admin
+              ðŸ” Admin
             </Link>
           </div>
         </div>
@@ -56,11 +71,11 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
       <section className="bg-gradient-to-br from-blue-50 to-purple-50 py-10 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-2">
-            {cidade ? `Imóveis em ${cidade}` : 'Todos os Imóveis'}
+            {cidade ? `ImÃ³veis em ${cidade}` : 'Todos os ImÃ³veis'}
             {bairro ? ` - ${bairro}` : ''}
           </h2>
           <p className="text-gray-600">
-            {imoveis.length} imóvel{imoveis.length !== 1 ? 'is' : ''} encontrado{imoveis.length !== 1 ? 's' : ''}
+            {imoveis.length} imÃ³vel{imoveis.length !== 1 ? 'is' : ''} encontrado{imoveis.length !== 1 ? 's' : ''}
           </p>
 
           <div className="flex flex-wrap justify-center gap-3 mt-6">
@@ -82,7 +97,7 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
                 href="/imoveis-publicos"
                 className="px-4 py-2 rounded-full text-sm font-medium border border-red-300 text-red-600 bg-white hover:bg-red-50 transition"
               >
-                ✕ Limpar filtros
+                âœ• Limpar filtros
               </Link>
             )}
           </div>
@@ -92,12 +107,12 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {imoveis.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
-            <div className="text-8xl mb-6">🏚️</div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-2">Nenhum imóvel encontrado</h3>
+            <div className="text-8xl mb-6">ðŸšï¸</div>
+            <h3 className="text-2xl font-bold text-gray-700 mb-2">Nenhum imÃ³vel encontrado</h3>
             <p className="text-gray-600 mb-6">
-              {cidade ? `Não há imóveis disponíveis em ${cidade} no momento.` : 'Tente ajustar os filtros.'}
+              {cidade ? `NÃ£o hÃ¡ imÃ³veis disponÃ­veis em ${cidade} no momento.` : 'Tente ajustar os filtros.'}
             </p>
-            <Link href="/" className="text-blue-600 hover:underline">← Voltar para a página inicial</Link>
+            <Link href="/" className="text-blue-600 hover:underline">â† Voltar para a pÃ¡gina inicial</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -122,9 +137,9 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
                       />
                     ) : (
                       <div className="h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-7xl">
-                        {imovel.tipo === 'Apartamento' || imovel.tipo === 'APARTAMENTO' ? '🏢' :
-                         imovel.tipo === 'Casa' || imovel.tipo === 'CASA' ? '🏠' :
-                         imovel.tipo === 'Terreno' ? '🏞️' : '🏪'}
+                        {imovel.tipo === 'Apartamento' || imovel.tipo === 'APARTAMENTO' ? 'ðŸ¢' :
+                         imovel.tipo === 'Casa' || imovel.tipo === 'CASA' ? 'ðŸ ' :
+                         imovel.tipo === 'Terreno' ? 'ðŸžï¸' : 'ðŸª'}
                       </div>
                     )}
                     <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -139,7 +154,7 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
                     )}
                     {imovel.destaque && (
                       <span className="absolute bottom-3 left-3 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-1 rounded">
-                        ⭐ Destaque
+                        â­ Destaque
                       </span>
                     )}
                   </div>
@@ -149,18 +164,18 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
                       {imovel.tipo} em {imovel.bairro || imovel.cidade}
                     </h3>
                     <p className="text-gray-500 text-sm mb-3">
-                      📍 {imovel.endereco}, {imovel.cidade}/{imovel.estado}
+                      ðŸ“ {imovel.endereco}, {imovel.cidade}/{imovel.estado}
                     </p>
                     <div className="flex gap-4 text-sm text-gray-600 mb-4 flex-wrap">
-                      {imovel.quartos > 0 && <span>🛏️ {imovel.quartos} qtos</span>}
-                      {imovel.banheiros > 0 && <span>🚿 {imovel.banheiros} ban</span>}
-                      {imovel.vagas > 0 && <span>🚗 {imovel.vagas} vag</span>}
-                      <span>📐 {Number(imovel.metragem)}m²</span>
+                      {imovel.quartos > 0 && <span>ðŸ›ï¸ {imovel.quartos} qtos</span>}
+                      {imovel.banheiros > 0 && <span>ðŸš¿ {imovel.banheiros} ban</span>}
+                      {imovel.vagas > 0 && <span>ðŸš— {imovel.vagas} vag</span>}
+                      <span>ðŸ“ {Number(imovel.metragem)}mÂ²</span>
                     </div>
                     <div className="border-t pt-3">
                       <p className="text-2xl font-bold text-green-600">
                         R$ {new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(preco))}
-                        {imovel.finalidade === 'aluguel' && <span className="text-sm text-gray-500">/mês</span>}
+                        {imovel.finalidade === 'aluguel' && <span className="text-sm text-gray-500">/mÃªs</span>}
                       </p>
                     </div>
                   </div>
@@ -173,9 +188,10 @@ export default async function ImoveisPublicosPage({ searchParams }: Props) {
 
       <footer className="bg-gray-900 text-white py-10 mt-10">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2025 Imobiliária Perto. Todos os direitos reservados.</p>
+          <p>&copy; 2025 ImobiliÃ¡ria Perto. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
   );
 }
+
