@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+﻿export const dynamic = 'force-dynamic';
 import { prisma } from './prisma';
 
 export async function buscarImoveis(cidade?: string) {
@@ -7,6 +7,7 @@ export async function buscarImoveis(cidade?: string) {
       disponivel: true,
       ...(cidade ? { cidade: { contains: cidade, mode: 'insensitive' } } : {}),
     },
+    include: { proprietario: true },
     orderBy: { createdAt: 'desc' },
   });
 
@@ -29,13 +30,15 @@ export async function buscarImoveis(cidade?: string) {
     codigo: i.codigo,
     precoAluguel: i.precoAluguel ? Number(i.precoAluguel) : null,
     caracteristicas: i.caracteristicas || [],
+    whatsapp: i.proprietario?.telefone || '5511976661297',
+    proprietarioNome: i.proprietario?.nome || '',
   }));
 }
 
 export async function buscarImovelPorId(id: string) {
-  // Aceita tanto ID (UUID) quanto slug para SEO
   const imovel = await prisma.imovel.findFirst({
-    where: { OR: [{ id }, { slug: id }] }
+    where: { OR: [{ id }, { slug: id }] },
+    include: { proprietario: true },
   });
   if (!imovel) return null;
 
@@ -58,11 +61,16 @@ export async function buscarImovelPorId(id: string) {
     codigo: imovel.codigo,
     precoAluguel: imovel.precoAluguel ? Number(imovel.precoAluguel) : null,
     caracteristicas: imovel.caracteristicas || [],
+    whatsapp: imovel.proprietario?.telefone || '5511976661297',
+    proprietarioNome: imovel.proprietario?.nome || '',
   };
 }
 
 export async function buscarImovelPorSlug(slug: string) {
-  const imovel = await prisma.imovel.findUnique({ where: { slug } });
+  const imovel = await prisma.imovel.findUnique({
+    where: { slug },
+    include: { proprietario: true },
+  });
   if (!imovel) return null;
 
   return {
@@ -84,5 +92,7 @@ export async function buscarImovelPorSlug(slug: string) {
     codigo: imovel.codigo,
     precoAluguel: imovel.precoAluguel ? Number(imovel.precoAluguel) : null,
     caracteristicas: imovel.caracteristicas || [],
+    whatsapp: imovel.proprietario?.telefone || '5511976661297',
+    proprietarioNome: imovel.proprietario?.nome || '',
   };
 }
